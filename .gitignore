@@ -1,0 +1,22 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies and generated build output
+node_modules/
+dist/
+build/
+coverage/
+
+# Local tooling and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Temporary logs and local task/runtime output
+*.log
+*.tmp
