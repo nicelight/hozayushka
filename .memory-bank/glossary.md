@@ -2,6 +2,7 @@
 description: Словарь терминов, сущностей и agreed vocabulary проекта.
 status: active
 last_updated: 2026-08-03
+source_of_truth: .memory-bank/prd.md, .memory-bank/analysis/product-brief.md
 ---
 # Glossary
 

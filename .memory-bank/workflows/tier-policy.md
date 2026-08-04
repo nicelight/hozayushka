@@ -72,12 +72,61 @@ ownership:
   complete mapping; no required claim may rely only on a receipt;
 - T3 never permits reuse-only PASS. `/verify` obtains new functional evidence
   for every independently harm-driving claim, then normal per-task
-  `/red-verify` and human-checkpoint rules still apply.
+  `/red-verify` rules still apply.
 
 Receipt eligibility, current-attempt selection, state/freshness comparison,
 fallback, and reporting are fully defined in the installed `/exe` and
 `/verify` runtime commands. No receipt task field, registry, status, cache, or
 artifact family exists.
+
+## Task-Scoped Acceptance Evidence
+
+Compact changes protocol depth, not task-scoped acceptance obligations. When a
+task at any tier carries `verification_targets` or `evidence_required`, its
+closure evidence must satisfy them. A newly created or reconciled
+`planned|ready` task that proves a material NFR has non-empty values in both,
+linked to its governing REQ and exact feature AC; evidence records the observed
+value or qualitative result, decisive conditions, pass/fail comparison, and
+artifact. Human/expert review is an evidence method.
+
+This rule does not make those fields non-empty for every T0/T1 task, change tier
+assignment, or add a gate, status, lifecycle, or protocol family.
+
+## Claim-Linked RED / GREEN For T2/T3
+
+Each accepted `planned|ready` T2/T3 card maps its stable AC/REQ/canonical-spec
+claims through existing direct links, `verification_targets`, and
+`evidence_required` to prospective claim-scoped proof. An AC path repeats its
+exact `FT-<NNN>-AC-<NNN>` ID. One probe may cover several claims only with
+explicit complete mapping. A meaningful RED that is not applicable records one
+accepted task-specific reason and alternative proof; tier, convenience, or a
+missing harness is not a reason.
+
+After `ready -> in_progress`, the initial attempt obtains honest
+pre-implementation RED for each applicable claim before changing its production
+behavior, then claim-equivalent GREEN. Setup, syntax, unrelated, or artificial
+failure is not RED. Pre-implementation GREEN preserves the evidence and avoids
+production changes for that claim. `/exe` completes any remaining accepted task
+outcome, then returns the same ordinary `/exe` handoff to `/verify`.
+
+A retry retains the original durable RED when one exists, links the new
+Execution Attempt to the failed gate evidence and correction, obtains fresh
+claim-equivalent GREEN for corrected applicable claims, and repeats every
+required gate without forcing the original probe to become RED again.
+
+`/verify` independently proves the current task outcome. RED/GREEN, valid
+pre-implementation GREEN, and accepted not-applicable proof remain supporting
+execution evidence and do not change verdict semantics. Pre-implementation
+GREEN alone is neither PASS nor `NEEDS-CLARIFICATION`. T3 proof covers every
+independently harm-driving claim in already authorized isolated/disposable
+state with safe rerun and cleanup. `/red-verify` keeps its hostile semantic
+role. No task field, status, scheduler stage, verdict, protocol family, queue,
+registry, or lifecycle is added.
+
+Do not fabricate or backfill RED/GREEN evidence for historical
+`in_progress|done|failed` tasks. A lifecycle owner does not close a task whose
+current accepted plan requires this evidence until `/verify` confirms the
+claim-linked path.
 
 ## Task Start and Status Transition Modes
 
@@ -93,10 +142,10 @@ Start contract:
 - Before `ready -> in_progress`, `/exe` initializes or reconciles the
   tier-required protocol and one neutral current `Execution Attempt` containing
   only `attempt` and `started`.
-- `/exe` writes `ready -> in_progress` immediately before the first
-  implementation or external side-effect write. Re-entry with a prepared
+- `/exe` writes `ready -> in_progress` before the first prospective T2/T3
+  probe, implementation, or external side effect. Re-entry with a prepared
   `ready` attempt or unfinished `in_progress` attempt reuses it.
-- A completed implementation handoff routes forward without replay. An eligible
+- A completed `/exe` handoff routes forward without replay. An eligible
   same-task retry creates a new attempt; ambiguous possibly completed unsafe or
   non-idempotent work stops instead of being replayed.
 - Task selection/start does not grant external permissions or approvals. No
@@ -113,7 +162,7 @@ Scheduler mode:
   `current stage: execute` and `next action: /exe <TASK_ID>`. `/exe` then owns
   protocol preparation and `ready -> in_progress`.
 - Scheduler decides closure/failure/blocking eligibility.
-- `/exe` returns scoped implementation handoff; it does not close tasks.
+- `/exe` returns a scoped `/exe` handoff; it does not close tasks.
 - `/verify` gives functional verdict/evidence; in scheduler mode it does not close/fail/block/promote.
 - `/red-verify` gives semantic verdict for per-task T3 checks and T2 feature-completion checks; in scheduler mode it does not close/fail/block/promote.
 - Scheduler must write the closure/failure/blocking decision, final task status, and evidence links to the authoritative indexed `.memory-bank/tasks/TASK-*.task.json` record immediately after each task and before the next `/mb-sync` boundary.
@@ -123,7 +172,6 @@ Scheduler mode:
 - T2 feature completion requires feature-level `/red-verify --feature FT-<ID>` with `SEMANTIC_VERDICT: semantic-pass` after all tasks for that feature are implemented, recorded in the feature doc. In scheduler mode, run it when the last feature task closes and before the wave-boundary `/mb-sync` plus strict doctor.
 - `FT-000` is the Foundation Dev Path pseudo-feature and does not participate in product feature-completion semantics.
 - T3 scheduler task closure requires full protocol, applicable task/spec gates, `VERDICT: PASS`, and per-task `SEMANTIC_VERDICT: semantic-pass` before scheduler marks `done`.
-- T3 scheduler closure also requires the exact marker `HUMAN_CHECKPOINT: done`.
 
 Manual mode:
 - Expected T0/T1 simple flow: `/exe TASK`, compact local evidence, and optional closure by the explicit manual top-level owner.
@@ -148,28 +196,46 @@ Manual mode:
 
 ## Scheduler Failure Handling
 
-`/autopilot` and `/autonomous` apply one canonical failure contract:
+`/autopilot` and `/autonomous` apply the shared counting, retry-safety, and
+failure-disposition contract below. Automatic `diagnose` applies only to
+`/autopilot` product tasks; `/autonomous` FT-000 Foundation execution keeps its
+existing disposition.
 
-- After `VERDICT: FAIL` or `SEMANTIC_VERDICT: semantic-fail`, a same-task retry
-  is allowed only while `max_retries_per_task` has capacity and the correction
-  stays inside the accepted task identity, outcome, scope, tier, dependencies,
-  specs, and hard runtime boundaries. The retry must not repeat an unsafe or
-  non-idempotent side effect. Keep the task `in_progress`, create a new
-  Execution Attempt, record it and the evidence in the run status/task protocol,
-  then rerun `/exe` and every required verification gate. Ordinary re-entry
-  before a completed implementation handoff resumes the existing attempt.
-- If no safe same-task retry exists or its budget is exhausted, write
-  `in_progress -> failed` with the functional/semantic evidence and failure
-  decision in the authoritative task record. Before the next strict doctor,
-  create a `.memory-bank/bugs/` note mentioning the failed task or route a
-  normal indexed follow-up task through `/feature-to-tasks` or
-  `/foundation-to-tasks`. A follow-up joins the same run only after its normal
-  review and readiness gates pass.
-- `VERDICT: NEEDS-CLARIFICATION`, `SEMANTIC_VERDICT: semantic-concern`, or an
-  execution blocker never becomes `done` or automatic `failed`. Use a safe
-  same-task retry only when no operator/planning decision is needed; otherwise
-  set `blocked`, record owner/reason/evidence and the exact resume route, and use
-  the applicable clarification, blocking, or quality terminal state.
+- The current Execution Attempt becomes unsuccessful when `/verify` returns
+  `VERDICT: FAIL` or a required `/red-verify` returns
+  `SEMANTIC_VERDICT: semantic-fail`; both markers still count once for that
+  attempt. An unfinished `/exe`, replay, resume, `/debug`,
+  multiple findings, `NEEDS-CLARIFICATION`, `semantic-concern`, or a blocker
+  without a completed correction attempt does not increment the count.
+  `max_retries_per_task: 2` permits the initial attempt plus two retries.
+- Before the third unsuccessful attempt, same-task retry requires an
+  evidence-backed correction inside accepted task identity, outcome, scope,
+  tier, dependencies, specs, and hard runtime boundaries, without replaying an
+  unsafe or non-idempotent side effect. The task stays `in_progress`; a new
+  Execution Attempt records the correction basis before `/exe` and every gate
+  rerun. Re-entry before a completed `/exe` handoff resumes the current attempt.
+- `/autopilot` may checkpoint `diagnose` and run a fresh `/debug <TASK_ID>` when
+  durable failure evidence supports neither a safe same-task correction nor an
+  evidence-based disposition. `/debug` neither increments nor extends the retry
+  budget; checkpoint and report recovery remain owned by `/autopilot`.
+- Disposition follows evidence: a proven upstream or authority gap becomes
+  `blocked` with exact halt, owner, and resume route; proven task-local failure
+  without a safe retry becomes `failed`; an inconclusive mapping before the
+  third unsuccessful attempt keeps `in_progress` and uses the existing
+  quality/clarification halt with evidence owner and resume route.
+- After the third unsuccessful attempt no fourth is permitted. A proven
+  upstream or authority gap remains `blocked`; every other task-local or
+  inconclusive disposition becomes `failed`.
+- For `/autopilot` product tasks, route task slicing, tier, or direct task spec
+  to `/feature-to-tasks FT-<NNN>`; product ambiguity to
+  `/feature-doctor FT-<NNN>`; and shared architecture, write authority, source
+  of truth, public boundary, or dependency direction to `/spec-design`.
+- A failed disposition writes `in_progress -> failed` with functional/semantic
+  and diagnostic evidence. Before the next strict doctor, create a
+  `.memory-bank/bugs/` note or route a normal indexed follow-up through its
+  planning owner; same-run follow-up still requires normal review/readiness.
+- `NEEDS-CLARIFICATION`, `semantic-concern`, and execution blockers follow the
+  same evidence mapping and never become `done`.
 - Mark direct dependents of every `failed|blocked` task `blocked` before another
   promotion pass. Repeat the pass so no downstream task is promoted through a
   failed or blocked dependency.
@@ -186,7 +252,6 @@ Tier summary:
 - T0/T1: compact allowed.
 - T2 tasks: full protocol + applicable task/spec gates + verify PASS before scheduler marks done; T2 feature completion then requires feature-level red-verify.
 - T3 tasks: verify + per-task red-verify before scheduler marks done.
-- T3: human checkpoint before scheduler marks done.
 - Manual mode: T0/T1 may close in `/exe` with compact evidence when the explicit manual top-level owner conditions are met, or through `/verify PASS` when independent verification is requested; T2 tasks do not require per-task /red-verify for closure; T2 feature completion requires feature-level /red-verify semantic-pass recorded in the feature doc; T3 tasks require per-task /red-verify semantic-pass before closure.
 
 ## Single-card execution context
@@ -255,9 +320,7 @@ Use for auth, permissions, secrets, security-sensitive behavior, deploy/runtime 
   independently harm-driving functional claim requires new verifier-owned
   evidence and reuse-only PASS is forbidden
 - Scheduler mode: `/verify` `VERDICT: PASS` plus per-task `/red-verify` `SEMANTIC_VERDICT: semantic-pass` before scheduler marks the task done
-- T3: human checkpoint before scheduler marks done
-- Required scheduler marker line is the exact standalone line `HUMAN_CHECKPOINT: done`
-- Manual mode: T3 requires explicit closure ownership, `/red-verify` semantic-pass, and the human checkpoint before closure
+- Manual mode: T3 requires explicit closure ownership and `/red-verify` semantic-pass before closure
 - MB-SYNC: required at the end of the current wave; early sync uses the same
   exceptional dependency/owner rule as T2
 

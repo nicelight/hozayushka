@@ -2,6 +2,7 @@
 description: Глобальные инварианты и запреты проекта (MUST/NEVER).
 status: active
 last_updated: 2026-08-03
+source_of_truth: .memory-bank/constitution.md, .memory-bank/prd.md
 ---
 # Invariants
 

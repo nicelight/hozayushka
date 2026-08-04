@@ -1,0 +1,123 @@
+{
+  "id": "TASK-002-T3-FT-000-W1",
+  "title": "Run final Foundation build/start/test/smoke and compatibility gate",
+  "status": "planned",
+  "wave": "W1",
+  "feature": "FT-000",
+  "reqs": [
+    "REQ-000"
+  ],
+  "depends_on": [
+    "TASK-001-T3-FT-000-W0"
+  ],
+  "touched_files": [
+    "app/build/outputs/apk/debug/app-debug.apk",
+    ".protocols/FT-000/",
+    ".protocols/TASK-002-T3-FT-000-W1/",
+    ".tasks/TASK-002-T3-FT-000-W1/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Foundation build and host tests",
+      "command": "./gradlew clean assembleDebug testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "APK install probe",
+      "command": "adb install -r app/build/outputs/apk/debug/app-debug.apk",
+      "required": true
+    }
+  ],
+  "verify": [
+    "From a clean/reset state, rerun the recorded build and host-test commands, install the produced APK and use the exact launch invocation recorded by TASK-001.",
+    "Exercise the Foundation smoke path: clean launch, stable fullscreen main display, local settings seed, start/cancel one timer, re-open after a temporary interruption, and a redacted weather fixture without a live key.",
+    "Run the target-device probes for landscape fullscreen, hidden system panels, keep-screen-on, readability, temporary lifecycle/process interruption and the permitted/suppressed audio route; do not probe reboot recovery.",
+    "Record fresh redacted logs, screenshots or device notes under the selected protocol/evidence paths and leave the lifecycle decision to the owning scheduler or explicit operator."
+  ],
+  "docs": [
+    ".memory-bank/foundation.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-000/plan.md",
+    ".protocols/FT-000/decision-log.md"
+  ],
+  "evidence_required": [
+    "[REQ-000] Meaningful RED is not applicable to this verification-only final gate because it changes no production behavior; accepted alternative proof is a fresh clean/reset execution of every build, start, test, smoke and compatibility check with redacted artifacts.",
+    "[.memory-bank/testing/runtime-verification.md#foundation-minimal-proof] Meaningful RED is not applicable for the same verification-only reason; GREEN is the complete minimal path with known initial state, safe rerun/reset, observable result and cleanup recorded in the protocol/evidence artifacts.",
+    "[.memory-bank/contracts/platform-runtime.md#display-runtime-boundary] Meaningful RED is not applicable because the gate does not alter display behavior; GREEN is fresh target-device evidence for landscape fullscreen, hidden system panels, keep-screen-on and readability.",
+    "[.memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary] Meaningful RED is not applicable because the gate does not alter lifecycle/audio behavior; GREEN is fresh evidence for temporary interruption rehydration, visual overdue independence and permitted/suppressed audio behavior, excluding reboot recovery.",
+    "[.memory-bank/contracts/local-secret-handling.md#evidence-and-verification] Meaningful RED is not applicable because no credential-bearing production change occurs; GREEN is a synthetic/redacted artifact scan proving no real key appears in source, APK resources, logs or evidence.",
+    "T3 isolation, safe rerun, cleanup and permissions: reset disposable local state before and after the smoke path, use synthetic fixtures only, install only the generated debug APK on the authorized target/emulator, and do not grant new network, secret or production permissions."
+  ],
+  "purpose": "Independently prove that the completed FT-000 walking skeleton satisfies the accepted Foundation exit criteria across clean build, launch, deterministic probes, smoke flow and target-runtime compatibility.",
+  "success_outcome": "Fresh evidence proves one debug APK builds and installs, the app starts through the accepted composition root, the resettable smoke path remains usable, host probes pass, target-device compatibility probes pass or record an evidenced platform limitation without scope expansion, and no credential or speculative product behavior appears.",
+  "anti_goals": [
+    "Do not implement or verify full FT-001–FT-009 product acceptance criteria.",
+    "Do not add reboot recovery, a backend, Google Services, a new provider, event infrastructure or extra runtime permissions.",
+    "Do not treat a live API key, live provider request or an unredacted artifact as a valid Foundation proof."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "Product implementation beyond the FT-000 walking skeleton",
+      "backend, cloud sync, accounts, Google Services and reboot recovery",
+      "real credentials or unredacted logs/screenshots/evidence",
+      "new permissions or external side effects beyond authorized install/start/probe execution"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if a failed compatibility result requires changing architecture, ownership, source of truth, public boundary or Foundation scope.",
+      "Stop and route to /feature-to-tasks if a missing result is feature-level provider mapping, schema, UX or product behavior rather than Foundation proof.",
+      "Stop for operator direction if a target-device limitation would require reboot recovery, new permissions or a changed security posture."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/foundation.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json",
+    ".protocols/FT-000/plan.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#AD-001",
+    ".memory-bank/architecture/system-architecture.md#AD-002",
+    ".memory-bank/architecture/system-architecture.md#AD-003",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/testing/runtime-verification.md#foundation-minimal-proof",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/workflows/tier-policy.md#t3---critical--security--production--irreversible"
+  ],
+  "constraints": [
+    "Use only the implementation and probe surface established by TASK-001; the final gate is acceptance evidence, not a second implementation task.",
+    "Run every check from a known disposable/resettable state and preserve only redacted evidence.",
+    "A target-ROM limitation is recorded as runtime evidence and does not authorize reboot recovery, new permissions or product-scope expansion.",
+    "The final Foundation Gate must be done before any product task queue is created or executed."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must: clock/timer/cache paths remain usable within the accepted Foundation smoke scope and secrets remain local/redacted.",
+    ".memory-bank/invariants.md#never: no reboot recovery, backend, Google Services, extra V1 scope or unredacted credential evidence.",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules: platform limitations are evidence, not a new product boundary.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: device checks cover only outcomes host-side checks cannot reliably prove."
+  ],
+  "verification_targets": [
+    "REQ-000 / Foundation Exit Criteria: minimal path, compatibility probes and clean redacted evidence are complete; no unresolved material Foundation pressure remains.",
+    ".memory-bank/testing/runtime-verification.md#foundation-minimal-proof: build, launch, known initial state/reset, visible main-display smoke, deterministic timer probe, redacted fixture path and target-device route are all proven.",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary: fullscreen, hidden panels, keep-screen-on and readability are proven on the target path.",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary: temporary interruption rehydration and audio policy evidence preserve visual overdue behavior; reboot recovery remains excluded.",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification: artifact scan is clean without ever introducing a real key."
+  ]
+}

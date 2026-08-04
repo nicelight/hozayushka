@@ -17,15 +17,16 @@ status: active
 - [.memory-bank/prd.md](prd.md): Clarified Product Requirements Document для `/spec-init` и decomposition.
 - [.memory-bank/product.md](product.md): Продукт (C4 L1).
 - [.memory-bank/requirements.md](requirements.md): Требования + RTM.
-- [.memory-bank/epics/](epics/): Эпики (C4 L2).
-- [.memory-bank/features/](features/): Фичи (C4 L3).
+- [.memory-bank/epics/index.md](epics/index.md): Эпики (C4 L2) и их product outcomes.
+- [.memory-bank/features/index.md](features/index.md): Фичи (C4 L3) и их acceptance boundaries.
 - [.memory-bank/behavior-specs/](behavior-specs/): Optional JSON behavior examples linked from feature docs and task `source_artifacts`.
 - [.memory-bank/tasks/index.json](tasks/index.json): Authoritative JSON task record index.
 - [.memory-bank/schemas/task.schema.json](schemas/task.schema.json): JSON schema for task records.
 - [.memory-bank/workflows/index.md](workflows/index.md): Workflow router and tier/execution/sync policies.
 
 - [.memory-bank/spec-index.md](spec-index.md): Pure SDD spec registry and planned-spec index.
-- [.memory-bank/spec-backbone.md](spec-backbone.md): Pre-PRD framing status and global backbone state for `/prd-to-features` and `/spec-design`.
+- [.memory-bank/spec-backbone.md](spec-backbone.md): Global SDD backbone status, area matrix and Foundation routing.
+- [.memory-bank/foundation.md](foundation.md): Foundation Dev Path decision, gate anchors and feature pressure map.
 - [.memory-bank/user-scenarios.md](user-scenarios.md): reviewed actors, core scenarios and decomposition implications.
 - [.memory-bank/glossary.md](glossary.md): Общий словарь терминов и доменных значений.
 - [.memory-bank/invariants.md](invariants.md): Глобальные MUST/NEVER правила.
@@ -34,10 +35,11 @@ status: active
 - [.memory-bank/adrs/](adrs/): ADR решения.
 
 - [.memory-bank/domains/](domains/): Subject-based domain models, storage, schemas, migrations, and persistence rules.
-- [.memory-bank/contracts/](contracts/): Контракты и boundary specs (prefer when present).
-- [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md): Lightweight responsibility/scope boundary notes for decomposition and task runtime context.
+- [.memory-bank/contracts/index.md](contracts/index.md): Router for accepted boundary and subject contract specs.
+- [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md): Accepted module inventory, write ownership and dependency graph.
 - [.memory-bank/states/](states/): Lifecycle/state rules (prefer when present).
-- [.memory-bank/states/lifecycle-map.md](states/lifecycle-map.md): Preliminary timer, weather freshness and forecast-session lifecycle hints.
+- [.memory-bank/states/lifecycle-map.md](states/lifecycle-map.md): Canonical timer, weather freshness and forecast-session lifecycle contract.
 - [.memory-bank/runbooks/](runbooks/): Runbooks и operational procedures.
 - [.memory-bank/testing/index.md](testing/index.md): Router for testing documentation.
+- [.memory-bank/testing/runtime-verification.md](testing/runtime-verification.md): Concrete Foundation, integration, secret and target-device evidence routes.
 - [.memory-bank/skills/index.md](skills/index.md): Skill registry.

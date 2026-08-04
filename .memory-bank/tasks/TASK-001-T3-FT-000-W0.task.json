@@ -1,0 +1,140 @@
+{
+  "id": "TASK-001-T3-FT-000-W0",
+  "title": "Establish minimal Android walking skeleton and foundation probe path",
+  "status": "ready",
+  "wave": "W0",
+  "feature": "FT-000",
+  "reqs": [
+    "REQ-000"
+  ],
+  "depends_on": [],
+  "touched_files": [
+    "settings.gradle.kts",
+    "build.gradle.kts",
+    "gradle.properties",
+    "app/",
+    "app/src/main/AndroidManifest.xml",
+    "app/src/main/kotlin/<app-package>/app/",
+    "app/src/main/kotlin/<app-package>/display/",
+    "app/src/main/kotlin/<app-package>/weather/",
+    "app/src/main/kotlin/<app-package>/forecast/",
+    "app/src/main/kotlin/<app-package>/timer/",
+    "app/src/main/kotlin/<app-package>/settings/",
+    "app/src/main/kotlin/<app-package>/adapters/platform/",
+    "app/src/main/kotlin/<app-package>/adapters/weather/",
+    "app/src/test/",
+    "app/src/test/resources/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Android debug build",
+      "command": "./gradlew assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host-side foundation probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record the actual project-native build and host-test commands and their redacted outputs in the task protocol.",
+    "Review the composition root, accepted slice roots, adapter roots and directed ownership edges against the linked architecture and boundary specs.",
+    "Run the disposable local-state reset/fixture probe and the synthetic provider fixture through the owner boundaries; scan source, resources, logs and evidence for credential leakage.",
+    "Record the install/start invocation and target-device probe route without claiming device PASS before the final Foundation Gate."
+  ],
+  "docs": [
+    ".memory-bank/foundation.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md"
+  ],
+  "evidence_required": [
+    "[REQ-000] RED: before scaffold writes, the current checkout has no executable Android build/start/test/smoke path; GREEN: the new baseline records reproducible build, host-test, install/start and fixture commands with redacted results.",
+    "[.memory-bank/architecture/system-architecture.md#AD-001] RED: no single application composition root or accepted slice-root surface exists in the current checkout; GREEN: one app composition root and only the walking-skeleton roots for display, weather, forecast, timer, settings, platform/weather adapters and fixtures are present.",
+    "[.memory-bank/contracts/boundary-map.md#dependency-graph] RED: no executable boundary wiring exists to inspect; GREEN: the scaffold exposes no shared storage owner, unauthorized direct slice edge, event bus or backend boundary, and the composition root is limited to wiring/lifecycle.",
+    "[.memory-bank/domains/local-data.md#durable-data-rules] RED: no known initial state or safe reset path exists; GREEN: an isolated disposable fixture starts from a known state, exercises owner-local persistence/reload and resets cleanly without affecting another run.",
+    "[.memory-bank/contracts/local-secret-handling.md#evidence-and-verification] RED: no redacted provider fixture or artifact scan path exists; GREEN: a synthetic credential reaches only the provider fixture path and is absent from source, packaged resources, logs and durable evidence.",
+    "[.memory-bank/testing/runtime-verification.md#foundation-minimal-proof] RED: the required foundation proof route is absent; GREEN: the scaffold exposes deterministic host probes plus a documented target-device path for fullscreen, keep-screen-on and temporary lifecycle/audio checks."
+  ],
+  "purpose": "Create the smallest executable Android project and walking skeleton needed to prove the accepted one-deployable capability-sliced architecture, local-state baseline and safe redacted fixture path before product feature tasking.",
+  "success_outcome": "A clean checkout can build one debug APK, run deterministic host-side foundation probes, initialize and reset an isolated local fixture, exercise a synthetic weather/provider path without a live key, and launch through one composition root while preserving the accepted slice and adapter boundaries.",
+  "anti_goals": [
+    "Do not implement FT-001–FT-009 product behavior or acceptance criteria.",
+    "Do not add technical-layer slices, a shared business-data module, an event/message bus, backend/cloud/Google Services or reboot recovery.",
+    "Do not add a real API key to source, resources, logs, fixtures, screenshots or evidence.",
+    "Do not select a new dependency or change public/package/security/architecture posture without the governing operator checkpoint."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "Product behavior for FT-001–FT-009",
+      "backend, cloud sync, accounts, Google Services and reboot recovery",
+      "shared storage ownership, event/message infrastructure and speculative slices",
+      "real user credentials in any source, resource, log or evidence artifact"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before adding a dependency or making a substantial UI toolkit, persistence, package/public-boundary or security-posture decision.",
+      "Stop and route to /spec-design if execution requires changing the accepted composition root, capability ownership, dependency direction, source of truth or a Foundation exit criterion.",
+      "Stop and route to /feature-to-tasks if the work expands into product behavior or feature-level provider/schema decisions."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/foundation.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/features/FT-000-foundation.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/user-scenarios.md",
+    ".memory-bank/invariants.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#AD-001",
+    ".memory-bank/architecture/system-architecture.md#AD-002",
+    ".memory-bank/architecture/system-architecture.md#AD-003",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract",
+    ".memory-bank/domains/local-data.md#scope-and-source-of-truth",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/testing/runtime-verification.md#foundation-minimal-proof",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/workflows/tier-policy.md#t3---critical--security--production--irreversible"
+  ],
+  "constraints": [
+    "Preserve one deployable Kotlin Android application and one composition root; the root wires settings, adapters, lifecycle, start and shutdown but owns no product business state.",
+    "Use the accepted capability-slice code roots and private owner persistence paths; do not create layer-centric scaffolding, a shared storage owner or an unauthorized dependency edge.",
+    "Keep provider communication redacted and fixture-backed; no live API key or live provider request is needed for Foundation.",
+    "Use deterministic, disposable state with a safe reset/cleanup path for every Foundation probe.",
+    "Exact Gradle/plugin/package/UI/persistence implementation details remain bounded to the accepted target; new dependency or material posture changes require operator confirmation."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must: time remains the dominant display concern and local product state has one owner.",
+    ".memory-bank/invariants.md#never: no backend, Google Services, reboot recovery, event infrastructure or speculative V1 scope.",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract: user credentials stay local and redacted.",
+    ".memory-bank/domains/local-data.md#retention-and-cleanup: Foundation reset/fixture paths do not change product retention or create a second persistence owner."
+  ],
+  "verification_targets": [
+    "REQ-000: one reproducible build/start/test/smoke path and a known resettable local state exist before product task design.",
+    ".memory-bank/architecture/system-architecture.md#AD-001: one app composition root and accepted capability-slice discovery roots are present without technical-layer or future-slice scaffolding.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph: scaffolded dependencies remain within the accepted directed graph and no consumer bypasses a provider owner.",
+    ".memory-bank/domains/local-data.md#durable-data-rules: isolated settings/timer/weather fixture state can be initialized, reloaded and safely reset.",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification: synthetic credentials are absent from source, resources, logs and evidence.",
+    ".memory-bank/testing/runtime-verification.md#foundation-minimal-proof: host-side probes and target-device compatibility probe route are reproducible and redacted."
+  ]
+}

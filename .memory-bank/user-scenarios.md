@@ -1,6 +1,7 @@
 ---
 description: Reviewed core user scenarios and decomposition implications for the clarified V1.
-status: reviewed
+status: active
+review_status: reviewed
 last_updated: 2026-08-03
 ---
 # User Scenarios
