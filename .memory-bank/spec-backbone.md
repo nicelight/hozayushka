@@ -41,7 +41,8 @@ No material global target decision remains unresolved. The following concrete
 details are intentionally routed without changing the accepted backbone:
 
 - FT-000 establishes the Gradle/project package, executable entry, local
-  persistence primitive and first compatibility probes.
+  persistence primitive and first host-side probes. Target-device probes are
+  deferred until the application is ready for runtime/readiness validation.
 - FT-002–FT-004 and FT-008 finalize provider field mapping and redacted fixture
   shapes within the accepted Yandex contract.
 - Target-device probes establish observed custom-ROM lifecycle/audio behavior;
@@ -78,9 +79,12 @@ details are intentionally routed without changing the accepted backbone:
 - Not applicable areas:
   - event_message_contracts: not_applicable - accepted single-runtime V1 has no internal event/message boundary or broker; provider communication is an API contract.
   - agent_io_contracts: not_applicable - V1 has no agent, tool, plugin or protocol I/O boundary.
-- Notes: Global/shared target rules are authoritative. Foundation Dev Path is
-  required before product feature task design because no executable Android
-  baseline exists; feature-level detail remains routed to FT-000 and
+- Notes: Global/shared target rules are authoritative. Foundation Dev Path
+  remains required before product feature task design: TASK-001 establishes
+  the preliminary executable Android baseline and TASK-002 proves the final
+  clean/reset host baseline. Target-runtime compatibility is a later
+  readiness/release gate and is not executed while the application is still a
+  walking skeleton. Feature-level detail remains routed to FT-000 and
   `/feature-to-tasks`.
 
 ## Handoff To /foundation-to-tasks

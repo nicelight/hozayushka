@@ -22,3 +22,8 @@ status: active
 - Accepted one deployable Kotlin Android modular monolith with five capability slices and explicit write ownership.
 - Registered the architecture spine, boundary graph, capability/provider/platform/secret contracts, local-data and lifecycle specs.
 - Set Global Backbone Status to `complete`, Planning Revision `1`, and recorded `Foundation Required: true` without creating task records.
+
+## [2026-08-05] Wave 0 — TASK-001 closure
+- Updated: closed `TASK-001-T3-FT-000-W0` after current functional PASS and per-task semantic PASS.
+- Fixed: preserved the accepted `Main Display → Weather Context → Yandex Weather Adapter` ownership path in the Foundation probe.
+- Retained: `TASK-002-T3-FT-000-W1` remains the separate planned final Foundation Gate.

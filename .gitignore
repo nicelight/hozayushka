@@ -6,6 +6,7 @@
 *.key
 
 # Dependencies and generated build output
+.gradle/
 node_modules/
 dist/
 build/

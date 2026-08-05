@@ -1,0 +1,62 @@
+completed_snapshot=2026-08-05 18:40:30 +0500
+e00238676b0810431ba351a6c2e091898022d8cb
+ M .agents/skills/add-tests/SKILL.md
+ M .agents/skills/autonomous/SKILL.md
+ M .agents/skills/autopilot/SKILL.md
+ D .agents/skills/cold-start/SKILL.md
+ M .agents/skills/exe/SKILL.md
+ M .agents/skills/feature-to-tasks/SKILL.md
+ M .agents/skills/foundation-to-tasks/SKILL.md
+ M .agents/skills/mb-doctor/SKILL.md
+ M .agents/skills/mb-init/SKILL.md
+ M .agents/skills/mb-sync/SKILL.md
+ M .agents/skills/red-verify/SKILL.md
+ M .agents/skills/verify/SKILL.md
+ M .claude/skills/add-tests/SKILL.md
+ M .claude/skills/autonomous/SKILL.md
+ M .claude/skills/autopilot/SKILL.md
+ D .claude/skills/cold-start/SKILL.md
+ M .claude/skills/exe/SKILL.md
+ M .claude/skills/feature-to-tasks/SKILL.md
+ M .claude/skills/foundation-to-tasks/SKILL.md
+ M .claude/skills/mb-doctor/SKILL.md
+ M .claude/skills/mb-init/SKILL.md
+ M .claude/skills/mb-sync/SKILL.md
+ M .claude/skills/red-verify/SKILL.md
+ M .claude/skills/verify/SKILL.md
+ M .gitignore
+ M .memory-bank/changelog.md
+ M .memory-bank/contracts/boundary-map.md
+ M .memory-bank/foundation.md
+ M .memory-bank/skills/index.md
+ M .memory-bank/tasks/TASK-001-T3-FT-000-W0.task.json
+ M .memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json
+ M .memory-bank/templates/protocols/compact-run-template.md
+ M .memory-bank/templates/protocols/context-template.md
+ M .memory-bank/templates/protocols/progress-template.md
+ M .memory-bank/testing/runtime-verification.md
+ M .memory-bank/workflows/autonomy-policy.md
+ M .memory-bank/workflows/execute-loop.md
+ M .memory-bank/workflows/mb-sync.md
+ M .memory-bank/workflows/tier-policy.md
+ M .protocols/FT-000/plan.md
+ M AGENTS.md
+?? .agents/skills/start/
+?? .claude/skills/start/
+?? .memory-bank/contracts/boundary-map-old.md
+?? .protocols/TASK-001-T3-FT-000-W0/
+?? .protocols/TASK-002-T3-FT-000-W1/
+?? .tasks/TASK-001-T3-FT-000-W0/
+?? .tasks/TASK-002-T3-FT-000-W1/
+?? "PAPERCUTS/GPT-5 __ 08-04-2026 15.08.md"
+?? "PAPERCUTS/GPT-5 __ 08-05-2026 13.37.md"
+?? app/
+?? build.gradle.kts
+?? gradle.properties
+?? gradle/
+?? gradlew
+?? gradlew.bat
+?? settings.gradle.kts
+57e6fa4a56255ce78396260dddfb7c775a460ac6ef560f16614e44e4710af241  .memory-bank/tasks/TASK-002-T3-FT-000-W1.task.json
+9133d0f35901982c542183c4a54d019d44ba63b61c83cad315d49e2b9badb898  app/build.gradle.kts
+e8aa2448cd32affba4eeb21194a641d088170e1d465e142e69b5f2be5113117f  settings.gradle.kts

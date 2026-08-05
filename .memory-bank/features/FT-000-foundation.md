@@ -20,10 +20,11 @@ replace FT-001–FT-009.
 ## Outcome
 
 The project has one reproducible Kotlin Android walking skeleton that can be
-built, launched and exercised through a clean/reset local fixture path. The
-skeleton preserves the accepted composition root, capability-slice boundaries,
-local state ownership, redacted provider-fixture route and target-device probe
-route needed before product task design.
+built and exercised through a clean/reset host fixture path. The skeleton
+preserves the accepted composition root, capability-slice boundaries, local
+state ownership and redacted provider-fixture route needed before product task
+design. Target-device/emulator compatibility validation is deferred until the
+application is ready for runtime/readiness validation.
 
 ## Requirement
 
@@ -37,8 +38,9 @@ route needed before product task design.
 - private owner-local persistence baseline with a deterministic reset/isolation
   path;
 - synthetic/redacted provider fixture path without a live API key;
-- host-side build/test commands and target-device start/fullscreen/lifecycle/
-  audio probe route.
+- host-side build/test commands and deterministic fixture/probe route;
+- a documented, deferred target-device route for later runtime validation,
+  not a Foundation execution gate.
 
 Product screens, provider field mapping, full GeoNames data, detailed timer,
 weather, forecast or Settings behavior remain downstream feature work.

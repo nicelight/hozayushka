@@ -1,7 +1,7 @@
 {
   "id": "TASK-001-T3-FT-000-W0",
   "title": "Establish minimal Android walking skeleton and foundation probe path",
-  "status": "ready",
+  "status": "done",
   "wave": "W0",
   "feature": "FT-000",
   "reqs": [
@@ -42,7 +42,12 @@
     "Record the actual project-native build and host-test commands and their redacted outputs in the task protocol.",
     "Review the composition root, accepted slice roots, adapter roots and directed ownership edges against the linked architecture and boundary specs.",
     "Run the disposable local-state reset/fixture probe and the synthetic provider fixture through the owner boundaries; scan source, resources, logs and evidence for credential leakage.",
-    "Record the install/start invocation and target-device probe route without claiming device PASS before the final Foundation Gate."
+    "Record the install/start invocation and target-device probe route without claiming device PASS before the final Foundation Gate.",
+    "Independent verification result: PASS on 2026-08-04; fresh clean build, host probes, boundary/APK route inspection and credential scan passed. Evidence: .protocols/TASK-001-T3-FT-000-W0/verification.md",
+    "Independent verification Attempt 2: VERDICT: PASS on 2026-08-04 16:36 +0500; verifier-owned clean build/host probes, accepted-boundary probe, APK route inspection and full source/build/evidence credential scan passed. No device PASS claimed. Evidence: .protocols/TASK-001-T3-FT-000-W0/verification.md and .tasks/TASK-001-T3-FT-000-W0/TASK-001-T3-FT-000-W0-S-VERIFY-final-report-docs-02.md",
+    "Independent verification run 3: VERDICT: PASS on 2026-08-04 23:55 +0500; fresh clean build/host probes, accepted-boundary and APK route probes, and source/build/evidence/APK credential scan passed. No device PASS claimed. Evidence: .protocols/TASK-001-T3-FT-000-W0/verification.md and .tasks/TASK-001-T3-FT-000-W0/TASK-001-T3-FT-000-W0-S-VERIFY-final-report-docs-03.md",
+    "Independent verification current corrected Attempt 3: VERDICT: PASS on 2026-08-05 15:19 +0500; verifier-owned clean build/host probes, owner-boundary scan, APK route/package check and fresh source/evidence/APK credential scan passed. No device PASS claimed. Evidence: .protocols/TASK-001-T3-FT-000-W0/verification.md and .tasks/TASK-001-T3-FT-000-W0/TASK-001-T3-FT-000-W0-S-VERIFY-final-report-docs-04.md",
+    "Independent verifier rerun after corrected Attempt 3: VERDICT: PASS on 2026-08-05 17:25 +0500; fresh clean build/host probes, owner-boundary scan, mb-lint, diff check, source/evidence/APK secret scan and APK route inspection passed. Two tests reported zero failures/errors/skips. No device PASS claimed. Evidence: .protocols/TASK-001-T3-FT-000-W0/verification.md and .tasks/TASK-001-T3-FT-000-W0/TASK-001-T3-FT-000-W0-S-VERIFY-final-report-docs-05.md"
   ],
   "docs": [
     ".memory-bank/foundation.md",

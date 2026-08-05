@@ -30,8 +30,8 @@ the final gate.
 
 | Order | Task | Tier | Wave | Status | Depends on | Role |
 |---|---|---|---|---|---|---|
-| 1 | `TASK-001-T3-FT-000-W0` | T3 | W0 | ready | none | Implement the walking skeleton, owner-local reset path, synthetic/redacted fixture path and host/device probe route. |
-| 2 | `TASK-002-T3-FT-000-W1` | T3 | W1 | planned | `TASK-001-T3-FT-000-W0` | Final Foundation Gate: clean build/start/test/smoke and compatibility evidence. |
+| 1 | `TASK-001-T3-FT-000-W0` | T3 | W0 | done | none | Implement the walking skeleton, owner-local reset path, synthetic/redacted fixture path and host probe route. |
+| 2 | `TASK-002-T3-FT-000-W1` | T3 | W1 | planned | `TASK-001-T3-FT-000-W0` | Final Foundation Gate: clean build/test, deterministic host smoke and redacted evidence. |
 
 `TASK-002-T3-FT-000-W1` is the one and only final foundation gate. It depends
 on every current Foundation implementation/probe task.
@@ -57,9 +57,11 @@ family.
 ## Scope boundary
 
 Foundation establishes only the executable substrate needed by the accepted
-smoke path: one app/composition root, the required capability-slice discovery
-roots, private owner-local persistence baseline, deterministic disposable
-fixtures, redacted provider path, host checks and target-device probe route.
+host smoke path: one app/composition root, the required capability-slice
+discovery roots, private owner-local persistence baseline, deterministic
+disposable fixtures, redacted provider path, a supported Foundation probe mode
+and host checks. Target-device/emulator checks are deferred until the
+application is ready for runtime/readiness validation.
 It does not implement weather mapping, forecast semantics, timer UX, Settings
 behavior, the complete GeoNames catalog or any FT-001–FT-009 acceptance
 criteria.
@@ -70,8 +72,8 @@ criteria.
 architecture composition, boundary graph, local-state reset, secret-safe fixture
 path and Foundation proof route. `TASK-002` is verification-only, so meaningful
 RED is recorded as not applicable with a concrete reason; its alternative is a
-fresh clean/reset run of the complete evidence matrix, including target-device
-probes and artifact scanning.
+fresh clean/reset run of the host evidence matrix and artifact scanning. No
+ADB, emulator or physical-device check is part of this queue.
 
 Every T3 check uses synthetic/disposable state, safe reset/cleanup and no live
 credential. A device limitation is evidence and follows the existing stop route;

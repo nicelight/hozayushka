@@ -17,17 +17,27 @@ gate or replace feature acceptance criteria.
 
 Foundation must establish a reproducible path with:
 
-- a clean build and launch command for the single Android application;
+- a clean build and host-test command for the single Android application;
 - a known initial local-data state and a safe reset or isolated fixture path;
 - a visible main-display smoke result;
 - a deterministic timer arithmetic/persistence probe;
-- a redacted provider fixture path that does not require a live API key; and
-- a target-device probe path for fullscreen, keep-screen-on and lifecycle/audio
-  behavior where host-side checks cannot prove the result.
+- a redacted provider fixture path that does not require a live API key.
 
-The exact project-native commands are intentionally absent until the
-Foundation Gate creates the executable baseline. Their absence is a foundation
-work item, not a product target blocker after the architecture decision.
+Target-device probing is a separate readiness/release concern. It is not part
+of the Foundation Gate while the application is still a walking skeleton.
+
+`TASK-001-T3-FT-000-W0` establishes the preliminary project-native commands
+`./gradlew assembleDebug` and `./gradlew testDebugUnitTest`, plus the ADB
+install/start route recorded in [Foundation](../foundation.md). The supported
+installed-app probe route is the same Activity with
+`--ez foundation_probe true`; it exposes reset/seed Settings, redacted fixture
+refresh, timer start/rehydration/cancel and the platform audio-policy probe
+through the owning capability boundaries. The weather request is constructed
+inside Weather Context; Display does not access the provider adapter directly.
+The final Foundation Gate reruns these commands from the clean baseline and
+records host-side evidence. It must not start an emulator, run ADB install or
+launch, or perform physical-device smoke while the application is not ready.
+The target-device route below is invoked by a later runtime/readiness task.
 
 ## Deterministic Host-Side Checks
 
@@ -57,6 +67,11 @@ Persistence/recovery probes define before execution:
 4. cleanup that cannot leak a secret or affect another run.
 
 ## Target-Device Evidence
+
+This route is intentionally deferred until the application is ready for
+runtime/readiness validation. It is not an automatic prerequisite for
+`TASK-002-T3-FT-000-W1`, and a Foundation host verification must never start an
+emulator or physical device merely to fill this section.
 
 Manual device evidence is required for the outcomes that host-side checks do
 not reliably establish:

@@ -18,12 +18,43 @@ evidence use the normal requirement, feature, task, protocol and plan paths.
 
 ## Minimal Work Path
 
-- Build command: To be established by FT-000 with the project-native Android build scaffold.
-- Start command: To be established by FT-000 for the target Android 11 device/emulator path.
+- Build command: `./gradlew assembleDebug` (established by
+  `TASK-001-T3-FT-000-W0`; final clean-build evidence belongs to the Foundation
+  Gate).
+- Host baseline command: `./gradlew clean assembleDebug testDebugUnitTest`.
+  The installed-app route remains documented for later readiness validation;
+  it is not executed by the Foundation Gate while the application is still a
+  walking skeleton.
 - Primary entrypoint: One Android application composition root under the accepted single-deployable architecture.
-- Smoke path: Clean launch → stable fullscreen main display → local settings seed → start/cancel one timer → re-open after a temporary interruption → exercise a redacted weather fixture without a live key.
-- Test command: To be established by FT-000 for deterministic host-side and integration probes.
-- Evidence: The current workspace has no executable Android baseline; FT-000 must produce reproducible build/start/test commands, a walking skeleton, local persistence baseline, provider fixture path and target-device probe route.
+- Host smoke path: known/resettable local fixture → redacted weather fixture →
+  deterministic timer arithmetic/persistence probe → host test result and
+  cleanup. Emulator, ADB and physical-device smoke are deferred until the
+  application is ready for runtime validation.
+- Test command: `./gradlew testDebugUnitTest`, with the deterministic
+  `com.hozayushka.app.FoundationProbesTest` owner-local reset/reload and
+  redacted provider fixture probes.
+- Evidence: Before TASK-001 the workspace had no executable Android baseline;
+  TASK-001 establishes the preliminary build/start/test commands, walking
+  skeleton, supported Foundation probe mode, owner-local persistence baseline
+  and provider fixture path. The final Foundation Gate proves the host baseline;
+  target-device compatibility is a later readiness gate.
+
+## TASK-001 preliminary baseline
+
+`TASK-001-T3-FT-000-W0` establishes the executable project shape and explicit
+Foundation probe mode before the final Foundation Gate. The runtime uses one
+`app` module, one composition root under `com.hozayushka.app.app`, the accepted
+capability/adapters roots, and private owner-local `SharedPreferences` stores.
+The probe mode routes Settings, Weather, Timer and platform audio/lifecycle
+operations through their owning boundaries; host probes still use isolated
+in-memory owner stores and a generated in-memory credential whose durable
+provider result is `[REDACTED]`.
+
+The install/start commands are a later runtime-validation route, not a
+Foundation Gate prerequisite. Fullscreen, keep-screen-on, temporary
+interruption/lifecycle and audio observations remain deferred until the
+application is ready; no emulator or physical device should be started for
+FT-000 host verification.
 
 ## Feature Pressure Map
 
@@ -43,15 +74,15 @@ evidence use the normal requirement, feature, task, protocol and plan paths.
 
 | Decision | Why deferred | Trigger to revisit |
 |---|---|---|
-| Exact Gradle/package/UI toolkit setup | No executable Android baseline exists; it does not alter the accepted target shape. | FT-000 scaffold creation. |
-| Project-native persistence primitive | The global contract fixes ownership and behavior, not a library choice. | FT-000 storage probe; operator checkpoint if a new dependency is required. |
+| Exact Gradle/package/UI toolkit setup | TASK-001 uses the cached Android Gradle/Kotlin plugins, provisional `com.hozayushka.app` namespace and platform `Activity`/`View` APIs; this does not add a runtime library or alter the target shape. | Final packaging review / Foundation Gate. |
+| Project-native persistence primitive | TASK-001 establishes owner-local Android `SharedPreferences` stores plus isolated in-memory host-probe stores; no shared storage owner is introduced. | Foundation Gate and later feature schema work; operator checkpoint if a new dependency or security posture is required. |
 | Exact provider field serialization | Product semantics are accepted; feature-level mapping needs a runnable fixture. | FT-002–FT-004 feature design. |
-| Target custom-ROM lifecycle/audio behavior | Current runtime cannot be observed before the app exists. | FT-000 device probe and later verification. |
+| Target custom-ROM lifecycle/audio behavior | Runtime cannot be meaningfully evaluated while only the walking skeleton is under construction. | Later readiness/release validation after the application is ready; not FT-000 execution. |
 
 ## Foundation Exit Criteria
 
 - minimal path passes
-- compatibility probes pass
+- host minimal path passes; target-device compatibility remains explicitly deferred
 - no P0/P1 design pressure unresolved
 - feature dev path allowed
 
@@ -59,4 +90,5 @@ evidence use the normal requirement, feature, task, protocol and plan paths.
 
 - Queue created: `TASK-001-T3-FT-000-W0` -> `TASK-002-T3-FT-000-W1`.
 - Next gate: run `/mb-doctor --strict` for the indexed FT-000 queue.
-- Product task design remains blocked until `TASK-002-T3-FT-000-W1` is done.
+- Product task design may proceed after the host-only Foundation Gate is done;
+  target-device compatibility remains a later readiness/release gate.

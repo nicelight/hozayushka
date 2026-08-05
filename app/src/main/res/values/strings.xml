@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Хозяюшка</string>
+    <string name="foundation_status">Foundation walking skeleton</string>
+    <string name="foundation_hint">Сборка, локальный fixture и границы готовы к проверке</string>
+</resources>

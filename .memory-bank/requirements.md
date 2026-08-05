@@ -21,7 +21,9 @@ test level or create a test artifact.
   a reproducible single-deployable Kotlin Android baseline with the accepted
   composition root and capability-slice discovery roots, a deterministic local
   state reset/fixture path, a redacted provider-fixture path, and recorded
-  build/start/test/smoke/compatibility evidence. Foundation MUST NOT introduce
+  host build/test/smoke evidence. Target-device/emulator compatibility evidence
+  is deferred until the application is ready for runtime/readiness validation;
+  it is not a Foundation Gate prerequisite. Foundation MUST NOT introduce
   product behavior beyond the walking skeleton or any live user API key.
   Sources: `.memory-bank/foundation.md`, `.memory-bank/architecture/system-architecture.md`,
   `.memory-bank/testing/runtime-verification.md`.

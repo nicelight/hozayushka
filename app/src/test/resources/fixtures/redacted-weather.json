@@ -1,0 +1,6 @@
+{
+  "fixture": "foundation-redacted-weather",
+  "temperatureCelsius": 21,
+  "condition": "cloud",
+  "credential": "[REDACTED]"
+}

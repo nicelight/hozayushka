@@ -28,3 +28,37 @@ last_updated: 2026-08-04
 - The final gate anchor is now
   `TASK-002-T3-FT-000-W1`; product feature tasking remains downstream of its
   completion.
+
+## 2026-08-05 — Operator decision: defer target-runtime checks
+
+- The operator explicitly narrowed the active FT-000 Foundation Gate to the
+  host/build/fixture baseline while the application remains a walking
+  skeleton.
+- `TASK-002-T3-FT-000-W1` must not start an emulator, run ADB install/launch,
+  or execute physical-device smoke. Its active gates are clean build, host
+  tests, deterministic local fixture/timer probes, boundary/static checks and
+  redacted artifact evidence.
+- Fullscreen, lifecycle, timer rehydration and audio-policy checks remain
+  valid product/runtime evidence, but are deferred to a later readiness/release
+  task after the application is ready. They are not a Foundation closure
+  prerequisite.
+- Historical verification reports that expected target evidence remain
+  retained as historical artifacts and are superseded by this decision. No
+  `/exe`, `/verify` or task execution is started by this planning change.
+
+## 2026-08-05 — Operator decision: defer target-runtime checks
+
+- The operator explicitly narrowed the active FT-000 Foundation Gate to the
+  host/build/fixture baseline while the application remains a walking
+  skeleton.
+- `TASK-002-T3-FT-000-W1` must not start an emulator, run ADB install/launch,
+  or execute physical-device smoke. Its active gates are clean build, host
+  tests, deterministic local fixture/timer probes, boundary/static checks and
+  redacted artifact evidence.
+- Fullscreen, lifecycle, timer rehydration and audio-policy checks remain
+  valid product/runtime evidence, but are deferred to a later readiness/release
+  task after the application is ready. They are not a Foundation closure
+  prerequisite.
+- Historical verification reports that expected target evidence remain
+  retained as historical artifacts and are superseded by this decision. No
+  `/exe`, `/verify` or task execution is started by this planning change.
