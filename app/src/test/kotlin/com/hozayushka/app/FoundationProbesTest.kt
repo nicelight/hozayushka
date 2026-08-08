@@ -19,6 +19,24 @@ import org.junit.Test
 
 class FoundationProbesTest {
     @Test
+    fun validLocationChangeCallbackRunsAfterPersistedChangeOnly() {
+        var refreshRequests = 0
+        val settings = SettingsCapability(
+            InMemorySettingsStateStore(),
+            onValidLocationChanged = { refreshRequests += 1 },
+        )
+        val first = LocationContext("First city", 40.0, 69.0, "UTC")
+        val second = first.copy(cityLabel = "Second city")
+
+        settings.saveFoundationLocation(first)
+        settings.saveFoundationLocation(first)
+        settings.saveFoundationLocation(second)
+
+        assertEquals(second, settings.currentLocation())
+        assertEquals(2, refreshRequests)
+    }
+
+    @Test
     fun ownerLocalStateReloadsAndResetIsolated() {
         val firstStores = ProbeStores()
         val secondStores = ProbeStores()

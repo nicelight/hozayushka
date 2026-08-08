@@ -1,6 +1,8 @@
 package com.hozayushka.app.adapters.platform
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.app.NotificationManager
@@ -22,12 +24,27 @@ data class AudioProbeResult(
     val requested: Boolean,
     val permitted: Boolean,
     val reason: String,
+    val signalId: String? = null,
+    val volumePercent: Int? = null,
+    val rampPercent: Int? = null,
+    val overdueElapsedMillis: Long? = null,
+)
+
+data class AlertAudioRequest(
+    val signalId: String,
+    val volumePercent: Int,
+    val rampPercent: Int,
+    val overdueElapsedMillis: Long,
 )
 
 interface PlatformRuntime {
     fun nowMillis(): Long
 
     fun deviceTimeText(nowMillis: Long = nowMillis()): String
+
+    fun deviceZoneId(): ZoneId
+
+    fun isNetworkAvailable(): Boolean
 
     fun applyFoundationWindow(window: Window)
 
@@ -36,6 +53,10 @@ interface PlatformRuntime {
     fun onActivityResumed()
 
     fun requestAlertAudio(): AudioProbeResult
+
+    fun requestAlertAudio(request: AlertAudioRequest): AudioProbeResult = requestAlertAudio()
+
+    fun stopAlertAudio() = Unit
 }
 
 class PlatformRuntimeAdapter(
@@ -51,6 +72,16 @@ class PlatformRuntimeAdapter(
         clockFormatter
             .withZone(ZoneId.systemDefault())
             .format(Instant.ofEpochMilli(nowMillis))
+
+    override fun deviceZoneId(): ZoneId = ZoneId.systemDefault()
+
+    override fun isNetworkAvailable(): Boolean {
+        val connectivity = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            ?: return false
+        val network = connectivity.activeNetwork ?: return false
+        val capabilities = connectivity.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
 
     override fun applyFoundationWindow(window: Window) {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -80,7 +111,16 @@ class PlatformRuntimeAdapter(
 
     override fun onActivityResumed() = Unit
 
-    override fun requestAlertAudio(): AudioProbeResult {
+    override fun requestAlertAudio(): AudioProbeResult = requestAlertAudio(
+        AlertAudioRequest(
+            signalId = "classic",
+            volumePercent = 70,
+            rampPercent = 100,
+            overdueElapsedMillis = 0L,
+        ),
+    )
+
+    override fun requestAlertAudio(request: AlertAudioRequest): AudioProbeResult {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
@@ -93,6 +133,21 @@ class PlatformRuntimeAdapter(
                 requested = false,
                 permitted = false,
                 reason = "audio_service_unavailable",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
+            )
+        }
+        if (request.volumePercent == 0) {
+            return AudioProbeResult(
+                requested = false,
+                permitted = false,
+                reason = "app_volume_suppressed",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
             )
         }
         if (ringerMode != AudioManager.RINGER_MODE_NORMAL) {
@@ -100,6 +155,10 @@ class PlatformRuntimeAdapter(
                 requested = false,
                 permitted = false,
                 reason = "ringer_mode_suppressed",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
             )
         }
         if (dndSuppressed) {
@@ -107,13 +166,41 @@ class PlatformRuntimeAdapter(
                 requested = false,
                 permitted = false,
                 reason = "dnd_suppressed",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
+            )
+        }
+        if (audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS).isEmpty()) {
+            return AudioProbeResult(
+                requested = false,
+                permitted = false,
+                reason = "audio_route_unavailable",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
             )
         }
 
         toneGenerator?.release()
-        val tone = ToneGenerator(AudioManager.STREAM_ALARM, 80)
+        val rampedVolume = (request.volumePercent * request.rampPercent / 100).coerceIn(1, 100)
+        val tone = try {
+            ToneGenerator(AudioManager.STREAM_ALARM, rampedVolume)
+        } catch (_: RuntimeException) {
+            return AudioProbeResult(
+                requested = false,
+                permitted = false,
+                reason = "audio_route_unavailable",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
+            )
+        }
         toneGenerator = tone
-        tone.startTone(ToneGenerator.TONE_PROP_BEEP, 250)
+        tone.startTone(toneFor(request.signalId), 500)
         mainHandler.postDelayed({
             if (toneGenerator === tone) {
                 tone.release()
@@ -124,6 +211,21 @@ class PlatformRuntimeAdapter(
             requested = true,
             permitted = true,
             reason = "tone_requested",
+            signalId = request.signalId,
+            volumePercent = request.volumePercent,
+            rampPercent = request.rampPercent,
+            overdueElapsedMillis = request.overdueElapsedMillis,
         )
+    }
+
+    override fun stopAlertAudio() {
+        toneGenerator?.release()
+        toneGenerator = null
+    }
+
+    private fun toneFor(signalId: String): Int = when (signalId) {
+        "bell" -> ToneGenerator.TONE_PROP_ACK
+        "electronic" -> ToneGenerator.TONE_PROP_BEEP2
+        else -> ToneGenerator.TONE_PROP_BEEP
     }
 }

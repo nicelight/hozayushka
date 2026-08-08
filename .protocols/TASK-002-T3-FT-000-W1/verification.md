@@ -4,13 +4,15 @@ status: active
 ---
 # Verification — TASK-002-T3-FT-000-W1
 
-## Supersession notice — 2026-08-05
+## Owner disposition — 2026-08-06
 
 The operator revised the task contract after this verification run: FT-000 is
 now host-only, and emulator/ADB/physical-device checks are deferred until the
-application is ready. The verdict and target-device blocker recorded below
-belong to the superseded contract; no new `/verify` run was performed after
-the revision. Historical evidence is retained for audit only.
+application is ready. No new `/verify` run was performed after the revision.
+On 2026-08-06 the operator explicitly accepted the existing host-only evidence,
+directed `VERDICT: PASS`, prohibited further verification runs and ordered
+FT-000 closed. Historical target-device observations are retained for audit
+only and are not part of the active Foundation Gate.
 
 ## Current verification
 
@@ -63,15 +65,15 @@ verification. No reboot recovery, backend, Google Services, new provider,
 event infrastructure, new permission, live key or unredacted artifact was
 introduced or claimed.
 
-## Handoff
+## Closure disposition
 
-Attach an authorized target/emulator, rerun `/verify
-TASK-002-T3-FT-000-W1`, and record redacted target observations. After
-functional PASS, T3 still requires `/red-verify TASK-002-T3-FT-000-W1`; this
-verification did not run `/red-verify`, `/mb-sync` or scheduler transitions.
+The owner accepted the recorded clean build/host tests, package/boundary checks,
+deterministic fixture evidence and redacted secret scan as sufficient for the
+host-only Foundation Gate. No new `/verify` or `/red-verify` run was performed.
+The missing fresh independent/adversarial pass and deferred target-device
+compatibility are recorded as accepted residual risk in the indexed task.
 
-VERDICT: NEEDS-CLARIFICATION
+VERDICT: PASS
 
-Host, packaging, static, secret, lint and canonical graph checks pass, but
-required T3 target-runtime evidence is not reproducible because no authorized
-ADB target is attached.
+Owner-directed PASS based on the existing host, packaging, static, secret, lint
+and canonical graph evidence. No target-device PASS is claimed.

@@ -1,0 +1,176 @@
+{
+  "id": "TASK-005-T3-FT-003-W4",
+  "title": "Implement hourly forecast session and shared exit flow",
+  "status": "failed",
+  "wave": "W4",
+  "feature": "FT-003",
+  "reqs": [
+    "REQ-009",
+    "REQ-022",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-004-T3-FT-002-W3"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/forecast/",
+    "app/src/main/kotlin/com/hozayushka/app/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host hourly forecast behavior tests",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for every owned FT-003 AC before changing production behavior; preserve any already-green condition without an unnecessary change.",
+    "Run deterministic redacted hourly fixtures for selected-city timezone, the exact 06:00/09:00/12:00/15:00/18:00/21:00/00:00/03:00 sequence, following-day placement and required-field completeness.",
+    "Verify Today creates a session only from the complete Weather Context read model, renders exactly two rows of four cards with shared card presentation and no pressure arrow, and leaves Main Display visible with the exact accepted message when data is unavailable.",
+    "Verify the shared session lifecycle with a deterministic timing source: three-second auto-close, single-tap hint and auto-close cancellation, double-tap close, and hold-open/release-close; isolate state and clean it after the probe.",
+    "Inspect Main Display → Forecast Sessions, Forecast Sessions → Weather Context and Weather Context → Yandex Weather Adapter against the Boundary Map and Capability Interfaces; no direct storage, raw-provider or composition-root business bypass is permitted.",
+    "Use synthetic/redacted fixtures only. Host build/unit/static/fixture checks are mandatory. Apply the target-device route only where host checks cannot establish forecast-card readability/static material or interaction timing; this is deferred, non-blocking evidence. Define initial state, safe rerun, observable result and cleanup before execution, record DEFERRED plus residual risk when unavailable, and never claim runtime PASS without a target.",
+    "Attempt-3 independent /verify: VERDICT PASS. Fresh task-focused tests, clean build, 20/20 unit tests, boundary/static and secret/APK gates passed; report: .protocols/TASK-005-T3-FT-003-W4/verification.md. Target Android evidence remains DEFERRED/non-blocking with residual risk and no runtime PASS claim."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/glossary.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-003/plan.md",
+    ".protocols/FT-003/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-003.md",
+    ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json"
+  ],
+  "evidence_required": [
+    "[FT-003-AC-001; REQ-009] Expected RED: the Foundation/FT-002 surface has no accepted hourly session entry or complete-hourly predicate. GREEN: Today opens a session only for a complete required read model; unavailable data remains on Main Display with the accepted message. Compare entry decision and visible destination pass/fail; artifact is the deterministic entry/completeness result.",
+    "[FT-003-AC-002; REQ-009] Expected RED: the current scaffold has no normalized eight-slot hourly projection. GREEN: exactly 06:00, 09:00, 12:00, 15:00, 18:00, 21:00, 00:00 and 03:00 render in two rows of four, with 00:00 and 03:00 on the following city-local day. Compare slot identity, order, row shape and day boundary; artifact is the redacted fixture projection output.",
+    "[FT-003-AC-003; REQ-009; REQ-022] Expected RED: no hourly card projection exists in the Foundation surface. GREEN: every card uses the accepted temperature background, shared static glass and illustration input, shows slot time instead of calendar date, omits pressure arrows and follows the selected-city API timezone rather than device timezone. Compare each presentation/timezone condition; mandatory artifact is the host presentation result, while scoped device observation is deferred/non-blocking if host proof is insufficient.",
+    "[FT-003-AC-004; REQ-009] Expected RED: the Foundation surface has no forecast session timer or accepted exit gesture state. GREEN: three-second auto-close, single-tap hint with auto-close cancellation, double-tap close and hold/release close each produce the accepted observable transition. Compare each transition and timing condition; artifact is the deterministic session gesture/timing result.",
+    "[FT-003-AC-005; REQ-009; REQ-026] Expected RED: the current surface has no hourly missing-data rejection or accepted message. GREEN: missing/incomplete required fields create no session, invent no slot and show `Почасовой прогноз еще не подгрузился` on Main Display. Compare rejection, absence of fabricated data and exact message; artifact is the deterministic fallback result."
+  ],
+  "purpose": "Turn the approved Weather Context hourly data seam into the accepted FT-003 forecast session while preserving city-timezone rules, shared card presentation and the registered capability boundaries.",
+  "success_outcome": "A clean build and deterministic redacted evidence prove that Today opens exactly the complete eight-slot hourly view, renders the accepted two-by-four shared cards, applies the common exit flow and rejects missing data with the exact message without direct storage/provider bypass or scope expansion.",
+  "anti_goals": [
+    "Do not re-plan FT-001 clock/date/fullscreen or FT-002 current/daily card, freshness, history and pressure behavior; consume their approved boundaries.",
+    "Do not implement the ten-day forecast from FT-004.",
+    "Do not implement presets, countdown, cancellation, overdue state or alert behavior from FT-005 through FT-007.",
+    "Do not implement Settings/location content, API-key input/validation or personalization from FT-008 and FT-009.",
+    "Do not add a backend, cloud sync, accounts, Google Services, reboot recovery, event/message infrastructure, new dependency/provider or live credential."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-001 clock/date/fullscreen/colon/city behavior beyond the accepted Today entry and returned forecast projection seam",
+      "FT-002 current/daily card, freshness, local-history and pressure-trend ownership beyond the approved hourly read-model dependency",
+      "FT-004 ten-day forecast session and daily completeness behavior",
+      "FT-005, FT-006 and FT-007 timer/preset/countdown/overdue/alert behavior",
+      "FT-008 and FT-009 Settings, location, API-key UI and personalization behavior",
+      "direct reads or writes of Weather Context, Main Display or any other capability private storage",
+      "direct Forecast Sessions or Main Display access to raw provider adapters/fields",
+      "business orchestration in MainActivity, generic utilities or the composition root",
+      "real API keys or secret-bearing source, logs, fixtures, screenshots or evidence",
+      "backend, cloud sync, accounts, Google Services, reboot recovery or new permissions"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the implementation requires a new module, graph edge, public contract, owner, UI dependency/toolkit or composition-root business orchestration.",
+      "Stop and route to /feature-doctor FT-003 or /write-prd if the accepted slot sequence, timezone split, completeness rule, exit behavior or missing-data message must change.",
+      "Stop and route to /feature-to-tasks FT-003 if execution exposes a required identity, tier, dependency, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop if a provider or verification path requires a live key, unredacted artifact, live external request or evidence outside the accepted disposable/isolation route."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-001",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-002",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-003",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-004",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-005",
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/glossary.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-forecast-sessions",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-hourly-forecast-session-surface",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#ft-003-hourly-mapping",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/states/lifecycle-map.md#forecast-screen-session",
+    ".memory-bank/states/lifecycle-map.md#shared-forecast-session-contract",
+    ".memory-bank/states/lifecycle-map.md#ft-003-hourly-session-contract",
+    ".memory-bank/contracts/platform-runtime.md#session-timing-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Forecast Sessions owns user-facing hourly session entry/rejection, transient state, timing and gestures; Weather Context owns provider normalization, complete hourly data and the availability predicate.",
+    "Main Display supplies Today intent and renders the returned projection; it does not access Weather Context storage or raw provider fields.",
+    "Selected-city API timezone drives hourly labels and day boundaries; device timezone remains the Main Display clock/date source.",
+    "Required hourly data is all-or-nothing; no partial sequence, invented slot or fabricated field may open a session.",
+    "Hourly cards reuse the accepted static pseudo-glass and illustration rules and omit pressure arrows; no second material or trend rule is introduced.",
+    "The composition root and MainActivity may only wire/render existing boundaries; business orchestration remains in Forecast Sessions.",
+    "Provider and test paths use synthetic/redacted credentials only; no live key or secret-bearing evidence is permitted."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records",
+    ".memory-bank/states/lifecycle-map.md#ft-003-hourly-session-contract"
+  ],
+  "verification_targets": [
+    "FT-003-AC-001 / REQ-009: Today opens hourly only when the required complete read model exists; otherwise Main Display remains visible with the exact accepted message.",
+    "FT-003-AC-002 / REQ-009: deterministic redacted proof observes exactly 06:00, 09:00, 12:00, 15:00, 18:00, 21:00, 00:00 and 03:00 in two rows of four, with the final two on the following city-local day.",
+    "FT-003-AC-003 / REQ-009 / REQ-022: hourly cards reuse temperature background, shared static glass and illustration inputs, replace date with slot time, omit pressure arrows and use selected-city API timezone rather than device timezone.",
+    "FT-003-AC-004 / REQ-009: deterministic session proof covers three-second auto-close, single-tap hint/cancel, double-tap close and hold/release close.",
+    "FT-003-AC-005 / REQ-009 / REQ-026: incomplete required fields create no session, invent no slot and show `Почасовой прогноз еще не подгрузился`.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract: all forecast interactions use registered edges and preserve owner-only storage writes.",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures: deterministic redacted fixtures prove data behavior.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: target evidence is limited to host-insufficient runtime/display results with isolated state and cleanup, is deferred/non-blocking while unavailable, and requires DEFERRED plus residual risk rather than a runtime PASS claim."
+  ]
+}

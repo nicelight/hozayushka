@@ -1,10 +1,14 @@
 ---
-description: Canonical accepted module/change-unit dependency graph and boundary contracts.
-status: active
-last_updated: 2026-08-05
-source_of_truth: .memory-bank/architecture/system-architecture.md, .memory-bank/prd.md, operator confirmation 2026-08-04
+description: Historical copy of the accepted boundary map retained for provenance.
+status: archived
+last_updated: 2026-08-06
+canonical_path: .memory-bank/contracts/boundary-map.md
 ---
-# Boundary Map
+# Boundary Map (Historical Copy)
+
+> This unregistered snapshot is retained for provenance only. The canonical
+> subject path is [Boundary Map](boundary-map.md); this file does not authorize
+> modules, dependencies or contract changes.
 
 ## Purpose
 - Keep one accepted inventory of project modules/change units and every allowed significant dependency between them.

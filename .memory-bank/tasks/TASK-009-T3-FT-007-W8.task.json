@@ -1,0 +1,165 @@
+{
+  "id": "TASK-009-T3-FT-007-W8",
+  "title": "Implement overdue visual state, dismissal and permitted repeatable alert",
+  "status": "done",
+  "wave": "W8",
+  "feature": "FT-007",
+  "reqs": [
+    "REQ-015",
+    "REQ-016"
+  ],
+  "depends_on": [
+    "TASK-008-T3-FT-006-W7"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/timer/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/settings/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host overdue state and alert-policy probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for each FT-007 AC before changing production behavior; preserve any already-green FT-006 overdue projection prerequisite without claiming its evidence for this task.",
+    "Run deterministic host checks from a known isolated idle state for countdown completion, active-preset color projection, fullscreen overdue state data, blinking-plus versus stable numeric counter, full elapsed arithmetic and visual persistence until dismissal; reset state after the probe.",
+    "Run single-tap and double-tap overdue dismissal checks and prove both stop the alert request, clear the overdue projection and return to Main Display; audio denial must not block either path.",
+    "Run isolated synthetic audio-policy checks for all three accepted built-in signals, default Classic selection, the 5–10 second ramp, repeat-until-dismissal behavior and the 30-minute audio cap; distinguish silent mode, DND and unavailable-route suppression from the visual result.",
+    "Run the accepted temporary-resume path using persisted FT-006 timer data and prove that an already-overdue state re-establishes the same visual projection, any-tap dismissal and permitted alert policy; do not add or test reboot recovery.",
+    "Inspect Timer & Alert ownership and the registered Main Display -> Timer & Alert, Timer & Alert -> Settings & Location, Timer & Alert -> Android Runtime Adapter and Main Display -> Android Runtime Adapter edges; no private storage, direct platform bypass or composition-root business orchestration is permitted.",
+    "Use isolated/resettable local state, synthetic platform-policy inputs and cleanup that cannot affect another run. Host/build/unit/static/policy checks are mandatory. Apply target-device evidence only where host checks cannot establish fullscreen/readability, actual ramp or custom-ROM silent/DND/audio-route behavior; it is deferred/non-blocking, so record DEFERRED plus residual risk when unavailable and never claim runtime PASS without a target. Record no runtime evidence during planning.",
+    "Scheduler closure: attempt-1 functional/semantic failure was corrected within FT-007 by retry attempt 2; fresh `/verify` returned VERDICT: PASS and fresh `/red-verify` returned SEMANTIC_VERDICT: semantic-pass. Same-runtime resume, repeat/cap/suppression, all FT-007 AC-001..AC-005, host/build/static gates pass. Target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .protocols/TASK-009-T3-FT-007-W8/verification.md, .protocols/TASK-009-T3-FT-007-W8/red-verification.md, .tasks/TASK-009-T3-FT-007-W8/verifier-owned-probe.md."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-007-overdue-alert.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-008-T3-FT-006-W7.task.json",
+    ".protocols/FT-007/plan.md",
+    ".protocols/FT-007/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-007.md"
+  ],
+  "evidence_required": [
+    "[FT-007-AC-001; REQ-015] Expected RED: the FT-006 lifecycle surface has no task-owned fullscreen overdue presentation with the active preset color and accepted blink split. GREEN: the active preset expands into the accepted fullscreen neon area, `+` blinks and the numeric counter does not; compare each condition and store the mandatory deterministic presentation result, with scoped target-display evidence deferred/non-blocking where host proof is insufficient.",
+    "[FT-007-AC-002; REQ-015] Expected RED: the current overdue projection does not prove full elapsed time from the persisted start or visual persistence until dismissal. GREEN: the counter includes the configured duration, remains numerically stable and the visual state remains until a tap; compare the projected elapsed value and dismissal boundary in the isolated state/projection artifact.",
+    "[FT-007-AC-003; REQ-015] Expected RED: no accepted any-tap overdue dismissal path is available. GREEN: both single and double tap clear the overdue state, stop the alert request and return to Main Display; compare both gesture outcomes in the deterministic transition artifact.",
+    "[FT-007-AC-004; REQ-016] Expected RED: no task-owned repeatable built-in alert policy proves the accepted signal set, default, ramp or cap. GREEN: `Классический`, `Колокольчик` and `Электронный` use the selected/default value, ramp for 5–10 seconds, repeat until dismissal and stop at 30 minutes; compare signal, timing and stop conditions in the mandatory isolated audio-policy artifact, with target-ROM evidence deferred/non-blocking where host proof is insufficient.",
+    "[FT-007-AC-005; REQ-016] Expected RED: audio suppression is not yet shown to preserve overdue presentation and dismissal. GREEN: silent mode, DND and unavailable route suppress only audio while the visual state remains and any tap still dismisses it; compare each policy input against the visual/audio result in the platform-policy integration artifact.",
+    "T3 isolation and safe rerun: each proof starts from known disposable idle state with synthetic timestamps and platform-policy inputs, records the observable result and decisive pass/fail comparison, and cleans up without live credentials, external permissions or durable cross-run state."
+  ],
+  "purpose": "Turn the FT-006 overdue lifecycle projection into the accepted FT-007 completion outcome while preserving Timer & Alert ownership, Android audio policy and the visual state when audio is suppressed.",
+  "success_outcome": "A clean Android build and deterministic redacted evidence prove that timer completion renders the active preset as a fullscreen neon overdue state with a blinking plus and stable full elapsed counter, any single or double tap dismisses it and stops the alert, and the accepted repeatable built-in alert obeys its ramp, 30-minute cap and Android silent/DND/route policy without suppressing the visual state.",
+  "anti_goals": [
+    "Do not reimplement FT-005 preset validation, defaults, labels, colors or Settings configuration.",
+    "Do not reimplement FT-006 countdown start, remaining-time arithmetic, protected countdown cancellation or temporary lifecycle recovery; consume its accepted overdue state and prove only the overdue integration delta.",
+    "Do not implement FT-009 user-facing sound/volume Settings, auto-save or validation; use the accepted validated projection/default seam.",
+    "Do not add reboot recovery, backend/cloud/accounts, Google Services, event/message infrastructure, new runtime permissions, direct private-storage access, live credentials or unaccepted UI scope.",
+    "Do not claim target-device or runtime evidence during planning."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-005 preset configuration and FT-006 countdown/cancellation implementation beyond the accepted overdue projection seam",
+      "FT-008 location/API-key behavior and FT-009 user-facing sound/volume/glass Settings behavior",
+      "direct reads or writes of private Settings & Location or Main Display storage",
+      "business orchestration in MainActivity, generic utilities or the composition root",
+      "reboot recovery, backend, cloud sync, accounts, Google Services, event/message infrastructure and new permissions",
+      "live API keys or secret-bearing source, logs, screenshots, fixtures or evidence"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before adding a dependency or changing the accepted UI toolkit, package/public contract, architecture, persistence/security posture or product behavior.",
+      "Stop and route to /spec-design if execution requires a new module, graph edge, ownership rule, public contract, audio permission or composition-root business behavior.",
+      "Stop and route to /feature-to-tasks FT-007 if execution exposes a required identity, tier, dependency, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop and route to /feature-doctor FT-007 or /write-prd if the accepted overdue presentation, dismissal, alert cap or silent/DND semantics must change.",
+      "Stop and route to /feature-to-tasks FT-009 if completion-time behavior requires a new user-facing sound/volume Settings outcome rather than consuming the accepted validated projection."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-001",
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-002",
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-003",
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-004",
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-005",
+    ".memory-bank/features/FT-007-overdue-alert.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/capability-interfaces.md#timer-and-alert-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#orchestration-ownership",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/domains/local-data.md#ownership-matrix",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Timer & Alert is the sole owner of active-timer state, overdue transitions, elapsed interpretation and alert requests; consumers use its public projection and commands.",
+    "Main Display owns fullscreen composition and gesture dispatch through the accepted Main Display -> Timer & Alert contract; it does not calculate elapsed time or access timer storage.",
+    "Timer & Alert reads the validated sound/volume/default projection from Settings & Location and never writes Settings directly; user-facing personalization remains FT-009 scope.",
+    "Android Runtime Adapter owns lifecycle/display/audio signals and silent/DND/route policy; the visual overdue state remains product-owned and independent of audio permission.",
+    "The 30-minute cap applies to audio only; the visual overdue state remains until accepted manual dismissal. Temporary resume reuses the persisted lifecycle state and does not add reboot recovery."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must: only one active timer, overdue state is always visual, and audio is permission/cap governed.",
+    ".memory-bank/invariants.md#never: automatic timer recovery after reboot, event infrastructure, backend/cloud/Google Services or unaccepted V1 scope.",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary: Timer & Alert owns the product overdue state; Android owns only audio policy.",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract: overdue retains timer identity, full elapsed time and any-tap dismissal; the numeric counter does not blink.",
+    ".memory-bank/domains/local-data.md#durable-data-rules: active timer recovery uses persisted start/duration data and validated Settings values remain owner-local."
+  ],
+  "verification_targets": [
+    "FT-007-AC-001 / REQ-015: active preset color expands into fullscreen overdue presentation; plus blinks and numeric counter does not.",
+    "FT-007-AC-002 / REQ-015: elapsed counter is full time from persisted start including configured duration, and visual overdue state persists until tap.",
+    "FT-007-AC-003 / REQ-015: single or double tap anywhere dismisses overdue, stops the alert and returns to Main Display.",
+    "FT-007-AC-004 / REQ-016: selected/default built-in signal, 5–10 second ramp, repeat-until-dismissal and 30-minute audio cap are all enforced.",
+    "FT-007-AC-005 / REQ-016: silent mode, DND or unavailable audio route suppresses only audio; overdue visual state and dismissal remain available.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph: only registered Main Display -> Timer & Alert, Main Display -> Android Runtime Adapter, Timer & Alert -> Settings & Location and Timer & Alert -> Android Runtime Adapter edges are used; no private-store or composition-root business bypass exists.",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract: an already-overdue persisted timer re-establishes the same visual/audio-policy path after temporary interruption; reboot recovery is excluded.",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks: state, elapsed, gesture and synthetic policy checks are reproducible.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: target evidence is limited to host-insufficient fullscreen/readability, ramp and custom-ROM audio-policy behavior, is deferred/non-blocking while unavailable, and requires DEFERRED plus residual risk rather than a runtime PASS claim; planning claims no runtime evidence."
+  ]
+}

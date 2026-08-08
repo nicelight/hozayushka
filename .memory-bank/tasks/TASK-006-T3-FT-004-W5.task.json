@@ -1,0 +1,178 @@
+{
+  "id": "TASK-006-T3-FT-004-W5",
+  "title": "Implement ten-day forecast session and shared exit flow",
+  "status": "done",
+  "wave": "W5",
+  "feature": "FT-004",
+  "reqs": [
+    "REQ-010",
+    "REQ-022",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-013-T3-FT-003-W5"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/forecast/",
+    "app/src/main/kotlin/com/hozayushka/app/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host ten-day forecast behavior tests",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for every owned FT-004 AC before changing production behavior; preserve any already-green condition without an unnecessary change.",
+    "Run deterministic redacted daily fixtures for selected-city timezone, exactly ten ordered records from today through the next nine city-local calendar days, day/night selection and required-field completeness.",
+    "In isolated Weather Context-owned fixture state, save one successful normalized ten-day result, reload the Weather Context read model through its public boundary, compare the pre-save and reloaded ten-record projections and completeness, then exercise both entry intents; reset before and clean up after the probe so reruns cannot leak data.",
+    "Verify Tomorrow and Day-after create the same long-term session only from the complete Weather Context read model, render exactly two rows of five cards with shared card presentation and no pressure arrow, and leave Main Display visible with the exact accepted message when data is unavailable.",
+    "Verify the shared session lifecycle with a deterministic timing source: three-second auto-close, single-tap hint and auto-close cancellation, double-tap close, and hold-open/release-close; isolate state and clean it after the probe.",
+    "Inspect Main Display → Forecast Sessions, Forecast Sessions → Weather Context and Weather Context → Yandex Weather Adapter against the Boundary Map and Capability Interfaces; no direct storage, raw-provider or composition-root business bypass is permitted.",
+    "Use synthetic/redacted fixtures only. Host build/unit/static/fixture checks are mandatory. Apply the target-device route only where host checks cannot establish forecast-card readability/static material or interaction timing; this is deferred, non-blocking evidence. Define initial state, safe rerun, observable result and cleanup before execution, record DEFERRED plus residual risk when unavailable, and never claim runtime PASS without a target.",
+    "Scheduler closure: /verify VERDICT: PASS and /red-verify SEMANTIC_VERDICT: semantic-pass; independent probes, 27/27 host tests and clean build pass, target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .tasks/TASK-006-T3-FT-004-W5/TASK-006-T3-FT-004-W5-S-VERIFY-final-report-docs-01.md and .tasks/TASK-006-T3-FT-004-W5/TASK-006-T3-FT-004-W5-S-RED-VERIFY-final-report-docs-01.md."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-004-ten-day-forecast.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/glossary.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-004/plan.md",
+    ".protocols/FT-004/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-004.md",
+    ".memory-bank/tasks/TASK-013-T3-FT-003-W5.task.json"
+  ],
+  "evidence_required": [
+    "[FT-004-AC-001; REQ-010; REQ-026] Expected RED: the Foundation/FT-003 surface has no accepted long-term session entry or complete ten-day predicate. GREEN: a successful normalized ten-day result survives an isolated Weather Context save/reload with an identical complete read model, then Tomorrow and Day-after open the same session only for that saved model, while unavailable data leaves Main Display visible. Compare the pre-save/reloaded read model, both entry intents and the availability decision; artifact is the isolated save/reload/entry result with reset and cleanup outcome.",
+    "[FT-004-AC-002; REQ-010; REQ-022] Expected RED: no accepted ten-record daily projection is present. GREEN: exactly ten records render in two rows of five, ordered as selected-city today plus the next nine city-local calendar days. Compare count, order, layout and city-timezone boundary; artifact is the redacted fixture projection output.",
+    "[FT-004-AC-003; REQ-010; REQ-022; REQ-026] Expected RED: the current forecast seam has no long-term card projection. GREEN: every card shows `dd`, temperature, temperature background and weather illustration, uses selected-city day/night selection, preserves available required values and omits pressure arrows. Compare each presentation/timezone condition; mandatory artifact is the host presentation result, while scoped device observation is deferred/non-blocking where host proof is insufficient.",
+    "[FT-004-AC-004; REQ-010] Expected RED: the current scaffold has no long-term session timing or accepted exit behavior. GREEN: three-second auto-close, single-tap hint with auto-close cancellation, double-tap close and hold/release close each produce the accepted shared transition. Compare every transition and timing condition; artifact is the deterministic session timing/gesture result.",
+    "[FT-004-AC-005; REQ-010; REQ-026] Expected RED: the current forecast seam has no long-term missing-data rejection or accepted message. GREEN: missing/incomplete required daily fields create no session, invent no day and show `Долгосрочный прогноз еще не подгрузился`. Compare rejection, absence of fabricated data and exact message; artifact is the deterministic rejection/fallback result."
+  ],
+  "purpose": "Turn the approved Forecast Sessions and Weather Context seams into the accepted FT-004 long-term forecast while preserving city-timezone rules, shared card presentation, common exit behavior and registered capability boundaries.",
+  "success_outcome": "A clean build and deterministic redacted evidence prove that Tomorrow and Day-after open exactly the complete ten-day city-local view, render the accepted two-by-five shared cards, apply the common exit flow and reject missing data with the exact message without direct storage/provider bypass or scope expansion.",
+  "anti_goals": [
+    "Do not re-plan FT-001 clock/date/fullscreen or FT-002 current/daily card, freshness, history and pressure behavior; consume their approved boundaries.",
+    "Do not re-plan FT-003 hourly forecast content; consume only the approved shared forecast-session contract.",
+    "Do not implement presets, countdown, cancellation, overdue state or alert behavior from FT-005 through FT-007.",
+    "Do not implement Settings/location content, API-key input/validation or personalization from FT-008 and FT-009.",
+    "Do not add a backend, cloud sync, accounts, Google Services, reboot recovery, event/message infrastructure, a new provider/dependency or live credentials."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-001 clock/date/fullscreen/colon/city behavior beyond the approved Tomorrow/Day-after entry and returned forecast projection seam",
+      "FT-002 current/daily card, freshness, local-history and pressure-trend ownership beyond the approved daily read-model dependency",
+      "FT-003 hourly forecast session content or a second exit/gesture contract",
+      "FT-005, FT-006 and FT-007 timer/preset/countdown/overdue/alert behavior",
+      "FT-008 and FT-009 Settings, location, API-key UI and personalization behavior",
+      "direct reads or writes of Weather Context, Main Display or any other capability private storage",
+      "direct Forecast Sessions or Main Display access to raw provider adapters/fields",
+      "business orchestration in MainActivity, generic utilities or the composition root",
+      "real API keys or secret-bearing source, logs, fixtures, screenshots or evidence",
+      "backend, cloud sync, accounts, Google Services, reboot recovery or new permissions"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the implementation requires a new module, graph edge, public contract, owner, UI toolkit/dependency or composition-root business orchestration.",
+      "Stop and route to /feature-doctor FT-004 or /write-prd if the accepted forecast horizon, Tomorrow/Day-after entry, ten-card shape, city-timezone rule, shared exit behavior or missing-data message must change.",
+      "Stop and route to /feature-to-tasks FT-004 if execution exposes a required identity, tier, dependency, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop if a provider or verification path requires a live key, unredacted artifact, live external request or evidence outside the accepted disposable/isolation route."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-001",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-002",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-003",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-004",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-005",
+    ".memory-bank/features/FT-004-ten-day-forecast.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/glossary.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-forecast-sessions",
+    ".memory-bank/contracts/capability-interfaces.md#ft-004-long-term-forecast-session-surface",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#ft-004-long-term-mapping",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/domains/local-data.md#ft-004-long-term-forecast-records",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/states/lifecycle-map.md#forecast-screen-session",
+    ".memory-bank/states/lifecycle-map.md#shared-forecast-session-contract",
+    ".memory-bank/states/lifecycle-map.md#ft-004-long-term-session-contract",
+    ".memory-bank/contracts/platform-runtime.md#session-timing-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Forecast Sessions owns user-facing long-term session entry/rejection, transient state, timing and gestures; Weather Context owns provider normalization, complete daily data and the availability predicate.",
+    "Main Display supplies Tomorrow/Day-after intent and renders the returned projection; it does not access Weather Context storage or raw provider fields.",
+    "Selected-city API timezone drives daily dates, day boundaries and day/night selection; device timezone remains the Main Display clock/date source.",
+    "Required daily data is all-or-nothing; no partial sequence, invented day or fabricated field may open a session.",
+    "Long-term cards reuse the accepted static pseudo-glass and illustration rules and omit pressure arrows; no second material or trend rule is introduced.",
+    "The composition root and MainActivity may only wire/render existing boundaries; business orchestration remains in Forecast Sessions.",
+    "Provider and test paths use synthetic/redacted credentials only; no live key or secret-bearing evidence is permitted."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/domains/local-data.md#ft-004-long-term-forecast-records",
+    ".memory-bank/states/lifecycle-map.md#ft-004-long-term-session-contract"
+  ],
+  "verification_targets": [
+    "FT-004-AC-001 / REQ-010 / REQ-026: in isolated Weather Context-owned state, a successful normalized ten-day result is saved and reloaded through the public read model with identical ten-record order, required fields and completeness before Tomorrow and Day-after open the same session; otherwise Main Display remains visible with the exact accepted message. Reset and cleanup must pass.",
+    "FT-004-AC-002 / REQ-010 / REQ-022: deterministic redacted proof observes exactly ten ordered records for selected-city today plus the next nine city-local calendar days in two rows of five.",
+    "FT-004-AC-003 / REQ-010 / REQ-022 / REQ-026: long-term cards show `dd`, temperature background, temperature and illustration, use selected-city day/night selection, preserve available required values and omit pressure arrows.",
+    "FT-004-AC-004 / REQ-010: deterministic session proof covers three-second auto-close, single-tap hint/cancel, double-tap close and hold/release close through the shared forecast-session contract.",
+    "FT-004-AC-005 / REQ-010 / REQ-026: incomplete required fields create no session, invent no day and show `Долгосрочный прогноз еще не подгрузился`.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#ft-004-long-term-forecast-session-surface: all long-term interactions use registered edges and preserve owner-only storage writes.",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures: deterministic redacted fixtures prove daily mapping, missing-data behavior and the isolated save/reload persistence observation with safe reset and cleanup.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: target evidence is limited to host-insufficient runtime/display results with isolated state and cleanup, is deferred/non-blocking while unavailable, and requires DEFERRED plus residual risk rather than a runtime PASS claim."
+  ]
+}

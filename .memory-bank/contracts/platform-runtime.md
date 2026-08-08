@@ -1,7 +1,7 @@
 ---
 description: Android OS boundary for lifecycle, time, display flags, network and permitted alert audio.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-07
 source_of_truth: .memory-bank/prd.md, .memory-bank/constitution.md, operator confirmation 2026-08-04
 ---
 # Platform Runtime Contract
@@ -21,8 +21,10 @@ compatible Android 11 custom ROM.
 - Main Display uses device time/timezone for `HH:mm` and the main date.
 - Platform/network availability may select the accepted online/offline colon
   behavior but cannot remove the clock shell.
-- A target-device probe owns readability, fullscreen and keep-screen-on
-  evidence; these are not inferred from host-side logic alone.
+- A target-device probe owns deferred readability, fullscreen and keep-screen-on
+  evidence; these are not inferred from host-side logic alone. While no
+  authorized target is available, the evidence is recorded as `DEFERRED` and
+  is non-blocking for the T3 product queue; no runtime `PASS` is inferred.
 
 ### Timer and Audio Runtime Boundary
 
@@ -55,6 +57,9 @@ Weather Context store or timer state.
 ## Verification Route
 
 Foundation must establish the minimal Android entry path before target-device
-probes can run. The required known initial state, safe rerun, observable result
-and cleanup/isolation for lifecycle, fullscreen and audio checks are defined in
-[Runtime Verification](../testing/runtime-verification.md).
+probes can run. The known initial state, safe rerun, observable result and
+cleanup/isolation for deferred lifecycle, fullscreen and audio checks are
+defined in [Runtime Verification](../testing/runtime-verification.md). Host,
+unit and static checks remain mandatory; target-device evidence is a later
+readiness/release follow-up and is not a queue-blocking prerequisite while the
+target is unavailable.

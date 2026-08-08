@@ -2,12 +2,12 @@
 description: Reserved foundation pseudo-feature for the executable Android baseline and its exit gate.
 status: active
 id: FT-000
-lifecycle: planned
+lifecycle: verified
 source_of_truth: .memory-bank/foundation.md, .memory-bank/requirements.md
 clarification_status: complete
 last_clarified: 2026-08-04
 clarification_questions: 0
-last_updated: 2026-08-04
+last_updated: 2026-08-06
 ---
 # FT-000 — Foundation executable baseline
 
@@ -16,6 +16,11 @@ last_updated: 2026-08-04
 `FT-000` is reserved for the Foundation Dev Path. It is a workflow
 pseudo-feature, not a product feature, and must not contain product behavior or
 replace FT-001–FT-009.
+
+The explicit owner closed the final Foundation Gate on 2026-08-06. Existing
+host-only evidence was accepted with no further `/verify` or `/red-verify` run;
+the omitted fresh independent/adversarial pass and deferred target-device
+compatibility are recorded as accepted residual risk in the indexed task.
 
 ## Outcome
 

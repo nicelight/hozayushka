@@ -54,6 +54,16 @@ library that implements them.
 - Weather Context owns cache/history writes and the transition to the
   freshness-derived projection.
 
+### FT-002 First-Run and Failure Projection
+
+- Before the first successful history sample, `yesterday` remains a dated empty
+  contour in its fixed position and has no temperature, illustration or arrow.
+- A failed refresh leaves the last successful normalized cache and its derived
+  freshness state unchanged; it never creates a partial fresh state.
+- A successful refresh replaces the normalized projection atomically from the
+  feature's point of view, then records the current pressure sample for the
+  installation-relative history window.
+
 ## Forecast Screen Session
 
 | Entry condition | Session behavior | Exit |
@@ -71,6 +81,33 @@ library that implements them.
   the session open and release closes it.
 - Forecast Sessions owns transient session state and timing. Weather Context
   owns normalized data and selected-city timezone.
+
+### FT-003 Hourly Session Contract
+
+- The hourly entry is valid only for a complete sequence of exactly eight
+  selected-city-timezone slots: 06:00, 09:00, 12:00, 15:00, 18:00, 21:00, 00:00
+  and 03:00, where 00:00 and 03:00 are on the following city-local day.
+- A valid session renders two rows of four cards. It uses slot time instead of
+  calendar date, reuses the accepted temperature/glass/illustration rules, and
+  omits pressure arrows.
+- Missing or incomplete required data remains on Main Display with
+  `Почасовой прогноз еще не подгрузился`; it does not create a session.
+- Session timing uses the platform timing source for the three-second
+  auto-close; slot labels and day boundaries remain provider-timezone data.
+
+### FT-004 Long-Term Session Contract
+
+- The long-term entry is valid only when the selected-city projection contains
+  exactly ten ordered daily records from today through the next nine city-local
+  calendar days.
+- A valid session renders two rows of five cards, uses `dd` and the shared
+  temperature/glass/illustration rules, omits pressure arrows, and applies
+  day/night selection from the selected-city API timezone.
+- Missing or incomplete required daily data remains on Main Display with
+  `Долгосрочный прогноз еще не подгрузился`; it does not create a session.
+- Session timing uses the platform timing source for the three-second
+  auto-close and shared gestures; daily dates and boundaries remain provider-
+  timezone data.
 
 ## Cross-Slice Implications
 

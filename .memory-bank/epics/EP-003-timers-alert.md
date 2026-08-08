@@ -3,7 +3,7 @@ description: L2 epic for preset timer setup, resilient countdown and overdue ale
 status: draft
 id: EP-003
 lifecycle: planned
-last_updated: 2026-08-03
+last_updated: 2026-08-08
 ---
 # EP-003 — Timers and alert
 
@@ -19,7 +19,9 @@ last_updated: 2026-08-03
   один timer.
 - Single tap не отменяет countdown; double tap отменяет его предсказуемо.
 - Countdown/recovery, overdue display, dismissal и alert policy соответствуют
-  PRD на target device where device verification is required.
+  PRD; target-device verification remains deferred/non-blocking for the T3
+  product queue when no authorized target is available, with residual risk
+  recorded and no runtime `PASS` claim without a target.
 
 ## Acceptance criteria
 
@@ -50,5 +52,19 @@ last_updated: 2026-08-03
 
 ## Design status
 
-Epic remains `draft`; timer persistence/runtime and alert boundaries are now
-registered, while executable feature design follows the Foundation Gate.
+Epic remains `draft` with lifecycle `planned`. The W6 boundary records
+`TASK-007-T3-FT-005-W6` as `done` after the corrected attempt-2 path and fresh
+attempt-3 functional `PASS` plus semantic `semantic-pass`. The W7 boundary
+records `TASK-008-T3-FT-006-W7` as `done` after fresh functional `PASS` plus
+semantic `semantic-pass`; FT-006 lifecycle is `implemented`, while
+target-device evidence remains `DEFERRED` and non-blocking with no runtime
+`PASS` claim. The W8 boundary records `TASK-009-T3-FT-007-W8` as `done` after
+retry-2 fresh functional `PASS` plus semantic `semantic-pass`; FT-007 lifecycle
+is `implemented`, while target-device evidence remains `DEFERRED` and
+non-blocking with no runtime `PASS` claim. EP-003 remains `planned` because
+FT-005/REQ-011 is still planned. No epic closure, promotion or dependent-state
+transition is inferred by this sync.
+The W11 semantic-fail evidence also records a non-city active-countdown
+double-tap cancellation defect against the existing FT-006 contract; FT-006
+and REQ-013 lifecycle state is preserved and the repair route remains the
+failed task's normal indexed FT-001 planning path.

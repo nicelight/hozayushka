@@ -1,8 +1,8 @@
 ---
 description: Accepted global architecture shape and Architecture Spine for the V1 Android application.
 status: active
-last_updated: 2026-08-04
-source_of_truth: .memory-bank/constitution.md, .memory-bank/prd.md, operator confirmation 2026-08-04
+last_updated: 2026-08-06
+source_of_truth: .memory-bank/constitution.md, .memory-bank/prd.md, operator confirmation 2026-08-04 and 2026-08-06
 ---
 # System Architecture
 
@@ -25,7 +25,7 @@ The accepted capability slices are:
 
 | Capability slice | Planned project-relative code root | Observable responsibility |
 |---|---|---|
-| Main Display | `app/src/main/kotlin/<app-package>/display` | Fullscreen clock/date/city shell, weather-card and preset presentation, and display gestures. |
+| Main Display | `app/src/main/kotlin/<app-package>/display` | Fullscreen clock/date/city shell, weather-card/personalization-preview and preset presentation, and display gestures. |
 | Weather Context | `app/src/main/kotlin/<app-package>/weather` | Provider refresh, normalized weather/forecast data, local cache/history, freshness and fallback state. |
 | Forecast Sessions | `app/src/main/kotlin/<app-package>/forecast` | Hourly and long-term forecast sessions, availability checks and the shared exit gesture flow. |
 | Timer & Alert | `app/src/main/kotlin/<app-package>/timer` | Preset execution, one active timer, countdown/overdue transitions and alert requests. |
@@ -101,6 +101,13 @@ Settings & Location capability; it is not a second network or service boundary.
 - Verification: The redacted-fixture and artifact-scan route is defined in [Local Secret Handling](../contracts/local-secret-handling.md) and [Runtime Verification](../testing/runtime-verification.md).
 - Source: [Constitution Product Non-negotiables](../constitution.md); `PRD-FR-033` and `PRD-AC-006` in [PRD](../prd.md).
 
+#### AD-007 - One personalization projection serves Today and Settings preview
+- Binds: Glass-intensity presentation, Settings preview temperature input and the Main Display ↔ Settings & Location boundary.
+- Prevents: A Settings → Weather Context dependency, private weather-storage reads, and visual divergence between the production Today card and its Settings preview.
+- Rule: Settings & Location owns persisted and validated alert/glass personalization. Main Display consumes that projection through the existing Main Display → Settings & Location contract, combines it with its existing Weather Context read (or the accepted `24 °C` fallback), and renders both surfaces with the shared Weather Card Presentation rules.
+- Verification: A deterministic presentation probe compares production Today and Settings preview under the same saved projection; boundary review confirms no new Settings → Weather Context edge.
+- Source: Operator confirmation on 2026-08-06; [Boundary Map](../contracts/boundary-map.md); [Capability Interfaces](../contracts/capability-interfaces.md); [Weather Card Presentation](../contracts/weather-card-presentation.md).
+
 ## Runtime Composition
 
 The single composition root is planned at
@@ -120,8 +127,13 @@ The runtime has these external boundaries:
 
 ## Data Flow and Ownership
 
-1. Main Display reads display-ready weather, timer and settings projections
-   through public contracts; it never reads another slice's storage.
+1. Main Display reads display-ready weather, timer and validated Settings
+   presentation projections through public contracts; it never reads another
+   slice's storage. The production Today card and the Settings preview use the
+   same saved glass-intensity projection and the same Weather Card Presentation
+   rules. Main Display supplies Today temperature from its existing Weather
+   Context read model, or the accepted `24 °C` fallback; this presentation
+   composition does not authorize a Settings & Location → Weather Context edge.
 2. Settings & Location validates and persists user settings and location. Its
    city-change path hands a validated access context to the Weather Context
    refresh owner; the exact feature-level sequencing is reconciled by
@@ -148,10 +160,13 @@ their exact contracts are defined only in [Boundary Map](../contracts/boundary-m
   scope.
 - The application runs landscape fullscreen, hides system panels, keeps the
   screen on while open and gives clock readability priority over visual effects.
-- The current workspace has no executable Android production source or build
-  scaffold; the observed surface contains Memory Bank documents and workflow
-  scripts, but no `app/src` or Gradle application baseline. This is as-is
-  evidence only and is the reason for the accepted Foundation Dev Path.
+- The current workspace contains the executable Android production source and
+  Gradle application baseline established by `TASK-001-T3-FT-000-W0` and
+  accepted by the closed host-only Foundation Gate
+  `TASK-002-T3-FT-000-W1`. The observed surface includes the `app` module,
+  `app/src` production and test roots, the composition root, capability and
+  adapter roots, and the deterministic fixture path. Target-device
+  compatibility remains deferred as recorded by the Foundation evidence.
 
 ## Deferred Design Routes
 

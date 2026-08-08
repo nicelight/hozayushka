@@ -1,7 +1,7 @@
 ---
 description: Concrete foundation, integration and target-device evidence routes for V1 runtime risks.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-08
 source_of_truth: .memory-bank/prd.md, .memory-bank/constitution.md, .memory-bank/testing/strategy.md
 ---
 # Runtime Verification
@@ -73,8 +73,37 @@ runtime/readiness validation. It is not an automatic prerequisite for
 `TASK-002-T3-FT-000-W1`, and a Foundation host verification must never start an
 emulator or physical device merely to fill this section.
 
-Manual device evidence is required for the outcomes that host-side checks do
-not reliably establish:
+Manual device evidence remains the correct proof route for outcomes that
+host-side checks do not reliably establish, but it is deferred, non-blocking
+evidence for the current T3 product queue while an authorized target is
+unavailable. Build, unit/host, static, redacted-fixture and boundary checks
+remain mandatory task gates. A task must not claim runtime `PASS` without an
+actual device/emulator observation; instead record `DEFERRED`, the unavailable
+target condition and the residual risk. The deferred evidence is a later
+runtime/readiness or release follow-up and must not by itself keep a product
+task `blocked`.
+
+### Supplementary Local Emulator Target
+
+The authorized local readiness route may use Android Studio or the direct SDK
+tools under `/home/serg/Android/Sdk`. Its supplementary target is AVD
+`Tecno_Pova_6_API_35`: hardware profile `TECNO POVA 6`, Android 15/API 35
+Google APIs x86_64, configured at 1080×2436 and 393 dpi. The profile metadata
+does not emulate TECNO firmware: its runtime system image identifies as the
+generic Google `sdk_gphone64_x86_64` model/product and `emu64xa` device.
+
+This AVD may establish build/install/start readiness and observed generic
+Android emulator behavior such as landscape rotation, fullscreen requests,
+keep-screen-on flags and absence of a launch crash. It is not the release
+target. The canonical release target remains the physical Samsung GT-I9300I
+(`s3ve3gds`) on a compatible Android 11 custom ROM at 1280×720 landscape.
+Emulator evidence must not promote a Samsung, custom-ROM or physical-device
+`PASS`; target geometry/readability, system-bar and keep-screen-on behavior,
+temporary interruption/process rehydration, and silent/DND/audio route, ramp
+and cap behavior remain residual target-device risks. The observed local run is
+recorded in [Tecno Pova 6 API 35 emulator evidence](../../.protocols/RUNTIME-VERIFICATION/tecno-pova-6-api35.md).
+
+The deferred device evidence covers:
 
 - 1280×720 landscape fullscreen, hidden system panels, keep-screen-on and
   clock readability;
@@ -86,6 +115,11 @@ not reliably establish:
 
 Reboot recovery is not a probe target. A platform limitation is recorded as
 runtime evidence and does not expand V1 scope.
+
+When a target is available, use the route below with known initial state,
+safe rerun/isolation, observable result and cleanup. When it is unavailable,
+record the same evidence item as `DEFERRED` and retain the risk; never replace
+it with a host-side runtime claim.
 
 ## Secret and Artifact Checks
 

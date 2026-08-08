@@ -1,0 +1,154 @@
+{
+  "id": "TASK-014-T3-FT-001-W11",
+  "title": "Restore reachable Main Display city and transient rows",
+  "status": "failed",
+  "wave": "W11",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-002",
+    "REQ-004",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-011-T3-FT-009-W10"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host unit and layout regression suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    },
+    {
+      "name": "Supplementary Tecno_Pova_6_API_35 layout observation",
+      "command": "/home/serg/Android/Sdk/platform-tools/adb -s emulator-5554 shell dumpsys activity top",
+      "required": true
+    }
+  ],
+  "verify": [
+    "After task start and before changing production behavior, reproduce or truthfully re-evaluate the current generic-emulator RED from .protocols/RUNTIME-VERIFICATION/tecno-pova-6-api35-review.md: the populated city row has zero rendered height and its accepted Settings gesture is unreachable. Existing review evidence grounds the task but does not replace current-attempt RED/GREEN evidence.",
+    "Implement only the smallest Main Display-owned layout allocation correction needed to keep the city row and populated transient status/hint rows non-zero within the existing landscape shell. Preserve the dominant clock, date, exactly four weather-card positions, three preset positions, existing gesture semantics and every registered capability boundary; do not invent UX or a new control.",
+    "Run the clean build, full host unit suite and static diff gate. Add the cheapest focused host regression that supports the corrected allocation without pretending that a host-only assertion proves Android View measurement or touch reachability.",
+    "On the documented AVD Tecno_Pova_6_API_35, confirm the running identity is the generic Google API 35 x86_64 image, build/install the current debug APK, cold-start the normal MainActivity, and record redacted screenshots plus dumpsys bounds showing city and each exercised populated status/hint row with bottom greater than top. Use only public UI/probe routes and synthetic state.",
+    "On the same AVD, prove the visible selected-city long hold opens Settings and system Back returns to Main Display. Retain host proof for empty-city short tap and selected-city short-tap no-op; exercise the empty-city runtime route only if it is reachable through the documented public reset path, never by inspecting or mutating private storage.",
+    "If the same minimal correction, without a second layout mechanism or FT-000 behavior change, also affects the Foundation probe surface, record whether Audio Probe and Cancel and Reset have non-zero reachable bounds. Treat that result only as a conditional implementation/testing side effect; do not make unrelated FT-000 product behavior part of this task.",
+    "Keep Samsung GT-I9300I Android 11 custom-ROM geometry, readability, system-bar, keep-screen-on and interaction behavior DEFERRED with residual risk. Generic-emulator GREEN must not be reported as Samsung, custom-ROM, 1280x720 or physical-device PASS.",
+    "Independent /verify PASS on 2026-08-08: fresh clean build, 52/52 host tests and diff gate passed; the current APK hash matched the APK installed on the sole generic Google Android 15/API35 x86_64 emulator; fresh public/synthetic probes showed a 97 px selected-city row, 59 px populated timer hint and 53 px populated forecast message with accepted composition retained, and selected-city hold -> Settings -> system Back passed. Samsung Android 11 custom-ROM/1280x720 evidence remains DEFERRED. Evidence: .protocols/TASK-014-T3-FT-001-W11/verification.md and .tasks/TASK-014-T3-FT-001-W11/verifier-owned-evidence.md. Status remains in_progress; next route is /red-verify TASK-014-T3-FT-001-W11.",
+    "Retry-attempt-2 independent /verify PASS on 2026-08-08: fresh clean build, 53/53 host tests and static diff passed; installed/local APK SHA-256 matched on the sole Tecno_Pova_6_API_35 generic Google Android 15/API35 x86_64 emulator. Fresh public UI proved the original 97 px city, 59 px timer-hint and 53 px forecast-row layout claim, non-city single tap preserving countdown with the populated hint, 800 ms selected-city hold opening Settings during countdown, system Back returning to the still-active countdown, and non-city double tap returning to idle. Source review confirmed the city-specific correction uses the existing Main Display to Settings callback with no private-state access, Settings semantic change, new architecture edge or FT-006 change on non-city surfaces. Samsung/custom-ROM/1280x720 remains DEFERRED. Evidence: .protocols/TASK-014-T3-FT-001-W11/verification.md, .tasks/TASK-014-T3-FT-001-W11/verifier-owned-evidence-attempt-2.md and .tasks/TASK-014-T3-FT-001-W11/TASK-014-T3-FT-001-W11-S-VERIFY-final-report-docs-02.md. Status remains in_progress; exact next route is /red-verify TASK-014-T3-FT-001-W11.",
+    "Final retry-attempt-3 independent /verify PASS on 2026-08-08: no prior functional PASS was reused. Fresh clean build, 54/54 host tests, focused delayed-navigation regression and static diff passed; local/installed APK SHA-256 matched on the sole Tecno_Pova_6_API_35 generic Google Android 15/API35 x86_64 emulator. Fresh public UI retained 97 px city, 59 px populated timer-hint and 53 px populated forecast rows, dominant clock/date, exactly four cards and three presets; non-city single tap, 800 ms city hold, system Back and non-city double tap preserved accepted outcomes. Two fresh selected-city double-tap runs were idle without Settings at approximately 264.5/265.7 ms and remained so after another 759.9/770.4 ms, beyond the 600 ms long-press timeout. Source review confirmed Main Display-local terminal event delivery through the existing onOpenSettings callback, with no private-state access, Settings semantic change, FT-006 behavior change, second layout mechanism or new graph edge. Samsung/custom-ROM/1280x720 remains DEFERRED. Evidence: .protocols/TASK-014-T3-FT-001-W11/verification.md, .tasks/TASK-014-T3-FT-001-W11/verifier-owned-evidence-attempt-3.md and .tasks/TASK-014-T3-FT-001-W11/TASK-014-T3-FT-001-W11-S-VERIFY-final-report-docs-03.md. Status was in_progress; next route was /red-verify TASK-014-T3-FT-001-W11.",
+    "Final retry-attempt-3 independent /red-verify returned SEMANTIC_VERDICT: semantic-fail on 2026-08-08: active countdown remained active after a public non-city weather-card double tap at a 120 ms interval, violating the accepted FT-006 cancellation contract. The selected-city double-tap cancellation and delayed-Settings protection passed; no Settings/FT-006 private-state or boundary drift was found. Evidence: .protocols/TASK-014-T3-FT-001-W11/red-verification.md and .tasks/TASK-014-T3-FT-001-W11/TASK-014-T3-FT-001-W11-S-RED-VERIFY-final-report-docs-01.md. This is the third unsuccessful attempt; no fourth /exe is permitted. Status is failed; route the repair through normal indexed task planning, then obtain fresh /exe, /verify and /red-verify."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/RUNTIME-VERIFICATION/tecno-pova-6-api35-review.md",
+    ".protocols/RUNTIME-VERIFICATION/adb-snippets-redacted.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002; REQ-002; REQ-023] Expected RED: on Tecno_Pova_6_API_35 the populated city/status/hint layout path reports zero-height rows in the accepted Main Display composition. GREEN: the city and each exercised populated transient row have non-zero bounds while the dominant HH:mm, date, exactly four lower-left weather-card positions and three right-side preset positions remain present. Compare before/after bounds and visible composition pass/fail; artifact is focused host regression output plus redacted ADB bounds and screenshots from the documented generic emulator.",
+    "[FT-001-AC-005; REQ-004] Expected RED: the zero-height city view has no usable touch target and a selected-city long hold cannot open Settings. GREEN: the visible selected-city row is touch-reachable, long hold opens the accepted Settings destination and system Back returns to Main Display; host checks retain empty-city short-tap/open, selected-city short-tap/no-op and any-city hold routing. Compare each owned route pass/fail; artifact is host test output plus redacted generic-emulator interaction notes/screenshots."
+  ],
+  "purpose": "Repair the confirmed post-terminal Main Display layout regression so the already accepted city row and Settings gesture are visibly reachable on the documented generic emulator, without reopening TASK-003 or adopting downstream feature behavior.",
+  "success_outcome": "The current debug app preserves the accepted Main Display composition and, on Tecno_Pova_6_API_35, renders a non-zero visible city target whose long hold opens Settings and Back returns, with populated shared status/hint rows no longer collapsed and Samsung/custom-ROM evidence still explicitly deferred.",
+  "anti_goals": [
+    "Do not reopen, rewrite, normalize or replace TASK-003, its done status, accepted evidence or terminal scheduler history.",
+    "Do not change city gesture semantics, Settings behavior, timer cancellation semantics, forecast behavior or any FT-002 through FT-009 product outcome.",
+    "Do not redesign the Main Display, add controls, change accepted text, add a dependency or introduce a new module, graph edge, public contract, state owner or storage path.",
+    "Do not create a separate Foundation repair; zero-height Foundation probe controls are only a conditional side effect/gate when the same minimal correction safely applies.",
+    "Do not claim Samsung, Android 11 custom-ROM, 1280x720 or physical-device PASS from the generic emulator."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "TASK-003 identity, lifecycle, verification evidence and protocol history",
+      ".protocols/AUTONOMOUS-RUN/status.md and all scheduler checkpoint or terminal-state fields",
+      "FT-003 forecast semantics, FT-006 timer cancellation semantics and FT-008/FT-009 Settings product behavior",
+      "direct reads or writes of Settings & Location, Weather Context, Timer & Alert or Forecast Sessions private state",
+      "Samsung/custom-ROM PASS claims, live API keys and secret-bearing logs, screenshots or evidence"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the correction requires a new module, graph edge, public contract, ownership rule or any change to Planning Revision 1.",
+      "Stop and route to /feature-to-tasks FT-001 if execution requires a different tier, dependency, accepted AC target or material product scope.",
+      "Stop and hand off without a GREEN claim if the exact Tecno_Pova_6_API_35 generic-emulator identity or decisive before/after bounds and Settings route cannot be observed safely.",
+      "Stop and ask the operator before adding a dependency, changing UX behavior or using private-state mutation to reach an emulator state."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-005",
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json",
+    ".protocols/TASK-003-T3-FT-001-W2/verification.md",
+    ".protocols/TASK-003-T3-FT-001-W2/red-verification.md",
+    ".protocols/RUNTIME-VERIFICATION/tecno-pova-6-api35-review.md#high--city-and-statushint-rows-collapse-to-zero-height",
+    ".protocols/RUNTIME-VERIFICATION/adb-snippets-redacted.md#normal-main-display-layout-evidence",
+    ".protocols/RUNTIME-VERIFICATION/18-safe-normal-main.png"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#AD-001",
+    ".memory-bank/architecture/system-architecture.md#AD-003",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-settings-and-location",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/testing/runtime-verification.md#supplementary-local-emulator-target",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display remains the sole owner of shell composition and city gesture intent; Settings & Location remains the destination owner behind the existing accepted edge.",
+    "Use one minimum layout-allocation correction sufficient for the evidenced 2436x1080 generic-emulator surface; preserve accepted content, ordering, counts and gesture rules.",
+    "Host checks are mandatory supporting gates, but actual Android View bounds and touch reachability are decided by the documented supplementary emulator observation.",
+    "The generic emulator is an authorized supplementary target only; Samsung GT-I9300I Android 11 custom-ROM and 1280x720 release behavior remain deferred.",
+    "Foundation probe controls may be observed only as a conditional side effect of the same correction and must not authorize a second mechanism or FT-000 product scope."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002 / REQ-023, follow-up runtime-layout delta only: city and each exercised populated status/hint row have non-zero generic-emulator bounds while dominant HH:mm, date, four lower-left cards and three right-side presets remain in the accepted composition.",
+    "FT-001-AC-005 / REQ-004, follow-up reachability delta only: the visible selected-city row accepts long hold, opens Settings and returns through system Back; deterministic host checks preserve empty-city short tap and selected-city short-tap no-op.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#main-display-to-settings-and-location: no owner, edge, Settings state or navigation-contract change.",
+    ".memory-bank/testing/runtime-verification.md#supplementary-local-emulator-target: exact generic runtime identity, current APK install/start, before/after bounds, interaction result, redacted screenshots and safe final state are distinguishable in the artifact.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: Samsung/custom-ROM/1280x720 behavior remains DEFERRED with residual risk and no promoted runtime PASS.",
+    "Conditional non-product gate: only if the same correction affects the Foundation probe, Audio Probe and Cancel and Reset are observed for non-zero reachable bounds without claiming or changing FT-000 behavior."
+  ]
+}

@@ -13,6 +13,9 @@ notes below are historical.
 
 ## Summary
 
+- The operator explicitly closed `TASK-002-T3-FT-000-W1` on 2026-08-06,
+  accepted the existing host-only evidence, directed `VERDICT: PASS`, and
+  prohibited further `/verify` or `/red-verify` runs.
 - Point-of-use preflight passed for the indexed T3 Foundation final gate.
 - Task was promoted `planned → ready → in_progress`; execution Attempt 1 ran
   the host and static gates.
@@ -65,15 +68,14 @@ notes below are historical.
 
 ## Known issues
 
-- `adb devices -l` is empty. `adb install -r` and both launch invocations
-  returned `adb: no devices/emulators found`; no target-device PASS is claimed.
-- The prior empty/draft canonical graph blocker is resolved. Independent
-  `/verify` must be rerun against the repaired map; its historical
-  `NEEDS-CLARIFICATION` report remains unchanged.
+- No fresh independent `/verify` or adversarial `/red-verify` run followed the
+  host-only scope revision; the operator accepted this residual risk.
+- Historical ADB observations remain non-PASS evidence. Target-device
+  compatibility is deferred to a later readiness/release task.
+- The prior empty/draft canonical graph blocker is resolved.
 
 ## Follow-ups
 
-- With an authorized target/emulator attached, run `/verify
-  TASK-002-T3-FT-000-W1`; then run the required per-task `/red-verify` after
-  functional PASS. Lifecycle closure remains with the explicit owner or
-  scheduler and `/exe` does not close T3.
+- Run `/mb-sync` for the closed Foundation wave and proceed to product feature
+  task decomposition. Target-device validation remains a later readiness/
+  release concern.

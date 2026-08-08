@@ -1,10 +1,20 @@
 ---
 description: L3 feature for personal weather access, default city and offline country/city selection.
-status: draft
+status: active
 id: FT-008
 epic: EP-004
 lifecycle: planned
-last_updated: 2026-08-03
+spec_design_status: complete
+spec_design_links:
+  - .memory-bank/contracts/boundary-map.md
+  - .memory-bank/contracts/capability-interfaces.md
+  - .memory-bank/contracts/weather-provider.md
+  - .memory-bank/contracts/local-secret-handling.md
+  - .memory-bank/contracts/platform-runtime.md
+  - .memory-bank/domains/local-data.md
+  - .memory-bank/testing/runtime-verification.md
+source_of_truth: .memory-bank/prd.md, .memory-bank/requirements.md, operator confirmation 2026-08-06
+last_updated: 2026-08-08
 ---
 # FT-008 — Weather access and offline location settings
 
@@ -28,16 +38,39 @@ last_updated: 2026-08-03
 
 ## Acceptance criteria
 
+### FT-008-AC-001 — Local personal API key
+
+- REQ: REQ-017, REQ-024.
 - Settings accept and locally retain a personal API key; it is not embedded in
   APK/source/logs/evidence.
+
+### FT-008-AC-002 — Default and selected location refresh
+
+- REQ: REQ-017.
 - Default location is Khujand, Tajikistan; selected city coordinates feed the
   weather request and city change triggers the accepted weather refresh path.
+
+### FT-008-AC-003 — Offline country-first catalog
+
+- REQ: REQ-018.
 - Country and city lists use the bundled GeoNames `cities15000` subset, work
   offline and case-insensitively, and city search is scoped to the chosen country.
+
+### FT-008-AC-004 — Names and aliases
+
+- REQ: REQ-018.
 - Display prefers Russian names and falls back to canonical GeoNames names;
   search matches Russian, canonical and ASCII aliases.
+
+### FT-008-AC-005 — GeoNames attribution
+
+- REQ: REQ-018.
 - Required GeoNames attribution appears in Settings before the final back-icon
   button.
+
+### FT-008-AC-006 — Inline failure preservation
+
+- REQ: REQ-017, REQ-018, REQ-024.
 - Missing/invalid API key, network failure and unknown city show accepted owning
   inline messages without destroying the last valid setting.
 
@@ -67,8 +100,9 @@ last_updated: 2026-08-03
 
 ## SDD Design Gate
 
-Global backbone is complete at Planning Revision `1`; feature-level design
-remains draft until the Foundation Gate and `/feature-to-tasks`.
+Global backbone is complete at Planning Revision `1` and the Foundation Gate
+is closed; FT-008 feature-level SDD design and task planning are complete for
+this reconciliation.
 
 Applicable global specs: [Boundary Map](../contracts/boundary-map.md),
 [Capability Interfaces](../contracts/capability-interfaces.md), [Weather Provider](../contracts/weather-provider.md),
@@ -76,3 +110,18 @@ Applicable global specs: [Boundary Map](../contracts/boundary-map.md),
 [Platform Runtime](../contracts/platform-runtime.md) and [Runtime Verification](../testing/runtime-verification.md).
 The storage primitive, catalog index and security mechanism details remain
 downstream within the accepted secret contract.
+
+## W9 implementation evidence
+
+The W9 boundary records `TASK-010-T3-FT-008-W9` as `done` with fresh functional
+`PASS` and T3 semantic `semantic-pass`. The evidence covers local key
+persistence and redaction, Khujand/default and selected-coordinate refresh,
+offline country-first and scoped city search, Russian/canonical/ASCII aliases,
+GeoNames attribution and inline failure preservation. See the [functional
+report](../../.tasks/TASK-010-T3-FT-008-W9/TASK-010-T3-FT-008-W9-S-VERIFY-final-report-docs-01.md),
+[semantic report](../../.tasks/TASK-010-T3-FT-008-W9/TASK-010-T3-FT-008-W9-S-RED-VERIFY-final-report-docs-01.md)
+and [verifier-owned probe](../../.tasks/TASK-010-T3-FT-008-W9/verifier-owned-probe.md).
+Target-device Settings readability/navigation evidence remains `DEFERRED` and
+non-blocking with residual risk; no runtime `PASS` is claimed. The FT-008
+feature and REQ-017/018/024 lifecycle values remain unchanged by this sync;
+promotion and dependent-state reconciliation remain scheduler-owned.

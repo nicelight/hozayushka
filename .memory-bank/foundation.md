@@ -1,7 +1,7 @@
 ---
 description: Foundation Dev Path evidence and feature pressure map.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-06
 ---
 # Foundation Dev Path
 
@@ -60,15 +60,15 @@ FT-000 host verification.
 
 | Feature | Pressure | Foundation Response | Probe | Status |
 |---|---|---|---|---|
-| FT-001 | Android entry, fullscreen, clock shell and device runtime | Establish one composition root and target-display shell | Launch/readability/fullscreen/keep-screen-on probe | pending_foundation |
-| FT-002 | Provider mapping, cache/freshness, history and deterministic weather visuals | Establish local-data owner path and redacted weather fixture | Fresh/stale/missing-field/palette/trend probe | pending_foundation |
-| FT-003 | Hourly fields, city timezone and shared forecast session | Establish normalized forecast fixture and session timing path | Eight-slot/timezone/completeness probe | pending_foundation |
-| FT-004 | Ten-day horizon, date boundaries and shared forecast exit | Reuse forecast contract and deterministic daily fixture | Ten-card/order/timezone/exit probe | pending_foundation |
-| FT-005 | Validated preset values and persistent timer preferences | Establish settings persistence and timer preference read path | Defaults/ranges/labels/last-valid-value probe | pending_foundation |
-| FT-006 | Timer persistence and temporary process-stop recovery | Establish active-timer durable data and lifecycle adapter seam | Countdown/overdue/recovery/cancel probe | pending_foundation |
-| FT-007 | Overdue visual state, audio policy and target-ROM behavior | Establish platform audio adapter and manual device probe route | Visual dismissal/silent-DND/ramp/cap probe | pending_foundation |
-| FT-008 | Local API key, offline GeoNames data and provider access | Establish key-safe local storage, catalog fixture and redacted provider path | Artifact absence/offline search/provider failure probe | pending_foundation |
-| FT-009 | Auto-save validation and live pseudo-glass preview | Establish settings/UI test seam and preview fixture path | Valid/invalid persistence and preview-state probe | pending_foundation |
+| FT-001 | Android entry, fullscreen, clock shell and device runtime | Establish one composition root and target-display shell | Launch/readability/fullscreen/keep-screen-on probe | established |
+| FT-002 | Provider mapping, cache/freshness, history and deterministic weather visuals | Establish local-data owner path and redacted weather fixture | Fresh/stale/missing-field/palette/trend probe | established |
+| FT-003 | Hourly fields, city timezone and shared forecast session | Establish normalized forecast fixture and session timing path | Eight-slot/timezone/completeness probe | established |
+| FT-004 | Ten-day horizon, date boundaries and shared forecast exit | Reuse forecast contract and deterministic daily fixture | Ten-card/order/timezone/exit probe | established |
+| FT-005 | Validated preset values and persistent timer preferences | Establish settings persistence and timer preference read path | Defaults/ranges/labels/last-valid-value probe | established |
+| FT-006 | Timer persistence and temporary process-stop recovery | Establish active-timer durable data and lifecycle adapter seam | Countdown/overdue/recovery/cancel probe | established |
+| FT-007 | Overdue visual state, audio policy and target-ROM behavior | Establish platform audio adapter and manual device probe route | Visual dismissal/silent-DND/ramp/cap probe | established |
+| FT-008 | Local API key, offline GeoNames data and provider access | Establish key-safe local storage, catalog fixture and redacted provider path | Artifact absence/offline search/provider failure probe | established |
+| FT-009 | Auto-save validation and live pseudo-glass preview | Establish settings/UI test seam and preview fixture path | Valid/invalid persistence and preview-state probe | established |
 
 ## Deferred Decisions
 
@@ -89,6 +89,7 @@ FT-000 host verification.
 ## Queue Handoff
 
 - Queue created: `TASK-001-T3-FT-000-W0` -> `TASK-002-T3-FT-000-W1`.
-- Next gate: run `/mb-doctor --strict` for the indexed FT-000 queue.
-- Product task design may proceed after the host-only Foundation Gate is done;
+- Foundation Gate closed: `TASK-002-T3-FT-000-W1` is `done` by explicit owner
+  decision on 2026-08-06.
+- Product task design may proceed through `/feature-to-tasks FT-<NNN>`;
   target-device compatibility remains a later readiness/release gate.

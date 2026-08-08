@@ -1,7 +1,7 @@
 ---
 description: Implementation plan for the FT-000 executable Android Foundation baseline.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-06
 ---
 # IMPL-FT-000 — Foundation executable baseline
 
@@ -18,9 +18,9 @@ feature planning.
    external adapter roots. Add only the private owner-local persistence and
    deterministic fixture/probe seams required by the Foundation smoke path.
 2. `TASK-002-T3-FT-000-W1` — from a clean/reset state, run the build, host
-   probes, install/start path, smoke flow, target-device compatibility probes
-   and synthetic/redacted artifact scan. This is the single final Foundation
-   Gate.
+   probes and synthetic/redacted artifact scan. Target-device compatibility is
+   deferred to a later readiness/release task. This is the single final
+   Foundation Gate.
 
 ## Accepted execution constraints
 
@@ -43,6 +43,8 @@ not-applicable rationale, concrete gates and target paths. Full T3 protocol and
 independent `/verify` evidence are required during execution; this plan does
 not fabricate execution evidence or mark either task done.
 
-After queue readiness passes, hand off to `/mb-doctor --strict`. After the final
-gate is done, route to `/feature-to-tasks FT-<NNN>` for the first product
-feature; `/autopilot` must not select FT-000 work.
+The final gate is `done` by explicit owner decision. The owner accepted the
+existing host-only evidence and recorded the omitted fresh independent/
+adversarial checks plus deferred target-device compatibility as residual risk.
+Route to `/feature-to-tasks FT-<NNN>` for the first product feature;
+`/autopilot` must not select FT-000 work.

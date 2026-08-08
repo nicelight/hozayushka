@@ -1,0 +1,157 @@
+{
+  "id": "TASK-013-T3-FT-003-W5",
+  "title": "Complete FT-003 hourly entry, fallback and shared exit integration",
+  "status": "done",
+  "wave": "W5",
+  "feature": "FT-003",
+  "reqs": ["REQ-009", "REQ-022", "REQ-026"],
+  "depends_on": ["TASK-012-T3-FT-003-W4"],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/forecast/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {"name": "Clean Android debug build", "command": "./gradlew clean assembleDebug", "required": true},
+    {"name": "Host FT-003 entry, presentation and session tests", "command": "./gradlew testDebugUnitTest", "required": true}
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for FT-003-AC-001 and FT-003-AC-004 before changing production behavior; preserve any already-green condition without an unnecessary change.",
+    "Using the existing TASK-012 complete normalized read model through the public Weather Context boundary, prove Today opens only for complete hourly data, rejects unavailable/incomplete data without a session or invented slot, keeps Main Display visible and shows the exact accepted fallback message.",
+    "Prove the shared forecast session state with an isolated deterministic timing source: three-second auto-close, single-tap hint with auto-close cancellation, double-tap close, and hold-open/release-close. Reset or dispose transient state after each probe so reruns are safe.",
+    "Run the minimum integration/regression proof for the assembled FT-003 outcome: the TASK-012 eight-slot projection remains exactly two rows of four at the selected-city timezone, hourly cards consume the shared temperature/glass/illustration presentation with slot time and no pressure arrow, and the Main Display → Forecast Sessions → Weather Context edges remain owner-safe. Do not reimplement or retest the TASK-012 provider normalization claim as this task's outcome.",
+    "Use only synthetic/redacted fixtures. Run host build/unit/static/boundary and secret-redaction checks; target-device readability and actual Android gesture/timing evidence is DEFERRED/non-blocking when no target is available, with residual risk recorded and no runtime PASS claim without a target.",
+    "Obtain fresh /verify VERDICT: PASS and T3 /red-verify SEMANTIC_VERDICT: semantic-pass for this task. Do not modify historical TASK-005/TASK-012 evidence or lifecycle records; scheduler closure and /mb-sync remain outside this task card.",
+    "Scheduler closure: /verify VERDICT: PASS and /red-verify SEMANTIC_VERDICT: semantic-pass; focused functional probes 5/5 and host gates pass, target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .tasks/TASK-013-T3-FT-003-W5/TASK-013-T3-FT-003-W5-S-VERIFY-final-report-docs-01.md and .tasks/TASK-013-T3-FT-003-W5/TASK-013-T3-FT-003-W5-S-RED-VERIFY-final-report-docs-01.md."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-003/plan.md",
+    ".protocols/FT-003/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-003.md",
+    ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json",
+    ".memory-bank/tasks/TASK-005-T3-FT-003-W4.task.json",
+    ".memory-bank/tasks/TASK-012-T3-FT-003-W4.task.json",
+    ".memory-bank/bugs/TASK-005-hourly-provider-shape.md",
+    ".tasks/TASK-005-T3-FT-003-W4/TASK-005-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md",
+    ".tasks/TASK-012-T3-FT-003-W4/TASK-012-T3-FT-003-W4-S-VERIFY-final-report-docs-01.md",
+    ".tasks/TASK-012-T3-FT-003-W4/TASK-012-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md"
+  ],
+  "evidence_required": [
+    "[FT-003-AC-001; REQ-009] RED: Today has no accepted session-opening/completeness decision on the current task baseline; GREEN: a complete TASK-012-normalized read model opens the hourly session, while unavailable/incomplete data keeps Main Display visible and exposes the exact fallback message. Compare entry destination, rejection and message; artifact is the deterministic entry/completeness/fallback result.",
+    "[FT-003-AC-004; REQ-009] RED: the accepted shared forecast timer/gesture transitions are not established by this follow-up baseline; GREEN: 3000 ms auto-close, single-tap HINT/cancellation, double-tap close and hold-beyond-deadline/release-close each produce the accepted transition. Compare each transition at deterministic timestamps; artifact is the isolated session timing/gesture result.",
+    "[FT-003-AC-003; REQ-009; REQ-022] Regression-only integration delta: RED: a failing or absent assembled projection-to-card/consumer assertion; GREEN: the existing TASK-012 eight-slot projection is consumed in two rows of four with shared temperature/glass/illustration inputs, slot time, no pressure arrow and selected-city API timezone. Compare the rendered projection and owner-safe edges without changing provider normalization; artifact is the redacted presentation/boundary regression result.",
+    "[FT-003-AC-005; REQ-009; REQ-026] Regression-only integration delta: RED: a failing or absent session-facing unavailable-data assertion; GREEN: the existing Weather Context unavailable predicate reaches Forecast Sessions/Main Display as no session, no fabricated slot and `Почасовой прогноз еще не подгрузился`. Compare the public rejection/fallback path without duplicating selected-field provider validation; artifact is the deterministic fallback integration result.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: if no authorized target exists, record DEFERRED plus the unavailable-target condition and residual risk; absence of a target is not a reason to claim runtime PASS or block host-provable closure."
+  ],
+  "purpose": "Establish the remaining FT-003 Forecast Sessions/Main Display outcome after TASK-012 repaired full-day provider normalization: Today entry and fallback, shared timing/gestures, and the smallest integration regression proving the repaired eight-slot read model is consumed through the accepted boundaries.",
+  "success_outcome": "Fresh T3 RED/GREEN, host gates and semantic verification show that the existing TASK-012 complete hourly read model opens from Today only when complete, unavailable data remains on Main Display with the accepted message, the shared session timing/gesture contract passes, and the assembled eight-slot cards use the accepted presentation and owner-safe integration without redoing provider normalization; TASK-005 remains failed and TASK-012 remains done.",
+  "anti_goals": [
+    "Do not modify, reopen, close or replace TASK-005-T3-FT-003-W4; preserve its failed status, protocols and historical evidence.",
+    "Do not modify TASK-012-T3-FT-003-W4 or repeat its full-day provider-normalization implementation/proof as this task's owned outcome; consume its done public read model.",
+    "Do not change the accepted eight slots, selected-city timezone, completeness rule, shared card material, lifecycle model, module graph, scheduler checkpoint, terminal state or feature/epic lifecycle.",
+    "Do not implement FT-004, timer/alert, Settings/location, a new provider/backend/event boundary, live credentials or any unrelated product behavior."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "direct reads or writes of Weather Context private storage from consumers",
+      "direct Forecast Sessions or Main Display access to raw provider fields",
+      "changes to app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+      "changes to .memory-bank/tasks/TASK-005-T3-FT-003-W4.task.json",
+      "changes to .protocols/TASK-005-T3-FT-003-W4/",
+      "changes to .memory-bank/tasks/TASK-012-T3-FT-003-W4.task.json",
+      "changes to .protocols/TASK-012-T3-FT-003-W4/",
+      "changes to .protocols/AUTONOMOUS-RUN/status.md",
+      "changes to lifecycle/status values, scheduler checkpoints or terminal-state records",
+      "real API keys or secret-bearing source, logs, fixtures, screenshots or evidence",
+      "new provider, backend, event/message boundary, permission or unrelated FT-001–FT-009 behavior"
+    ],
+    "stop_conditions": [
+      "Stop and route to /feature-doctor FT-003 or /write-prd if the accepted entry condition, fallback message, slot sequence, shared exit behavior or pass/fail target must change.",
+      "Stop and route to /spec-design if the outcome requires a new module, graph edge, public contract, owner or composition-root business orchestration.",
+      "Stop and route back to /feature-to-tasks FT-003 with rebuild_required if execution exposes a changed identity, tier, dependency, acceptance or material scope.",
+      "Stop if verification requires a live request, live credential or unredacted artifact."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-001",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-004",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-003",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-005",
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/tasks/TASK-012-T3-FT-003-W4.task.json",
+    ".tasks/TASK-012-T3-FT-003-W4/TASK-012-T3-FT-003-W4-S-VERIFY-final-report-docs-01.md",
+    ".tasks/TASK-012-T3-FT-003-W4/TASK-012-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md",
+    ".memory-bank/tasks/TASK-005-T3-FT-003-W4.task.json",
+    ".tasks/TASK-005-T3-FT-003-W4/TASK-005-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-forecast-sessions",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-hourly-forecast-session-surface",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records",
+    ".memory-bank/states/lifecycle-map.md#forecast-screen-session",
+    ".memory-bank/states/lifecycle-map.md#shared-forecast-session-contract",
+    ".memory-bank/states/lifecycle-map.md#ft-003-hourly-session-contract",
+    ".memory-bank/contracts/platform-runtime.md#session-timing-boundary",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Forecast Sessions owns user-facing hourly session creation/rejection, transient state, timing and gestures; Main Display owns composition; Weather Context owns the normalized read model and availability predicate.",
+    "Consume the complete eight-slot projection produced by TASK-012 through the accepted Forecast Sessions → Weather Context public boundary; do not access private storage or raw provider fields.",
+    "Selected-city API timezone controls hourly labels/day boundaries; device timezone remains the Main Display clock/date source.",
+    "Reuse the accepted shared temperature/glass/illustration rules and omit pressure arrows; no second material or presentation rule is authorized.",
+    "Use synthetic/redacted fixtures only and preserve local API-key/evidence-redaction rules; no new module, edge, provider, schema field, persistence owner or lifecycle state is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/states/lifecycle-map.md#shared-forecast-session-contract",
+    ".memory-bank/contracts/platform-runtime.md#session-timing-boundary"
+  ],
+  "verification_targets": [
+    "FT-003-AC-001 / REQ-009: Today opens only for a complete existing hourly read model; unavailable/incomplete data keeps Main Display visible and returns the exact accepted fallback message.",
+    "FT-003-AC-004 / REQ-009: the shared forecast session produces the accepted 3000 ms auto-close, single-tap hint/cancellation, double-tap close and hold/release transitions.",
+    "FT-003-AC-003 / REQ-009 / REQ-022 (integration delta only): the existing TASK-012 projection is rendered as two rows of four with shared temperature/glass/illustration presentation, slot time, no pressure arrow and selected-city API timezone; provider normalization remains owned by TASK-012.",
+    "FT-003-AC-005 / REQ-009 / REQ-026 (integration delta only): the existing unavailable predicate reaches the public session/display path without a session, invented slot or missing accepted Russian fallback message; selected-field provider validation remains owned by TASK-012.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#main-display-to-forecast-sessions: all calls remain on registered edges with owner-only state access.",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures: deterministic synthetic fixtures and isolated transient state produce reproducible results without credentials.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: target evidence is deferred/non-blocking when unavailable and must be recorded as DEFERRED rather than runtime PASS."
+  ]
+}

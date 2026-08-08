@@ -1,7 +1,7 @@
 ---
 description: Global SDD backbone, area matrix and Foundation Dev Path routing state.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-08
 ---
 # SDD Spec Backbone
 
@@ -79,28 +79,81 @@ details are intentionally routed without changing the accepted backbone:
 - Not applicable areas:
   - event_message_contracts: not_applicable - accepted single-runtime V1 has no internal event/message boundary or broker; provider communication is an API contract.
   - agent_io_contracts: not_applicable - V1 has no agent, tool, plugin or protocol I/O boundary.
-- Notes: Global/shared target rules are authoritative. Foundation Dev Path
-  remains required before product feature task design: TASK-001 establishes
-  the preliminary executable Android baseline and TASK-002 proves the final
-  clean/reset host baseline. Target-runtime compatibility is a later
-  readiness/release gate and is not executed while the application is still a
-  walking skeleton. Feature-level detail remains routed to FT-000 and
-  `/feature-to-tasks`.
+- Notes: Global/shared target rules are authoritative. The FT-000 Foundation
+  Gate is closed: TASK-001 established the executable Android baseline and the
+  explicit owner closed TASK-002 on the accepted host-only evidence. No fresh
+  `/verify` or `/red-verify` run followed the scope revision; that omission and
+  deferred target-runtime compatibility are accepted residual risk. Product
+  feature detail is now routed to `/feature-to-tasks`.
 
 ## Handoff To /foundation-to-tasks
 
 - Global Backbone Status: complete, Planning Revision 1.
-- Foundation Required: true; the normal FT-000 queue is created.
+- Foundation Required: true; the normal FT-000 queue is complete.
 - Foundation anchors: [.memory-bank/foundation.md](foundation.md) with
   `Foundation Gate Task: TASK-002-T3-FT-000-W1`.
-- Immediate route: run `/mb-doctor --strict`, then execute the FT-000 queue
-  through the `/autonomous`-owned Foundation phase.
+- Foundation result: `TASK-002-T3-FT-000-W1` is `done`; no FT-000 execution
+  remains.
 
 ## Handoff To /feature-to-tasks
 
-- Product feature design remains draft for FT-001–FT-009.
-- Do not start product task design until the Foundation Gate is done and its
-  executable commands/probes are recorded.
-- After Foundation Gate completion, run `/feature-to-tasks FT-<NNN>` in manual
-  flow or `/spec-auto --all` in autonomous flow, then review the feature task
-  plans for positive Planning Revision `1`.
+- Product feature SDD design is complete for FT-001–FT-009. The FT-001
+  planning surface is retained and indexed at the historical
+  `TASK-003-T3-FT-001-W2` (`done`) plus the failed W11 follow-up
+  `TASK-014-T3-FT-001-W11` (`failed`); FT-002 is reconciled and indexed at
+  `TASK-004-T3-FT-002-W3` (`done`); FT-003 has the indexed W4/W5 execution
+  records `TASK-005-T3-FT-003-W4` (`failed`, historical),
+  `TASK-012-T3-FT-003-W4` (`done`, provider-normalization repair) and
+  `TASK-013-T3-FT-003-W5` (`done`, entry/fallback/shared-session follow-up);
+  FT-004 has the indexed completed task
+  `TASK-006-T3-FT-004-W5` (`done`). FT-005 has the indexed completed task
+  `TASK-007-T3-FT-005-W6` (`done`); FT-006 has the completed task
+  `TASK-008-T3-FT-006-W7` (`done`) and feature lifecycle `implemented`; FT-007
+  has the completed task `TASK-009-T3-FT-007-W8` (`done`) and feature lifecycle
+  `implemented`; FT-008 has the indexed completed task
+  `TASK-010-T3-FT-008-W9` (`done`) while its feature/RTM lifecycle values are
+  unchanged by this sync; FT-009 has the indexed completed task
+  `TASK-011-T3-FT-009-W10` (`done`) while its feature/RTM lifecycle values
+  remain `planned`.
+- The Foundation Gate is done and its host commands/probes are recorded.
+- The W7 boundary does not change the complete global backbone or infer an
+  epic lifecycle/promotion/dependency transition. FT-006's direct REQ-012,
+  REQ-013, REQ-014 and REQ-025 rows are reconciled to `implemented`; REQ-011
+  remains owned by FT-005 and `planned`. Target-device evidence remains
+  deferred/non-blocking with no runtime PASS claim.
+- The W8 boundary records `TASK-009-T3-FT-007-W8` as `done` after retry-2 fresh
+  functional `PASS` and semantic `semantic-pass`; direct REQ-015/016 rows and
+  FT-007 lifecycle are reconciled to `implemented`. Target-device evidence
+  remains deferred/non-blocking with no runtime PASS claim. EP-003 remains
+  `planned` because FT-005/REQ-011 is still planned.
+- The W9 boundary records `TASK-010-T3-FT-008-W9` as `done` after fresh
+  functional `PASS` and semantic `semantic-pass`; host/build/unit/static and
+  redacted provider/catalog evidence is linked from the task and FT-008. Target
+  Settings readability/navigation evidence remains deferred/non-blocking with
+  no runtime PASS claim. FT-008, REQ-017/018/024, EP-004, dependencies,
+  scheduler checkpoint and terminal state remain unchanged; `spec-index.md`
+  remains registry-only.
+- The W10 boundary records `TASK-011-T3-FT-009-W10` as `done` after fresh
+  functional `PASS` and semantic `semantic-pass`; FT-009 evidence is linked
+  from the feature and task-owned verification artifacts. Target-only Settings
+  readability/static pseudo-glass evidence remains deferred/non-blocking with
+  no runtime PASS claim. FT-009, REQ-019/020/021, EP-004, dependencies,
+ scheduler checkpoint and terminal state remain unchanged; `spec-index.md`
+ remains registry-only. Scheduler post-sync lint/strict-doctor and any
+ promotion or dependent-state pass remain outside this reconciliation.
+- The W11 boundary records `TASK-014-T3-FT-001-W11` as `failed` after final
+  retry-3 functional `PASS` and semantic `semantic-fail`: a public non-city
+  weather-card double tap left the active countdown running, violating the
+  existing FT-006-AC-003 / REQ-013 contract. The final semantic report and
+  task-local bug note are linked from FT-001 and FT-006. TASK-003, FT-001 and
+  FT-006 lifecycle/RTM values, dependencies, Planning Revision `1`, the
+  scheduler checkpoint and terminal state remain unchanged; `spec-index.md`
+  remains a pure registry. Normal indexed FT-001 planning now retains the
+  failed W11 record and adds planned `TASK-015-T3-FT-001-W12`, whose only
+  task-owned acceptance is the bounded FT-001-AC-005 city
+  hold/Settings-preservation delta. The existing downstream protected-
+  cancellation contract (REQ-013) remains a regression guard only; its exact
+  FT-006 canonical basis is retained in TASK-015 `normative_inputs`, with no
+  new FT-006 task or lifecycle change. No new design or contract decision is
+  made here; lifecycle/RTM values, existing-task dependencies, Planning
+  Revision `1`, scheduler checkpoint and terminal state remain unchanged.

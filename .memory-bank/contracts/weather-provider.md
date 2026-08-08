@@ -1,7 +1,7 @@
 ---
 description: Canonical Yandex Weather API boundary and normalized provider obligations for V1.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-06
 source_of_truth: .memory-bank/prd.md, .memory-bank/architecture/system-architecture.md
 ---
 # Weather Provider Contract
@@ -42,6 +42,51 @@ The exact provider field-to-domain mapping and redacted fixture shape are
 feature-level contract work for FT-002–FT-004 and FT-008. That work may refine
 serialization details but may not change the source, horizon, timezone split,
 freshness rule or missing-data behavior below.
+
+### FT-002 Current and Daily Mapping
+
+- A successful FT-002 fixture MUST normalize selected-city timezone, current
+  temperature/pressure, daily dates, day/night temperature and condition, and
+  optional moon phase into the Weather Context model before persistence.
+- Missing optional condition or moon phase MUST produce the neutral cloud and
+  regular-moon fallbacks respectively; no textual condition is synthesized.
+- A missing required current pressure or daily day/date record MUST keep the
+  affected projection unavailable and MUST NOT replace the last successful
+  normalized cache with a partial result.
+- The fixture and mapping proof MUST be redacted and deterministic; it MUST NOT
+  contain a user API key.
+
+### FT-003 Hourly Mapping
+
+- A successful hourly fixture MUST normalize the selected-city API timezone and
+  the eight accepted slots `06:00`, `09:00`, `12:00`, `15:00`, `18:00`, `21:00`,
+  `00:00`, and `03:00`; the last two belong to the following city-local day.
+- Each accepted slot MUST contain the required time, temperature and weather
+  illustration inputs needed by the shared forecast card presentation. Pressure
+  arrows and calendar dates are not part of the hourly card projection.
+- Missing or incomplete required hourly data MUST produce unavailable hourly
+  data and MUST NOT synthesize a slot, open a session, or replace a successful
+  normalized forecast result with a partial result.
+- Hourly labels and day boundaries MUST use the selected-city API timezone;
+  device timezone is not a source for hourly labels.
+- The fixture and mapping proof MUST be deterministic and redacted; it MUST NOT
+  contain a user API key.
+
+### FT-004 Long-Term Mapping
+
+- A successful daily fixture MUST normalize the selected-city API timezone and
+  exactly ten ordered daily records: today plus the next nine calendar days.
+- Each required daily record MUST contain its city-local date, day/night
+  temperature and condition illustration inputs needed by the shared forecast
+  card presentation. Pressure arrows are not part of the long-term card
+  projection.
+- Missing or incomplete required daily data MUST produce unavailable long-term
+  data and MUST NOT synthesize a day, open a session, or replace a successful
+  normalized forecast result with a partial result.
+- Daily dates, day boundaries and day/night selection MUST use the selected-city
+  API timezone; device timezone is not a source for long-term date composition.
+- The fixture and mapping proof MUST be deterministic and redacted; it MUST NOT
+  contain a user API key.
 
 ## Refresh, Cache and Failure Rules
 

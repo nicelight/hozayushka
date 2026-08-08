@@ -1,0 +1,153 @@
+{
+  "id": "TASK-011-T3-FT-009-W10",
+  "title": "Implement alert and glass personalization settings with live preview",
+  "status": "done",
+  "wave": "W10",
+  "feature": "FT-009",
+  "reqs": [
+    "REQ-019",
+    "REQ-020",
+    "REQ-021"
+  ],
+  "depends_on": [
+    "TASK-010-T3-FT-008-W9"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/settings/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/timer/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host personalization, presentation and boundary probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for FT-009-AC-001 before changing production behavior; preserve approved FT-008 Settings behavior without claiming its evidence for this task.",
+    "Run deterministic isolated Settings checks for the accepted built-in sound set with default Классический, app alert volume range 0..100 with default 70, glass intensity range 0..1 with default 0.45, valid auto-save/reload, invalid-value preservation and the exact owning inline errors API-ключ не указан, Неверный API-ключ, Нет подключения, Город не найден and Укажите время больше нуля; prove no modal dialog and both Back routes return to Main Display.",
+    "Run the shared presentation probe while moving the glass slider and at 0, 0.45 and 1: the preview changes during the gesture, uses the production weather-card material with Today temperature or 24 °C fallback, two overlapping arrows and the temperature number, performs no network request, and matches the production Today projection under the same saved value.",
+    "Run the validated-settings consumer probe: Timer & Alert reads the sound/volume projection without writing Settings; volume 0 suppresses only app-alert sound while visual overdue state remains, and Android silent/DND policy is not overridden. Do not reimplement FT-007 completion-time presentation.",
+    "Inspect the registered Main Display -> Settings & Location, Main Display -> Weather Context, Timer & Alert -> Settings & Location and Timer & Alert -> Android Runtime Adapter contracts; no Settings -> Weather Context edge, private-store bypass, direct platform bypass or composition-root business orchestration is permitted.",
+    "Use isolated/resettable local state and deterministic presentation/platform fixtures, record only redacted results, clean up without cross-run state and keep host/build/unit/static/presentation checks mandatory. Apply target-device evidence only where host checks cannot establish Settings readability or static pseudo-glass behavior; it is deferred/non-blocking, so record DEFERRED plus residual risk when unavailable and never claim runtime PASS without a target. Record no runtime evidence during planning.",
+    "Scheduler closure: fresh /verify returned VERDICT: PASS and fresh /red-verify returned SEMANTIC_VERDICT: semantic-pass for FT-009 / REQ-019, REQ-020 and REQ-021; targeted 4/4, full 52/52, clean build, static/redaction/presentation gates pass. Device evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .protocols/TASK-011-T3-FT-009-W10/verification.md, .protocols/TASK-011-T3-FT-009-W10/red-verification.md and .tasks/TASK-011-T3-FT-009-W10/verifier-owned-probe.md."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-009-personalization-settings.md",
+    ".memory-bank/epics/EP-004-settings-location.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-010-T3-FT-008-W9.task.json",
+    ".protocols/FT-009/plan.md",
+    ".protocols/FT-009/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-009.md"
+  ],
+  "evidence_required": [
+    "[FT-009-AC-001; REQ-019, REQ-020, REQ-021] Expected RED: the approved Settings surface has no task-owned validated alert/glass projection, auto-save/reload, invalid-value preservation or complete personalization preview proof. GREEN: accepted sound/default, volume 0..100/default 70, glass 0..1/default 0.45, valid persistence/reload, invalid preservation, exact owning inline messages API-ключ не указан, Неверный API-ключ, Нет подключения, Город не найден and Укажите время больше нуля, no modal dialog and both Back routes satisfy the accepted result; compare every condition in one isolated Settings result artifact.",
+    "[FT-009-AC-001; REQ-020] Expected RED: the Settings preview is not proven to share the production weather-card presentation or update during a glass gesture. GREEN: Today temperature or 24 °C fallback, temperature number and two overlapping arrows use the same saved static material, values 0/0.45/1 visibly differ, the gesture updates the preview and no network request occurs; compare the preview and production projection in a deterministic presentation artifact.",
+    "[FT-009-AC-001; REQ-019, REQ-021] Expected RED: the validated alert projection is not proven to preserve visual overdue behavior or platform audio policy. GREEN: Timer & Alert consumes but does not mutate the projection, volume 0 suppresses only app-alert sound, visual overdue state remains and silent/DND policy is unchanged; compare projection, visual and policy results in an isolated consumer artifact.",
+    "T3 isolation and safe rerun: each proof starts from known disposable Settings/platform state, uses deterministic non-secret fixtures, records observable result, decisive conditions, pass/fail comparison and artifact, then cleans up without live credentials or durable cross-run state."
+  ],
+  "purpose": "Turn the accepted Settings & Location personalization boundary into one validated alert-sound/volume and glass-intensity outcome with local auto-save, invalid-value preservation and a production-card live preview.",
+  "success_outcome": "A clean Android build and deterministic isolated evidence prove that accepted sound, volume and glass values validate, auto-save and reload; invalid values retain the last valid settings with inline errors and no modal; the preview live-renders the production Today card or 24 °C fallback without network access; and Timer & Alert preserves visual overdue behavior while Android audio policy remains authoritative.",
+  "anti_goals": [
+    "Do not implement FT-007 completion-time overdue presentation, alert scheduling, ramp or dismissal; Timer & Alert only consumes this validated projection.",
+    "Do not implement FT-002 weather normalization/cache/history, read Weather Context storage directly or add a Settings & Location -> Weather Context edge; Main Display supplies the existing Today read or the accepted fallback.",
+    "Do not add extra Settings controls, modal errors, realtime blur/refraction/heavy visual effects, backend/cloud/accounts, Google Services, event infrastructure, new dependencies or reboot recovery.",
+    "Do not change the accepted API-key/local-secret boundary, place secrets in source/logs/fixtures/evidence or claim runtime evidence during planning."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-001 clock/fullscreen shell, FT-002 weather normalization/cache/history, FT-003/FT-004 forecast sessions and FT-005/FT-006/FT-007 timer lifecycle, overdue presentation and completion alert behavior",
+      "direct reads or writes of Weather Context, Timer & Alert, Main Display or another capability's private storage",
+      "a new Settings & Location -> Weather Context edge, direct Android audio-policy bypass, composition-root business orchestration or a new event/message boundary",
+      "extra Settings controls, modal validation errors, realtime blur/refraction/heavy visual effects, backend/cloud/accounts, Google Services, new dependencies, reboot recovery and secret-bearing artifacts"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before adding a dependency or changing the accepted UI toolkit, package/public contract, persistence/security posture, platform audio policy or product behavior.",
+      "Stop and route to /spec-design if execution requires a new module, graph edge, ownership rule, public contract or composition-root business behavior.",
+      "Stop and route to /feature-to-tasks FT-009 if execution exposes a required identity, tier, dependency, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop and route to /feature-doctor FT-009 or /write-prd if the accepted sound, volume, glass, preview, inline-error, auto-save or Back semantics must change.",
+      "Stop and route to /feature-to-tasks FT-007 if completion-time overdue or alert behavior must change rather than merely consuming the validated Settings projection."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-009-personalization-settings.md#FT-009-AC-001",
+    ".memory-bank/features/FT-009-personalization-settings.md",
+    ".memory-bank/epics/EP-004-settings-location.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-007---one-personalization-projection-serves-today-and-settings-preview",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#settings-personalization-surface",
+    ".memory-bank/contracts/capability-interfaces.md#timer-and-alert-to-settings-and-location",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#personalization-preview",
+    ".memory-bank/domains/local-data.md#ownership-matrix",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Settings & Location is the sole mutable owner of validated alert sound, app alert volume and glass intensity; valid values auto-save and invalid values remain unsaved while preserving the last valid value with the owning inline error.",
+    "Main Display composes the production Today card and Settings preview from the existing validated Settings projection and its existing Weather Context read or 24 °C fallback; no private-storage bypass or Settings -> Weather Context edge is authorized.",
+    "Timer & Alert reads the validated sound/volume projection and never writes Settings; app alert volume 0 suppresses only app-alert sound, while visual overdue state and Android silent/DND policy remain independent.",
+    "The preview uses the shared static pseudo-glass/weather-card contract, updates during the gesture, makes no network request and introduces no extra Settings surface or modal error.",
+    "No new module, public contract, graph edge, dependency, event boundary, backend, Google Services, secret-bearing artifact or unaccepted product scope is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must: valid Settings values remain after validation errors and accepted errors are inline without a modal dialog.",
+    ".memory-bank/invariants.md#never: no realtime blur/refraction, no extra Settings scope and no backend/cloud/accounts/Google Services in V1.",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary: Settings & Location owns personalization; Main Display composes the preview; Timer & Alert consumes the projection.",
+    ".memory-bank/domains/local-data.md#durable-data-rules: valid alert sound/volume/glass settings auto-save, invalid values do not replace the last valid value, and volume 0 does not remove visual overdue state.",
+    ".memory-bank/contracts/weather-card-presentation.md#personalization-preview: preview uses the production static material, Today or 24 °C fallback, two arrows and no network request."
+  ],
+  "verification_targets": [
+    "FT-009-AC-001 / REQ-019: accepted built-in sound set, default Классический, app alert volume integer range 0..100/default 70, valid auto-save/reload and volume-0 sound-only suppression are observed without mutating Timer & Alert or visual overdue state.",
+    "FT-009-AC-001 / REQ-020: glass intensity range 0..1/default 0.45, live gesture updates and saved projection are observed at 0, 0.45 and 1 using the shared production weather-card material, Today temperature or 24 °C fallback, two arrows and no network request.",
+    "FT-009-AC-001 / REQ-021: invalid values preserve the previous valid value and show the exact accepted inline messages API-ключ не указан, Неверный API-ключ, Нет подключения, Город не найден and Укажите время больше нуля, valid changes auto-save, no modal dialog appears and system Back/bottom back return to Main Display.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context, #settings-personalization-surface, #timer-and-alert-to-settings-and-location: only registered Main Display, Settings & Location, Weather Context and Timer & Alert interactions are used; no new Settings -> Weather Context edge or private-store bypass exists.",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks and #target-device-evidence: mandatory host probes cover validation, persistence and presentation; target-device evidence is limited to host-insufficient readability/static pseudo-glass results, is deferred/non-blocking while unavailable, and is never fabricated during planning.",
+    "Fresh Reviewer /verify returned VERDICT: PASS for FT-009-AC-001 / REQ-019, REQ-020 and REQ-021 after verifier-owned targeted/full host tests, clean build, static/presentation/redaction gates and direct boundary/source inspection. Target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .protocols/TASK-011-T3-FT-009-W10/verification.md and .tasks/TASK-011-T3-FT-009-W10/verifier-owned-probe.md.",
+    "Fresh independent /red-verify returned SEMANTIC_VERDICT: semantic-pass after adversarial owner/boundary, persistence/failure, preview/no-network, volume-zero/platform-policy and forbidden-scope checks. Target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .protocols/TASK-011-T3-FT-009-W10/red-verification.md and .tasks/TASK-011-T3-FT-009-W10/TASK-011-T3-FT-009-W10-S-RED-VERIFY-final-report-docs-01.md."
+  ]
+}

@@ -3,7 +3,7 @@ description: L2 epic for current weather cards, local weather context and foreca
 status: draft
 id: EP-002
 lifecycle: planned
-last_updated: 2026-08-03
+last_updated: 2026-08-08
 ---
 # EP-002 — Weather context and forecasts
 
@@ -52,5 +52,12 @@ last_updated: 2026-08-03
 
 ## Design status
 
-Epic remains `draft`; provider/data/storage boundaries are now registered, while
-feature-level weather mapping and verification follow the Foundation Gate.
+Epic remains `draft` and its lifecycle remains `planned`. FT-002's W3
+implementation and evidence are reconciled; FT-003's W4/W5 records preserve
+TASK-005 as failed historical evidence, record TASK-012 as the
+provider-normalization repair and TASK-013 as the entry/fallback/shared-session
+follow-up; FT-004's W5 outcome is recorded by TASK-006 after its functional and
+semantic verification. Target-only readability/runtime observations remain
+deferred under the accepted policy. No epic or feature lifecycle decision,
+closure, promotion or dependent-state transition is inferred by this boundary
+sync.

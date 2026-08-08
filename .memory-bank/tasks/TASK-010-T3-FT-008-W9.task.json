@@ -1,0 +1,170 @@
+{
+  "id": "TASK-010-T3-FT-008-W9",
+  "title": "Implement local weather access and offline location settings",
+  "status": "done",
+  "wave": "W9",
+  "feature": "FT-008",
+  "reqs": [
+    "REQ-017",
+    "REQ-018",
+    "REQ-024"
+  ],
+  "depends_on": [
+    "TASK-009-T3-FT-007-W8"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/settings/",
+    "app/src/main/kotlin/com/hozayushka/app/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/assets/geonames/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host Settings, catalog and redacted provider probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for each FT-008 AC before changing production behavior; preserve any already-green approved predecessor behavior without claiming its evidence for this task.",
+    "Run deterministic isolated Settings checks for Khujand default, valid key/location auto-save, reload persistence, invalid or missing key preservation, unknown-city preservation and the exact owning inline messages `API-ключ не указан`, `Неверный API-ключ`, `Город не найден`; reset state after the probe.",
+    "Run offline catalog checks with network unavailable: case-insensitive country search, country-first gating, selected-country city scoping, GeoNames cities15000 coverage fixture, Russian/canonical/ASCII alias matching and attribution placement before the final back-icon action.",
+    "Run a redacted city-change integration probe that observes persisted selected coordinates, the registered Settings & Location -> Weather Context refresh request and provider request shape; use only a synthetic credential and preserve valid settings when the provider or network fails.",
+    "Inspect Settings & Location ownership and the registered Main Display -> Settings & Location, Settings & Location -> Weather Context, Weather Context -> Yandex Weather Adapter and Settings & Location -> Bundled Location Catalog edges; no private-store bypass, direct provider access or composition-root business orchestration is permitted.",
+    "Use isolated/resettable local state, synthetic credentials, deterministic catalog/provider fixtures and cleanup that cannot leak a secret or affect another run. Host/build/unit/static/redacted-provider checks are mandatory. Apply target-device evidence only where host checks cannot establish Settings readability/navigation; it is deferred/non-blocking, so record DEFERRED plus residual risk when unavailable and never claim runtime PASS without a target. Record no runtime evidence during planning.",
+    "Scheduler closure: fresh `/verify` returned VERDICT: PASS and fresh `/red-verify` returned SEMANTIC_VERDICT: semantic-pass for FT-008-AC-001..AC-006 / REQ-017, REQ-018 and REQ-024; host/build/unit/static/redaction/catalog gates pass. Device evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .protocols/TASK-010-T3-FT-008-W9/verification.md, .protocols/TASK-010-T3-FT-008-W9/red-verification.md and .tasks/TASK-010-T3-FT-008-W9/TASK-010-T3-FT-008-W9-S-VERIFY-final-report-docs-01.md."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-008-weather-location-settings.md",
+    ".memory-bank/epics/EP-004-settings-location.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-009-T3-FT-007-W8.task.json",
+    ".protocols/FT-008/plan.md",
+    ".protocols/FT-008/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-008.md"
+  ],
+  "evidence_required": [
+    "[FT-008-AC-001; REQ-017, REQ-024] Expected RED: the predecessor surface has no task-owned local personal-key Settings path and secret-safe absence proof. GREEN: a valid synthetic key reloads from local storage, missing/invalid input shows the owning inline error and keeps the last valid value, and source/APK/log/evidence inspection finds no key; compare every condition and store the isolated persistence plus redacted secret-scan artifact.",
+    "[FT-008-AC-002; REQ-017] Expected RED: the current Settings/Weather seam does not prove Khujand default, selected coordinate persistence or valid city-change refresh. GREEN: Khujand is the default, selected coordinates reload, and the refresh request carries the selected location through Weather Context; compare default, reload and request fields in the deterministic redacted integration artifact.",
+    "[FT-008-AC-003; REQ-018] Expected RED: no accepted offline country-first and selected-country-scoped catalog behavior is available. GREEN: case-insensitive country search works without network, city search is gated by and limited to the selected country, and the bundled cities15000 fixture is used; compare offline, gating and scope conditions in the catalog query artifact.",
+    "[FT-008-AC-004; REQ-018] Expected RED: accepted Russian/canonical/ASCII display and search alias behavior is not proven. GREEN: display chooses Russian then canonical fallback and search matches all accepted alias forms; compare precedence and matching results in the alias projection artifact.",
+    "[FT-008-AC-005; REQ-018] Expected RED: the Settings content surface does not prove the required GeoNames attribution placement. GREEN: attribution is visible before the final back-icon action; compare the ordered Settings projection in the structure/content artifact.",
+    "[FT-008-AC-006; REQ-017, REQ-018, REQ-024] Expected RED: key/provider/city failures have no task-owned inline preservation result. GREEN: missing/invalid key, provider/network failure and unknown city show `API-ключ не указан`, `Неверный API-ключ`, `Нет подключения` or `Город не найден` as applicable, retain the last valid setting and leave clock/timer operation available; compare each failure and preserved state in the failure-boundary artifact.",
+    "T3 isolation and safe rerun: every proof starts from known disposable Settings state with synthetic credentials and deterministic fixtures, records the observable result and decisive pass/fail comparison, and cleans up without live credentials or durable cross-run state."
+  ],
+  "purpose": "Turn the accepted Settings & Location boundary into the FT-008 weather-access outcome with local secret handling, offline country/city selection, valid location persistence and provider refresh integration.",
+  "success_outcome": "A clean Android build and deterministic redacted evidence prove that a personal weather key and selected Khujand/other city are retained locally, offline country-first/scoped city search resolves the accepted aliases and attribution, a valid city change refreshes Weather Context with selected coordinates, and key/provider/city failures remain inline while preserving the last valid value and stable clock/timer behavior.",
+  "anti_goals": [
+    "Do not implement FT-002 weather normalization, cache/history/freshness or weather-card presentation; consume its accepted Weather Context boundary.",
+    "Do not implement FT-001 clock/fullscreen behavior, FT-003/FT-004 forecast sessions or FT-005–FT-007 timer, overdue and alert behavior.",
+    "Do not implement FT-009 alert sound/volume, glass intensity, preview or other personalization Settings.",
+    "Do not add a shared or embedded key, backend/proxy, cloud sync, accounts, Google Services, second location source, event/message infrastructure, new dependency or unaccepted Settings control.",
+    "Do not place live credentials in source, APK resources, logs, screenshots, fixtures or verification evidence, and do not claim runtime evidence during planning."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-002 weather normalization/cache/history/freshness ownership and FT-009 alert/glass personalization behavior",
+      "FT-001 clock/fullscreen, FT-003/FT-004 forecast and FT-005/FT-006/FT-007 timer/overdue/alert behavior",
+      "direct reads or writes of Weather Context, Main Display or another capability's private storage",
+      "direct Settings access to the Yandex adapter, network-dependent catalog search or composition-root business orchestration",
+      "shared/embedded API keys, secret-bearing source/logs/screenshots/fixtures/evidence, backend/cloud/accounts, Google Services, event infrastructure and new dependencies"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before adding a dependency or changing the accepted UI toolkit, package/public contract, persistence/security posture, location source or product behavior.",
+      "Stop and route to /spec-design if execution requires a new module, graph edge, ownership rule, public contract or composition-root business behavior.",
+      "Stop and route to /feature-to-tasks FT-008 if execution exposes a required identity, tier, dependency, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop and route to /feature-doctor FT-008 or /write-prd if the accepted key, offline location, alias, attribution, error-preservation or refresh semantics must change.",
+      "Stop and route to /feature-to-tasks FT-009 if the implementation requires a new user-facing sound/volume/glass personalization outcome."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-008-weather-location-settings.md#FT-008-AC-001",
+    ".memory-bank/features/FT-008-weather-location-settings.md#FT-008-AC-002",
+    ".memory-bank/features/FT-008-weather-location-settings.md#FT-008-AC-003",
+    ".memory-bank/features/FT-008-weather-location-settings.md#FT-008-AC-004",
+    ".memory-bank/features/FT-008-weather-location-settings.md#FT-008-AC-005",
+    ".memory-bank/features/FT-008-weather-location-settings.md#FT-008-AC-006",
+    ".memory-bank/features/FT-008-weather-location-settings.md",
+    ".memory-bank/epics/EP-004-settings-location.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-006---user-api-keys-are-local-and-redacted",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration",
+    ".memory-bank/contracts/capability-interfaces.md#settings-and-location-to-bundled-location-catalog",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/domains/local-data.md#ownership-matrix",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract",
+    ".memory-bank/contracts/local-secret-handling.md#storage-mechanism-boundary",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Settings & Location owns validation, persistence and the selected country/city/coordinates; the bundled GeoNames catalog is immutable and read-only.",
+    "The API key is accepted only from user input, travels only through the authorized Weather Context provider request path and is redacted from every durable artifact.",
+    "Valid values auto-save; invalid values remain unsaved, preserve the last valid value and expose the owning inline error. Country selection precedes and scopes city search.",
+    "Weather Context owns provider refresh, normalization, cache/history and freshness; Settings & Location requests refresh only after a valid location write.",
+    "No new provider, location source, dependency, backend, Google Services, event boundary or unaccepted Settings control is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must: personal weather API key remains local; offline country-then-city search is available; valid saved Settings survive errors.",
+    ".memory-bank/invariants.md#never: backend/cloud/accounts/shared API key, Google Services, additional location source or unaccepted Settings scope.",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary: Settings & Location owns selected location and key; Weather Context owns refresh and normalized weather state.",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract: key never appears in APK/source/logs/fixtures/evidence and invalid input preserves the last valid value.",
+    ".memory-bank/domains/local-data.md#durable-data-rules: valid settings auto-save, invalid settings remain unsaved and location records preserve country-first selection, aliases and coordinates."
+  ],
+  "verification_targets": [
+    "FT-008-AC-001 / REQ-017, REQ-024: valid key persistence/reload, missing/invalid-key inline preservation and source/APK/log/evidence secret absence are all observed using a synthetic placeholder.",
+    "FT-008-AC-002 / REQ-017: Khujand default, selected country/city/coordinates persistence and valid city-change refresh through Weather Context are observed in a redacted integration fixture.",
+    "FT-008-AC-003 / REQ-018: offline case-insensitive country search, country-first gating and selected-country city scoping over the bundled cities15000 subset are observed without network.",
+    "FT-008-AC-004 / REQ-018: Russian-preferred/canonical-fallback display and Russian/canonical/ASCII alias search matching are observed from deterministic catalog fixtures.",
+    "FT-008-AC-005 / REQ-018: GeoNames attribution is observed in the Settings projection before the final back-icon action.",
+    "FT-008-AC-006 / REQ-017, REQ-018, REQ-024: missing/invalid key, provider/network failure and unknown city show `API-ключ не указан`, `Неверный API-ключ`, `Нет подключения` or `Город не найден` as applicable, preserve the last valid setting and do not disable clock/timer operation.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration: only registered Settings/Weather/Provider/Catalog edges are used; no private-store or composition-root business bypass exists.",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures and #secret-and-artifact-checks: deterministic fixtures use synthetic credentials and every artifact contains only redacted results; planning claims no runtime evidence."
+  ]
+}

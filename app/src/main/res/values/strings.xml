@@ -3,4 +3,23 @@
     <string name="app_name">Хозяюшка</string>
     <string name="foundation_status">Foundation walking skeleton</string>
     <string name="foundation_hint">Сборка, локальный fixture и границы готовы к проверке</string>
+    <string name="display_select_city">Выбрать город</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_no_city">Город не выбран</string>
+    <string name="settings_timer_title">Пресеты таймера</string>
+    <string name="settings_preset_label">Пресет %1$s</string>
+    <string name="settings_preset_field_description">Пресет %1$s, единица %2$s</string>
+    <string name="settings_back">Назад</string>
+    <string name="settings_back_icon">←</string>
+    <string name="settings_geonames_attribution">Данные GeoNames, CC BY 4.0</string>
+    <string name="settings_alert_title">Сигнал таймера</string>
+    <string name="settings_alert_sound">Звук</string>
+    <string name="settings_alert_sound_description">Встроенный звук сигнала</string>
+    <string name="settings_alert_volume">Громкость приложения</string>
+    <string name="settings_alert_volume_description">Громкость сигнала приложения, процентов</string>
+    <string name="settings_alert_volume_value">%1$d%%</string>
+    <string name="settings_glass_title">Сила pseudo-glass</string>
+    <string name="settings_glass_description">Интенсивность pseudo-glass от 0 до 1</string>
+    <string name="settings_glass_value">%1$.2f</string>
+    <string name="settings_glass_preview">Предпросмотр карточки</string>
 </resources>

@@ -3,4 +3,13 @@
     <color name="foundation_background">#11151A</color>
     <color name="foundation_primary">#F3F5F7</color>
     <color name="foundation_secondary">#9BA8B5</color>
+    <color name="display_background">#10151B</color>
+    <color name="display_primary">#F4F7FA</color>
+    <color name="display_secondary">#A9B7C4</color>
+    <color name="display_card">#27333D</color>
+    <color name="display_card_stroke">#5A7182</color>
+    <color name="display_button">#314A5A</color>
+    <color name="timer_preset_orange">#FF7A00</color>
+    <color name="timer_preset_pink">#FF4FA3</color>
+    <color name="timer_preset_purple">#A855F7</color>
 </resources>

@@ -1,7 +1,7 @@
 {
   "id": "TASK-002-T3-FT-000-W1",
   "title": "Run final Foundation clean build, host tests and fixture gate",
-  "status": "in_progress",
+  "status": "done",
   "wave": "W1",
   "feature": "FT-000",
   "reqs": [
@@ -29,7 +29,30 @@
     "Exercise only the deterministic host Foundation path: isolated local state reset/reload, redacted weather fixture, timer arithmetic/persistence probe and cleanup.",
     "Run the project-native boundary/static and secret/artifact checks required by the host baseline; do not start an emulator, run ADB install/launch, connect a physical device or perform target-device smoke.",
     "Target-device fullscreen, lifecycle, timer rehydration and audio checks are deferred until the application is ready for a later runtime/readiness task; they are not acceptance gates for this task.",
-    "Historical verification reports remain under .protocols/TASK-002-T3-FT-000-W1/ and .tasks/TASK-002-T3-FT-000-W1/ as superseded evidence from the previous target-device gate contract."
+    "Historical verification reports remain under .protocols/TASK-002-T3-FT-000-W1/ and .tasks/TASK-002-T3-FT-000-W1/ as superseded evidence from the previous target-device gate contract.",
+    "Owner-directed functional disposition on 2026-08-06: VERDICT: PASS. The operator accepted the existing host-only build/test, deterministic fixture, boundary, package and redacted secret-scan evidence and explicitly directed that no further /verify run be performed. Evidence: .protocols/TASK-002-T3-FT-000-W1/verification.md and .tasks/TASK-002-T3-FT-000-W1/.",
+    {
+      "stage": "owner_lifecycle_closure",
+      "mode": "manual_explicit_owner",
+      "decision": "done",
+      "decided_at": "2026-08-06 00:32 +0500",
+      "gate_summary": {
+        "functional_verification": "OWNER-ACCEPTED: existing host-only evidence with operator-directed VERDICT: PASS; no fresh /verify run.",
+        "red_verification": "OWNER-ACCEPTED: no /red-verify run by explicit operator instruction."
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-002-T3-FT-000-W1/verification.md",
+        ".tasks/TASK-002-T3-FT-000-W1/gate-results.md",
+        ".tasks/TASK-002-T3-FT-000-W1/receipt-A-clean-build-host-tests.log",
+        ".tasks/TASK-002-T3-FT-000-W1/receipt-J-final-secret-scan.log"
+      ],
+      "accepted_residual_risk": [
+        "No fresh independent /verify run was performed after the host-only scope revision.",
+        "No adversarial per-task /red-verify run was performed.",
+        "Target-device compatibility remains unverified and deferred to a later readiness/release task."
+      ],
+      "owner_instruction": "Operator explicitly directed: no more verify; close FT-000."
+    }
   ],
   "docs": [
     ".memory-bank/foundation.md",

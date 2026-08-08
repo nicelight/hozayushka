@@ -1,0 +1,166 @@
+{
+  "anti_goals": [
+    "Do not implement preset field validation, defaults, labels, colors or Settings configuration owned by FT-005.",
+    "Do not implement overdue fullscreen rendering, alert sound selection/ramp/cap or silent/DND presentation owned by FT-007/FT-009.",
+    "Do not implement API-key, location, alert-volume or glass-personalization settings from FT-008/FT-009.",
+    "Do not add reboot auto-start/recovery, a new module, dependency, event/message boundary, backend, cloud sync, accounts, Google Services or unaccepted UI controls."
+  ],
+  "constraints": [
+    "Timer & Alert is the sole owner of active-timer persistence, elapsed arithmetic and idle|countdown|overdue transitions; consumers use its public projection and commands.",
+    "Main Display owns presentation and gesture dispatch through the accepted Main Display -> Timer & Alert contract; it must not calculate remaining time or read Timer & Alert private storage.",
+    "Settings & Location remains the owner of validated preset configuration; Timer & Alert reads the FT-005 projection and does not write settings or duplicate validation rules.",
+    "Android Runtime Adapter owns device/lifecycle/network signals and audio policy; the composition root forwards signals and wires capabilities but owns no timer business state.",
+    "Use the accepted persisted start point and positive configured duration for rehydration. Reboot recovery is explicitly excluded, and overdue presentation/audio remains downstream."
+  ],
+  "depends_on": [
+    "TASK-007-T3-FT-005-W6"
+  ],
+  "docs": [
+    ".memory-bank/features/FT-006-countdown-lifecycle.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-007-T3-FT-005-W6.task.json",
+    ".protocols/FT-005/plan.md",
+    ".protocols/FT-005/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-005.md"
+  ],
+  "evidence_required": [
+    "[FT-006-AC-001; REQ-012] Expected RED: the Foundation surface has no accepted user-facing short-tap countdown projection. GREEN: a valid selected preset starts immediately, countdown replaces the large clock, current time moves aside and the originating button is highlighted. Compare each start/projection condition; mandatory artifact is the deterministic start/integration result, while scoped device observation is deferred/non-blocking where host proof is insufficient.",
+    "[FT-006-AC-002; REQ-011] Expected RED: the Foundation/FT-005 seam has no accepted runtime proof that starting a configured preset preserves one active timer. GREEN: the Timer & Alert owner exposes at most one active timer while consuming the validated preset projection and never creates parallel active records. Compare active-state cardinality and ownership; artifact is the isolated Timer & Alert/Settings integration result.",
+    "[FT-006-AC-003; REQ-013] Expected RED: a countdown has no accepted protected-cancellation gesture path. GREEN: single tap leaves countdown active and shows the accepted hint; double tap anywhere cancels and returns to the standard display. Compare both gesture transitions and the final idle state; artifact is the deterministic gesture result.",
+    "[FT-006-AC-004; REQ-014] Expected RED: the current timer surface does not prove rehydration across accepted temporary interruptions. GREEN: after Activity/foreground/screen-off/temporary process interruption, persisted start/duration data recalculates the correct remaining countdown or overdue lifecycle state; no reboot recovery is claimed. Compare elapsed/remaining/state at synthetic timestamps and the accepted host route; artifact is the mandatory isolated persistence/rehydration result plus deferred/non-blocking target-ROM evidence where host proof is insufficient.",
+    "[FT-006-AC-005; REQ-025] Expected RED: the current product path has no feature-level proof that network/weather-service loss leaves timer operations usable, including dismissal of an already-overdue state. GREEN: with network/provider availability absent, start and countdown remain functional, protected cancellation remains available, and an already-overdue timer is dismissed by any tap and returns to Main Display. Compare each accepted transition with no provider input; artifact is the deterministic offline/no-provider lifecycle result. Do not claim FT-007 overdue rendering or audio behavior."
+  ],
+  "feature": "FT-006",
+  "gates": [
+    {
+      "command": "./gradlew clean assembleDebug",
+      "name": "Clean Android debug build",
+      "required": true
+    },
+    {
+      "command": "./gradlew testDebugUnitTest",
+      "name": "Host timer lifecycle and integration probes",
+      "required": true
+    }
+  ],
+  "id": "TASK-008-T3-FT-006-W7",
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/capability-interfaces.md#timer-and-alert-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#orchestration-ownership",
+    ".memory-bank/domains/local-data.md#ownership-matrix",
+    ".memory-bank/domains/local-data.md#durable-data-rules",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "purpose": "Turn the validated preset seam into the accepted Timer & Alert countdown lifecycle with immediate start, one active timer, protected cancellation, temporary-interruption rehydration and network-independent operation including overdue dismissal.",
+  "reqs": [
+    "REQ-011",
+    "REQ-012",
+    "REQ-013",
+    "REQ-014",
+    "REQ-025"
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-005 preset configuration validation/defaults/labels/colors and Settings product surface",
+      "FT-007 overdue fullscreen presentation, alert sound behavior, ramp/cap and silent/DND presentation",
+      "FT-008/FT-009 API-key, location, alert-volume and glass-personalization behavior",
+      "direct reads or writes of private Settings & Location or Main Display storage",
+      "business orchestration in MainActivity, generic utilities or the composition root",
+      "reboot recovery, backend, cloud sync, accounts, Google Services, event/message infrastructure and new permissions",
+      "live API keys or secret-bearing source, logs, screenshots, fixtures or evidence"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before adding a dependency or changing the accepted UI toolkit, package/public contract, architecture, persistence/security posture or product behavior.",
+      "Stop and route to /spec-design if execution requires a new module, graph edge, ownership rule, public contract or composition-root business behavior.",
+      "Stop and route to /feature-doctor FT-006 or /write-prd if the accepted start, one-active-timer, protected-cancellation or temporary-recovery semantics must change.",
+      "Stop and route to /feature-to-tasks FT-006 if execution exposes a required identity, tier, dependency, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop and route to /feature-to-tasks FT-007 if proving the lifecycle outcome requires overdue rendering/audio behavior beyond exposing the accepted overdue state."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-001",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-002",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-003",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-004",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-005",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md"
+  ],
+  "status": "done",
+  "success_outcome": "A clean Android build and deterministic redacted evidence prove that a validated selected preset starts immediately, only one timer is active, single-tap countdown cancellation is protected while double tap cancels, persisted start/duration data restores the correct countdown or overdue lifecycle state after temporary interruption, and with network/provider input absent an already-overdue timer is dismissed by any tap back to Main Display while accepted capability ownership and scope remain intact.",
+  "tier": "T3",
+  "title": "Implement countdown lifecycle, protected cancellation and temporary recovery",
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/timer/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/settings/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "verification_targets": [
+    "FT-006-AC-001 / REQ-012: a valid selected preset starts immediately; countdown replaces the large clock, current time moves aside and the originating button is highlighted.",
+    "FT-006-AC-002 / REQ-011: Timer & Alert consumes the validated FT-005 preset projection and maintains at most one active timer without parallel active records or a second state owner.",
+    "FT-006-AC-003 / REQ-013: a single tap during countdown preserves the timer and shows the accepted hint; a double tap anywhere cancels and returns to the standard Main Display.",
+    "FT-006-AC-004 / REQ-014: Activity/foreground/screen-off/temporary process interruption rehydrates from persisted start/duration data and recalculates the correct countdown or overdue lifecycle state; reboot recovery is excluded.",
+    "FT-006-AC-005 / REQ-025: with network/weather-service availability absent, timer start/countdown and protected cancellation remain usable; seed or rehydrate an already-overdue timer, submit any tap, and assert overdue -> idle plus return to Main Display. This is a resilience/integration check only; do not claim FT-007 overdue rendering or audio behavior.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph: only the existing Main Display -> Timer & Alert, Main Display -> Android Runtime Adapter, Timer & Alert -> Settings & Location and Timer & Alert -> Android Runtime Adapter edges are used; no private-store or composition-root business bypass exists.",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract: persisted start/duration, one active lifecycle and accepted gesture transitions are exercised from known idle state with safe rerun/reset and cleanup.",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks: host arithmetic/gesture/persistence checks are reproducible.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: target evidence is limited to host-insufficient lifecycle/display behavior, is deferred/non-blocking while unavailable, and requires DEFERRED plus residual risk rather than a runtime PASS claim; planning claims no runtime evidence."
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for each FT-006 AC before changing production behavior, preserving any already-green Foundation or FT-005 prerequisite result without claiming its evidence for this task.",
+    "Run deterministic host checks from known isolated idle state for selected-preset start, countdown projection, active-state cardinality, elapsed/remaining arithmetic, protected gestures and cancellation; reset state after the probe.",
+    "Run persistence/rehydration checks with synthetic timestamps across Activity/foreground/screen-off/temporary process-stop signals, observing both countdown and overdue lifecycle states from persisted start/duration data; do not add or test reboot recovery.",
+    "Run the same timer path with no network/provider input, including a known already-overdue state followed by any-tap dismissal and return to Main Display, and compare each lifecycle result to the accepted network-independent transitions; no live provider request or credential is allowed.",
+    "Inspect Timer & Alert ownership and the registered Main Display -> Timer & Alert, Main Display -> Android Runtime Adapter, Timer & Alert -> Settings & Location and Timer & Alert -> Android Runtime Adapter edges; no private storage, direct provider or composition-root business bypass is permitted.",
+    "Run target-device evidence only where host checks cannot establish accepted temporary lifecycle/screen-off or display behavior; this evidence is deferred/non-blocking. Define known initial state, safe rerun, observable result and cleanup, record DEFERRED plus residual risk when unavailable, and never claim runtime PASS without a target. Record no runtime evidence during planning.",
+    "Scheduler closure: /verify VERDICT: PASS and /red-verify SEMANTIC_VERDICT: semantic-pass; fresh focused and full host tests, clean build, boundary/redaction checks and git diff --check pass. Target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .protocols/TASK-008-T3-FT-006-W7/verification.md, .protocols/TASK-008-T3-FT-006-W7/red-verification.md and .tasks/TASK-008-T3-FT-006-W7/verifier-owned-probes-final.md."
+  ],
+  "wave": "W7"
+}

@@ -1,0 +1,193 @@
+{
+  "id": "TASK-004-T3-FT-002-W3",
+  "title": "Implement weather cards, freshness cache and local pressure context",
+  "status": "done",
+  "wave": "W3",
+  "feature": "FT-002",
+  "reqs": [
+    "REQ-005",
+    "REQ-006",
+    "REQ-007",
+    "REQ-008",
+    "REQ-022",
+    "REQ-023",
+    "REQ-024",
+    "REQ-025",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-003-T3-FT-001-W2"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/settings/",
+    "app/src/main/kotlin/com/hozayushka/app/display/",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/",
+    "app/src/main/res/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host weather-context behavior tests",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for every owned FT-002 AC and integration claim before changing production behavior; preserve any already-green condition rather than changing it without need.",
+    "Run deterministic redacted fixtures for current/daily normalization, selected-city timezone/day-night selection, moon and unknown-condition fallback, ordered four-card projection, sign rule, all 78 palette entries, endpoint clamp and shared static pseudo-glass.",
+    "Run isolated freshness/cache/history probes for launch, valid city change, 30-minute refresh, successful-cache-only persistence, 24-hour offline availability, stale four-contour rendering, installation-relative seven-day retention, first-run Yesterday and pressure thresholds/fallback.",
+    "Inspect Weather Context ownership and every crossed edge against Boundary Map, Capability Interfaces, Platform Runtime, Weather Provider, Local Data and Local Secret Handling; no direct Main Display/provider-adapter/private-storage bypass is permitted.",
+    "Verify launch, valid city-change and 30-minute network refresh use the accepted Android Runtime signal/wiring path: Android OS owns the signals, the Application Composition Root and Android Runtime Adapter only lift them, and Weather Context owns refresh/freshness/failure behavior; no new graph edge is permitted.",
+    "Verify the clock, timer lifecycle, cancellation and overdue dismissal remain usable during network/provider failure without adopting FT-001, FT-003, FT-004, FT-005, FT-006, FT-007, FT-008 or FT-009 behavior.",
+    "Use synthetic credentials only and record only redacted results. Host build/unit/static/fixture checks are mandatory. Apply the target-device route for card readability/static pseudo-glass only as deferred, non-blocking follow-up when host checks cannot establish the result; record DEFERRED plus residual risk when unavailable and never claim runtime PASS without a target."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/glossary.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json"
+  ],
+  "evidence_required": [
+    "[FT-002-AC-001; REQ-005] Expected RED: the Foundation/FT-001 shell has no Weather Context card projection. GREEN: exactly yesterday/today/tomorrow/day-after is observed, Today is slightly larger and the other three sizes are equal smaller. Compare each order/size condition; artifact is the deterministic projection/layout assertion.",
+    "[FT-002-AC-002; REQ-005; REQ-022] Expected RED: no accepted normalized current/daily card mapping is present. GREEN: filled cards contain date, temperature, illustration and temperature background without textual day/weather labels, with selected-city timezone driving weather date/day-night and moon fallback; device clock/date remains FT-001-owned. Compare fixture fields to the canonical projection; artifact is redacted mapping/projection output.",
+    "[FT-002-AC-003; REQ-006; REQ-023] Expected RED: the Foundation surface has no accepted palette/material projection. GREEN: the −4…+4 sign rule, all 78 explicit colors, endpoint clamp and shared static pseudo-glass pass; host/static readability conditions pass, while target readability/static-visual evidence is deferred/non-blocking where host checks are insufficient. Compare every palette/material condition; artifact is mandatory host evidence plus DEFERRED target evidence and residual risk when unavailable.",
+    "[FT-002-AC-004; REQ-007; REQ-025] Expected RED: no feature-level refresh/freshness state is present. GREEN: launch, valid city change and 30-minute network refresh retain the last successful normalized result; cache age through 24 hours remains offline, older data renders four value-free contours, and clock/timer paths remain usable on failure. Compare each trigger/state/failure condition; artifact is deterministic cache/lifecycle and redacted integration output.",
+    "[FT-002-AC-005; REQ-008] Expected RED: the Foundation surface has no installation-relative pressure history or trend projection. GREEN: seven-day retention, 3-hour thresholds, exact-zero 12-hour fallback, Yesterday maximum-change rule, absent-arrow behavior and dated first-run contour pass without layout shift. Compare each history/trend condition; artifact is isolated host probe output.",
+    "[FT-002-AC-006; REQ-026] Expected RED: unknown condition or missing optional field is not handled by the feature surface. GREEN: neutral cloud/regular-moon fallbacks preserve available temperature/color, do not invent text and do not crash. Compare the redacted missing-field fixture result; artifact is the deterministic fallback test output.",
+    "[FT-002-AC-007; REQ-024] FT-002-AC-007 RED_NOT_APPLICABLE: meaningful pre-implementation RED cannot be produced without introducing a real or user-like credential into source, packaged resources, logs, fixtures, screenshots or evidence, which REQ-024 and the local-secret boundary forbid; alternative proof: provider and test paths use a synthetic credential only, the real key is absent from source, packaged resources, logs, fixtures, screenshots and evidence, and the isolated redacted scan compares that absence condition; artifact is the secret/artifact scan receipt; FT-008 remains the owner of user-facing key input/validation."
+  ],
+  "purpose": "Turn the Foundation weather seam into the accepted FT-002 Weather Context outcome while preserving the approved Main Display boundary, local ownership, freshness/history lifecycle and redacted provider path.",
+  "success_outcome": "A clean build and redacted deterministic evidence prove the four ordered weather cards, accepted presentation, provider normalization, 24-hour cache/freshness, seven-day local pressure context and failure fallbacks through the registered capability boundaries, without secret leakage or scope expansion.",
+  "anti_goals": [
+    "Do not replace or re-plan FT-001 clock/date/fullscreen/colon/city-gesture behavior; consume its approved display shell seam.",
+    "Do not implement hourly or long-term forecast sessions from FT-003 or FT-004.",
+    "Do not implement preset configuration, countdown, cancellation, overdue state or alert behavior from FT-005, FT-006 or FT-007.",
+    "Do not implement Settings catalog, API-key input/validation, or personalization controls from FT-008 or FT-009; use only the accepted validated input boundary.",
+    "Do not add a backend, cloud sync, accounts, Google Services, reboot recovery, second provider, event infrastructure, realtime blur, new dependency or new graph edge.",
+    "Do not use live credentials or fabricate target-device/runtime evidence."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-001 clock/date/fullscreen/colon/city-gesture behavior beyond the approved weather projection seam",
+      "FT-003 and FT-004 forecast-session UI/state and forecast-specific completeness behavior",
+      "FT-005, FT-006 and FT-007 timer/preset/countdown/overdue/alert behavior",
+      "FT-008 Settings catalog/API-key input/validation and FT-009 personalization controls",
+      "direct reads or writes of Main Display, Settings & Location, Timer & Alert or Forecast Sessions private storage",
+      "direct Main Display access to provider adapters or raw provider fields",
+      "real API keys or secret-bearing source, logs, screenshots, fixtures or evidence",
+      "backend, cloud sync, accounts, Google Services, reboot recovery, event/message infrastructure or new permissions"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the implementation requires a new module, graph edge, public contract, ownership rule, UI toolkit/dependency or composition-root business orchestration.",
+      "Stop and route to /feature-doctor FT-002 or /write-prd if the accepted card order, freshness window, forecast horizon, timezone split, fallback or product pass/fail target must change.",
+      "Stop and route to /feature-to-tasks FT-002 if execution exposes a required identity, tier, dependency, acceptance, or material-scope change; do not hide it behind repair.",
+      "Stop if a provider or verification path requires a live key, unredacted artifact, live external request or evidence outside the accepted disposable/isolation route."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-001",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-002",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-003",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-004",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-005",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-006",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-007",
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/glossary.md",
+    ".memory-bank/tasks/TASK-003-T3-FT-001-W2.task.json"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/architecture/system-architecture.md#runtime-composition",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration",
+    ".memory-bank/contracts/platform-runtime.md#boundary-ownership",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#ft-002-current-and-daily-mapping",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/domains/local-data.md#ft-002-weather-context-records",
+    ".memory-bank/domains/local-data.md#retention-and-cleanup",
+    ".memory-bank/states/lifecycle-map.md#weather-freshness-contract",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Weather Context owns refresh, normalization, cache/history writes, freshness, pressure trends and fallback; consumers never write its private storage.",
+    "Main Display renders the display-ready projection through Main Display → Weather Context and never reads raw provider data or private Weather Context storage.",
+    "Settings & Location owns selected location and credential validation; a city refresh is requested only after valid Settings state is persisted.",
+    "The Yandex adapter owns transport/mapping only; it does not own normalized cache/history or product fallback state.",
+    "Android OS owns device time, lifecycle and network availability. The Application Composition Root and Android Runtime Adapter provide only the accepted signal/wiring lift through existing contracts; Weather Context owns refresh cadence, cache/freshness and failure projection, and no new direct graph edge is introduced.",
+    "Selected-city API timezone drives weather dates, day boundaries and day/night selection; device timezone remains the FT-001 clock/date source.",
+    "Network/provider failure leaves the clock, timer lifecycle, cancellation and overdue dismissal usable.",
+    "All provider and test credentials are synthetic/redacted and all accepted visual effects remain static pseudo-glass."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must: weather cache remains available offline only through 24 hours after a successful update and older data becomes the accepted empty state.",
+    ".memory-bank/invariants.md#must: all 78 accepted temperature HEX values remain explicit in one compile-time source with endpoint clamp.",
+    ".memory-bank/invariants.md#never: no pre-install history, backend/cloud/shared key, Google Services, realtime blur or unaccepted V1 scope.",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary: Weather Context owns normalized weather, cache/history, freshness and pressure trends; consumers do not bypass the contract.",
+    ".memory-bank/domains/local-data.md#ft-002-weather-context-records: history is installation-relative, seven-day bounded and selected-city scoped.",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract: user credentials remain local and never enter source, resources, logs, fixtures or evidence."
+  ],
+  "verification_targets": [
+    "FT-002-AC-001 / REQ-005: deterministic projection has exactly yesterday/today/tomorrow/day-after order, accepted relative sizing and no textual day/weather labels.",
+    "FT-002-AC-002 / REQ-005 / REQ-022: redacted current/daily mapping preserves selected-city timezone for weather date/day-night selection, moon fallback, illustration and available temperature/color; device clock/date remains FT-001-owned.",
+    "FT-002-AC-003 / REQ-006 / REQ-023: mandatory deterministic host proof covers the sign rule, all 78 palette entries, endpoint clamp and shared static glass; target route covers only residual readability/static-visual evidence and remains deferred/non-blocking with explicit residual risk when unavailable.",
+    "FT-002-AC-004 / REQ-007 / REQ-025: through the accepted platform signal/wiring path, isolated refresh/cache probes cover launch, valid city change, 30-minute network cadence, successful-cache persistence, 24-hour offline freshness, stale contours and unaffected clock/timer path.",
+    "FT-002-AC-005 / REQ-008: isolated installation-relative history probe covers seven-day retention, 3-hour thresholds, exact-zero 12-hour fallback, Yesterday maximum-change rule and dated first-run contour.",
+    "FT-002-AC-006 / REQ-026: redacted missing-optional-field and unknown-condition probe proves neutral fallback, available temperature/color preservation, no invented text and no crash.",
+    "FT-002-AC-007 / REQ-024 / .memory-bank/contracts/local-secret-handling.md#evidence-and-verification: synthetic/redacted scan proves no real credential enters source, resources, logs, fixtures, screenshots or evidence; FT-008 remains the owner of user-facing key input/validation.",
+    ".memory-bank/contracts/platform-runtime.md#boundary-ownership and #compatibility-and-failure-rules: Android OS owns lifecycle/time/network signals, the composition root and Android Runtime Adapter only wire them, Weather Context owns refresh/freshness/failure behavior, and no new graph edge is introduced; the mandatory proof artifact is the deterministic lifecycle/cache result, while scoped device evidence is deferred/non-blocking where host proof is insufficient.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph: Weather Context interactions use only the accepted Main Display, Settings & Location and Yandex provider edges; no consumer bypasses owner storage."
+  ]
+}

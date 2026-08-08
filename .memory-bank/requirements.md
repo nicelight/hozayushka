@@ -1,7 +1,7 @@
 ---
 description: Требования (REQ-IDs) + traceability matrix (RTM).
 status: draft
-last_updated: 2026-08-03
+last_updated: 2026-08-08
 ---
 # Requirements: V1 product contract
 
@@ -23,7 +23,8 @@ test level or create a test artifact.
   state reset/fixture path, a redacted provider-fixture path, and recorded
   host build/test/smoke evidence. Target-device/emulator compatibility evidence
   is deferred until the application is ready for runtime/readiness validation;
-  it is not a Foundation Gate prerequisite. Foundation MUST NOT introduce
+  it is not a Foundation Gate prerequisite or a blocking T3 queue gate while a
+  target is unavailable. Foundation MUST NOT introduce
   product behavior beyond the walking skeleton or any live user API key.
   Sources: `.memory-bank/foundation.md`, `.memory-bank/architecture/system-architecture.md`,
   `.memory-bank/testing/runtime-verification.md`.
@@ -123,7 +124,9 @@ test level or create a test artifact.
 - **REQ-023** — Product MUST meet the accepted target-device, Russian UI,
   readability, static-UI and lightweight-visual constraints; clock dominance
   takes precedence over effects, and outcomes that cannot be reliably proven
-  host-side require the accepted device verification route. Sources:
+  host-side require the accepted deferred device verification route; unavailable
+  device evidence is recorded as `DEFERRED` with residual risk and does not
+  block the current T3 product queue. Sources:
   `PRD-NFR-001`, `PRD-NFR-002`, `PRD-NFR-003`, `PRD-NFR-004`, `PRD-NFR-005`,
   `PRD-NFR-006`, `PRD-AC-001`, `PRD-AC-003`.
 - **REQ-024** — The user-provided API key MUST remain local and MUST NOT appear
@@ -154,30 +157,30 @@ test level or create a test artifact.
 ## Traceability (RTM)
 | REQ | Epic | Feature | Test | Lifecycle |
 |---|---|---|---|---|
-| REQ-000 | Foundation | FT-000 | Foundation Exit Criteria | planned |
-| REQ-001 | EP-001 | FT-001 | PRD-AC-001 | planned |
-| REQ-002 | EP-001 | FT-001 | PRD-AC-001 | planned |
-| REQ-003 | EP-001 | FT-001 | PRD-FR-003/004 | planned |
-| REQ-004 | EP-001 | FT-001 | PRD-FR-006 | planned |
-| REQ-005 | EP-002 | FT-002 | PRD-AC-002 | planned |
-| REQ-006 | EP-002 | FT-002 | PRD-AC-003 | planned |
-| REQ-007 | EP-002 | FT-002 | PRD-FR-013/014 | planned |
-| REQ-008 | EP-002 | FT-002 | PRD-FR-015/018 | planned |
+| REQ-000 | Foundation | FT-000 | Foundation Exit Criteria | verified |
+| REQ-001 | EP-001 | FT-001 | PRD-AC-001 | implemented |
+| REQ-002 | EP-001 | FT-001 | PRD-AC-001 | implemented |
+| REQ-003 | EP-001 | FT-001 | PRD-FR-003/004 | implemented |
+| REQ-004 | EP-001 | FT-001 | PRD-FR-006 | implemented |
+| REQ-005 | EP-002 | FT-002 | PRD-AC-002 | implemented |
+| REQ-006 | EP-002 | FT-002 | PRD-AC-003 | implemented |
+| REQ-007 | EP-002 | FT-002 | PRD-FR-013/014 | implemented |
+| REQ-008 | EP-002 | FT-002 | PRD-FR-015/018 | implemented |
 | REQ-009 | EP-002 | FT-003 | PRD-AC-007A | planned |
 | REQ-010 | EP-002 | FT-004 | PRD-AC-007 | planned |
-| REQ-011 | EP-003 | FT-005 | PRD-FR-023/025 | planned |
-| REQ-012 | EP-003 | FT-006 | PRD-AC-004 | planned |
-| REQ-013 | EP-003 | FT-006 | PRD-FR-028 | planned |
-| REQ-014 | EP-003 | FT-006 | PRD-AC-005 | planned |
-| REQ-015 | EP-003 | FT-007 | PRD-FR-029/030 | planned |
-| REQ-016 | EP-003 | FT-007 | PRD-AC-005 | planned |
+| REQ-011 | EP-003 | FT-005 | PRD-FR-023/024/025 | planned |
+| REQ-012 | EP-003 | FT-006 | PRD-AC-004 | implemented |
+| REQ-013 | EP-003 | FT-006 | PRD-FR-028 | implemented |
+| REQ-014 | EP-003 | FT-006 | PRD-AC-005 | implemented |
+| REQ-015 | EP-003 | FT-007 | PRD-FR-029/030 | implemented |
+| REQ-016 | EP-003 | FT-007 | PRD-AC-005 | implemented |
 | REQ-017 | EP-004 | FT-008 | PRD-FR-032/034 | planned |
 | REQ-018 | EP-004 | FT-008 | PRD-AC-006B | planned |
 | REQ-019 | EP-004 | FT-009 | PRD-AC-006/006C | planned |
 | REQ-020 | EP-004 | FT-009 | PRD-AC-003/006 | planned |
 | REQ-021 | EP-004 | FT-009 | PRD-AC-006A/006C | planned |
-| REQ-022 | EP-001 | FT-001 | PRD-AC-009 | planned |
-| REQ-023 | EP-001 | FT-001 | PRD-AC-001/003 | planned |
+| REQ-022 | EP-001 | FT-001 | PRD-AC-009 | implemented |
+| REQ-023 | EP-001 | FT-001 | PRD-AC-001/003 | implemented |
 | REQ-024 | EP-004 | FT-008 | PRD-AC-006 | planned |
-| REQ-025 | EP-003 | FT-006 | PRD-AC-008 | planned |
-| REQ-026 | EP-002 | FT-002 | PRD-AC-007/010 | planned |
+| REQ-025 | EP-003 | FT-006 | PRD-AC-008 | implemented |
+| REQ-026 | EP-002 | FT-002 | PRD-AC-007/010 | implemented |

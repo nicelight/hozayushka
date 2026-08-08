@@ -1,7 +1,7 @@
 ---
 description: Foundation queue plan for the accepted executable Android baseline.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-06
 ---
 # FT-000 Foundation Queue Plan
 
@@ -31,7 +31,7 @@ the final gate.
 | Order | Task | Tier | Wave | Status | Depends on | Role |
 |---|---|---|---|---|---|---|
 | 1 | `TASK-001-T3-FT-000-W0` | T3 | W0 | done | none | Implement the walking skeleton, owner-local reset path, synthetic/redacted fixture path and host probe route. |
-| 2 | `TASK-002-T3-FT-000-W1` | T3 | W1 | planned | `TASK-001-T3-FT-000-W0` | Final Foundation Gate: clean build/test, deterministic host smoke and redacted evidence. |
+| 2 | `TASK-002-T3-FT-000-W1` | T3 | W1 | done | `TASK-001-T3-FT-000-W0` | Final Foundation Gate: clean build/test, deterministic host smoke and redacted evidence. |
 
 `TASK-002-T3-FT-000-W1` is the one and only final foundation gate. It depends
 on every current Foundation implementation/probe task.
@@ -81,7 +81,8 @@ it does not authorize scope growth.
 
 ## Handoff
 
-Queue generation is complete. Run `/mb-doctor --strict` for the indexed queue,
-then execute `TASK-001-T3-FT-000-W0` and `TASK-002-T3-FT-000-W1` through the
-`/autonomous`-owned Foundation phase. Do not run `/autopilot` and do not create
-product task records until the final gate is done.
+The Foundation queue is complete. The explicit owner closed the final gate on
+2026-08-06 using the existing host-only evidence and accepted the omitted fresh
+independent/adversarial checks plus deferred target-device compatibility as
+residual risk. Product task design may proceed through
+`/feature-to-tasks FT-<NNN>`.

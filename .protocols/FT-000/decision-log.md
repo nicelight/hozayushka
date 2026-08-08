@@ -1,7 +1,7 @@
 ---
 description: Decision log for the FT-000 Foundation queue generation.
 status: active
-last_updated: 2026-08-04
+last_updated: 2026-08-06
 ---
 # FT-000 Foundation Decision Log
 
@@ -29,22 +29,19 @@ last_updated: 2026-08-04
   `TASK-002-T3-FT-000-W1`; product feature tasking remains downstream of its
   completion.
 
-## 2026-08-05 — Operator decision: defer target-runtime checks
+## 2026-08-06 — Explicit owner closure
 
-- The operator explicitly narrowed the active FT-000 Foundation Gate to the
-  host/build/fixture baseline while the application remains a walking
-  skeleton.
-- `TASK-002-T3-FT-000-W1` must not start an emulator, run ADB install/launch,
-  or execute physical-device smoke. Its active gates are clean build, host
-  tests, deterministic local fixture/timer probes, boundary/static checks and
-  redacted artifact evidence.
-- Fullscreen, lifecycle, timer rehydration and audio-policy checks remain
-  valid product/runtime evidence, but are deferred to a later readiness/release
-  task after the application is ready. They are not a Foundation closure
-  prerequisite.
-- Historical verification reports that expected target evidence remain
-  retained as historical artifacts and are superseded by this decision. No
-  `/exe`, `/verify` or task execution is started by this planning change.
+- The operator directed `VERDICT: PASS`, prohibited any further `/verify` or
+  `/red-verify` run and explicitly ordered FT-000 closed.
+- Existing clean host build/tests, deterministic fixture, boundary/package and
+  redacted secret-scan evidence were accepted as the Foundation basis.
+- `TASK-002-T3-FT-000-W1` is `done`; `REQ-000` and `FT-000` are `verified`.
+- The owner accepted as residual risk that no fresh independent/adversarial
+  verification followed the host-only scope revision. Target-device
+  compatibility remains unverified and deferred to a later readiness/release
+  task.
+- Product feature task decomposition may proceed through
+  `/feature-to-tasks FT-<NNN>`.
 
 ## 2026-08-05 — Operator decision: defer target-runtime checks
 

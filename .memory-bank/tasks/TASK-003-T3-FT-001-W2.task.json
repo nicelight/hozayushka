@@ -1,0 +1,172 @@
+{
+  "id": "TASK-003-T3-FT-001-W2",
+  "title": "Implement main clock display shell, colon states and city interaction",
+  "status": "done",
+  "wave": "W2",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-003",
+    "REQ-004",
+    "REQ-022",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-002-T3-FT-000-W1"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/app/MainActivity.kt",
+    "app/src/main/kotlin/com/hozayushka/app/app/FoundationRuntime.kt",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt",
+    "app/src/main/kotlin/com/hozayushka/app/settings/",
+    "app/src/main/res/values/",
+    "app/src/test/kotlin/com/hozayushka/app/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host display behavior tests",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record the honest pre-implementation Foundation baseline for every owned AC; preserve any already-green window or time behavior and change only missing product behavior.",
+    "Run deterministic host checks for device-time HH:mm/date formatting, exact four-card lower-left composition, online/offline/countdown colon states and city short/long-hold routing.",
+    "Inspect Main Display ownership and every crossed edge against the linked Boundary Map and Capability Interfaces; no direct neighbor storage or private-adapter access is permitted.",
+    "Use a known disposable host state with no selected city; prove the empty-city short-tap/hold request reaches the minimal Settings destination and Back returns to Main Display. Exercise selected-city short-tap as an isolated Settings-owner projection/host route without requiring the later catalog or settings-content features. Target interaction/fullscreen/readability evidence is deferred and non-blocking when no authorized target is available; record DEFERRED plus residual risk, and never claim runtime PASS without a target.",
+    "Do not claim FT-002 weather data/content/freshness/palette, forecast sessions, preset configuration, countdown lifecycle, Settings catalog, API-key validation or personalization; the four-card Main Display shell and the minimal accepted Settings destination/return seam are the only cross-feature boundaries in this task.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-07",
+      "gate_summary": {
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED with residual risk; no runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-VERIFY-final-report-docs-02.md",
+        ".tasks/TASK-003-T3-FT-001-W2/TASK-003-T3-FT-001-W2-S-RED-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-003-T3-FT-001-W2/verification.md",
+        ".protocols/TASK-003-T3-FT-001-W2/red-verification.md",
+        ".tasks/TASK-003-T3-FT-001-W2/gate-results.md"
+      ],
+      "accepted_residual_risk": [
+        "Target-observed fullscreen, readability, keep-screen-on and interaction evidence remains deferred until a later readiness/release route."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-001] Expected RED: any baseline condition missing from landscape-only fullscreen, hidden system panels or keep-screen-on is recorded as a claim-specific RED; a complete pre-implementation GREEN is preserved without an unnecessary change. GREEN: host/static checks pass for the implementable conditions. Compare each condition pass/fail; artifact is mandatory host/static evidence plus a DEFERRED target observation and residual risk when no target is available; never claim runtime PASS without a target.",
+    "[FT-001-AC-002; REQ-002] Expected RED: the current Foundation surface does not expose the accepted four-card composition, so a count/placement assertion is expected to fail until the Main Display shell is implemented. GREEN: dominant HH:mm, city/date on the left, exactly four weather cards in the stable lower-left area and three preset positions on the right, with and without a weather projection; FT-002 data/content is not part of this claim. Compare count and zones pass/fail; artifact is the mandatory host layout assertion, with target-display evidence deferred/non-blocking and residual risk recorded when unavailable.",
+    "[FT-001-AC-003; REQ-022] Expected RED: the Foundation output supplies HH:mm but no accepted date projection, so the device-time date assertion is expected to fail. GREEN: device timezone drives output containing only dd plus the Russian genitive month, with no year or weekday. Compare deterministic expected versus observed text; artifact is the unit-test output.",
+    "[FT-001-AC-004; REQ-003] Expected RED: the Foundation surface has no accepted online/offline/countdown colon-state projection, so the state-transition assertion is expected to fail. GREEN: online rise/fade-to-2%, offline fixed 38% and active-countdown 382/618 ms match the accepted values. Compare expected timing/brightness to observed values; artifact is the deterministic state-test output.",
+    "[FT-001-AC-005; REQ-004] Expected RED: the Foundation surface has no executable city gesture and Settings destination path, so empty-city/hold routing is expected to fail. GREEN: empty-city short tap and any-city hold reach the minimal accepted Settings destination, selected-city short tap is a no-op, and Back returns to Main Display. Compare each gesture and destination result pass/fail; artifact is mandatory host routing output; target interaction evidence is deferred/non-blocking when unavailable.",
+    "[REQ-023; FT-001-AC-001; FT-001-AC-002] Expected RED: the Foundation surface is not yet the accepted 1280x720 Main Display composition, so any observed readability or lightweight-static-UI violation is recorded as claim-specific RED; do not fabricate a runtime result, and record pre-implementation GREEN where the baseline already satisfies a condition. GREEN: host/static conditions pass; target readability/fullscreen observation is recorded as DEFERRED with residual risk when no target is available. Compare host/static evidence with the accepted conditions; never claim runtime PASS without a target."
+  ],
+  "purpose": "Turn the Foundation walking shell into the accepted FT-001 Main Display outcome while keeping the exact four-card shell, device/runtime policy and cross-slice ownership behind the registered boundaries.",
+  "success_outcome": "A clean build launches a stable landscape fullscreen display whose dominant device-time HH:mm, Russian date, exactly four lower-left weather-card positions, accepted colon states and city gestures satisfy all FT-001 acceptance criteria without direct neighbor-state access or downstream feature scope.",
+  "anti_goals": [
+    "Do not implement weather provider mapping, freshness/history, weather-card data/content or palette from FT-002; FT-001 owns only the four-card shell count and placement.",
+    "Do not implement hourly/long-term forecast sessions from FT-003/FT-004.",
+    "Do not implement preset configuration, countdown lifecycle or overdue alert from FT-005/FT-006/FT-007.",
+    "Do not implement offline location catalog, API-key settings, validation or personalization preview from FT-008/FT-009; only the minimal accepted Settings destination/return seam needed by FT-001-AC-005 is in scope.",
+    "Do not add a dependency, backend/cloud/accounts, Google Services, reboot recovery, event/message infrastructure, heavy realtime visual effects or a new product control."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "FT-002 through FT-009 product behavior and state ownership, except the minimal Settings destination/return seam explicitly required by FT-001-AC-005 behind the existing accepted edge",
+      "direct reads/writes of Weather Context, Timer & Alert or Settings & Location private storage",
+      "business orchestration in MainActivity, generic utilities or the composition root",
+      "backend, cloud sync, accounts, Google Services and reboot recovery",
+      "real API keys or secret-bearing source, logs, screenshots or evidence"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before adding a dependency or changing the accepted UI toolkit, package/public contract, architecture, source-of-truth or security posture.",
+      "Stop and route to /spec-design if the display requires a new module, graph edge, ownership rule or composition-root business behavior.",
+      "Stop and route to /feature-to-tasks FT-001 if accepted product behavior, AC ownership, task tier, dependency or material scope must change."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-001",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-003",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-004",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-005",
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/architecture/system-architecture.md#AD-001",
+    ".memory-bank/architecture/system-architecture.md#AD-003",
+    ".memory-bank/architecture/system-architecture.md#AD-005",
+    ".memory-bank/constitution.md#iii-bounded-agent-autonomy-and-human-checkpoints",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#runtime-scope-hints",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-forecast-sessions",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-settings-and-location",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display owns composition and display gestures; it consumes neighbor projections and never writes neighbor state.",
+    "Main Display owns city gesture intent; Settings & Location owns the minimal Settings destination and return surface behind the existing Main Display → Settings & Location contract, while MainActivity/composition-root code only wires the route.",
+    "Use Android device time/timezone for the main clock/date; selected-city/API timezone must not shift them.",
+    "Network absence or missing weather data leaves the clock and stable shell available and only selects the accepted colon/weather state.",
+    "The Main Display task must preserve the accepted lightweight static UI and clock dominance on the target 1280x720 display.",
+    "Exact UI toolkit, class split and package/file identity remain execution discretion unless they change an accepted boundary or require a new dependency."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary"
+  ],
+  "verification_targets": [
+    "FT-001-AC-001: landscape fullscreen, hidden system panels and keep-screen-on while the app is open.",
+    "FT-001-AC-002 / REQ-002: dominant HH:mm, stable city/date, exactly four weather cards in the lower-left area and three preset positions under present and absent weather projection; FT-002 retains data/content ownership.",
+    "FT-001-AC-003 / REQ-022: deterministic device-time HH:mm and dd plus Russian genitive month without year/weekday.",
+    "FT-001-AC-004 / REQ-003: deterministic online/offline/countdown colon timing and brightness state projection.",
+    "FT-001-AC-005 / REQ-004: empty-city and selected-city short-tap rules plus hold-to-Settings routing through the minimal accepted Settings destination and return path.",
+    "REQ-023 / PRD-NFR-001 through PRD-NFR-006: accepted target-device readability, Russian UI and static/lightweight visual behavior; host/static evidence is mandatory, while the manual target route is deferred/non-blocking and must be recorded as DEFERRED when unavailable.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence"
+  ]
+}

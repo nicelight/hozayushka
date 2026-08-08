@@ -28,6 +28,7 @@ source_of_truth:
 | contract | [.memory-bank/contracts/boundary-map.md](contracts/boundary-map.md) | active | Canonical module inventory and directed dependency graph. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/capability-interfaces.md](contracts/capability-interfaces.md) | active | Public in-process capability contracts and ownership rules. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/weather-provider.md](contracts/weather-provider.md) | active | Yandex provider boundary, refresh/failure semantics and normalized-data obligations. | /spec-design or /feature-to-tasks |
+| contract | [.memory-bank/contracts/weather-card-presentation.md](contracts/weather-card-presentation.md) | active | FT-002 display-ready cards, temperature palette, pseudo-glass and pressure-trend presentation. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/platform-runtime.md](contracts/platform-runtime.md) | active | Android lifecycle, time, display and audio boundary. | /spec-design or /feature-to-tasks |
 | contract | [.memory-bank/contracts/local-secret-handling.md](contracts/local-secret-handling.md) | active | Local API-key handling, redaction and evidence boundary. | /spec-design or /feature-to-tasks |
 | domain | [.memory-bank/domains/local-data.md](domains/local-data.md) | active | Local domain subjects, write ownership, persistence and retention invariants. | /spec-design or /feature-to-tasks |

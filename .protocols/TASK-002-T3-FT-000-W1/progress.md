@@ -12,9 +12,9 @@ receipts and target blockers below are historical and superseded.
 
 ## Current status
 
-- state: verifying
-- last update: 2026-08-05 18:48 +0500
-- lifecycle: `in_progress`; prospective checks may now run
+- state: closed by explicit owner decision
+- last update: 2026-08-06 00:32 +0500
+- lifecycle: `done`; no further verification run was performed
 
 ## What was done
 
@@ -65,11 +65,12 @@ executor-owned supporting evidence for independent T3 verification.
 
 ## Open issues / risks
 
-- Target-device install/start/smoke/compatibility proof is unavailable because
-  `adb devices -l` returned an empty device list. Do not infer target PASS from
-  host-side build/test success.
+- Accepted residual risk: no fresh independent `/verify` or adversarial
+  `/red-verify` run followed the host-only scope revision.
+- Target-device install/start/smoke/compatibility remains unverified and is
+  deferred to a later readiness/release task. No target PASS is claimed.
 
 ## Next step (single concrete action)
 
-- Hand off to `/verify TASK-002-T3-FT-000-W1`; independent verification must
-  repeat or resolve the target-device gate before any T3 closure route.
+- Reconcile the closed Foundation boundary through `/mb-sync`, then proceed to
+  product feature task decomposition.

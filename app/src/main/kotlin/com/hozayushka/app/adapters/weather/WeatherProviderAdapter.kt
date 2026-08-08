@@ -1,5 +1,8 @@
 package com.hozayushka.app.adapters.weather
 
+import java.time.LocalDate
+import java.time.LocalTime
+
 /**
  * Boundary DTOs deliberately contain no application-owned weather model.
  * Weather Context performs the owner-side normalization.
@@ -9,11 +12,49 @@ data class RedactedProviderPayload(
     val condition: String,
 )
 
+data class ProviderCurrentWeather(
+    val temperatureCelsius: Int,
+    val pressureMmHg: Double,
+    val condition: String?,
+)
+
+data class ProviderDailyWeather(
+    val date: LocalDate,
+    val dayTemperatureCelsius: Int?,
+    val nightTemperatureCelsius: Int?,
+    val dayCondition: String?,
+    val nightCondition: String?,
+    val moonPhase: String? = null,
+)
+
+data class ProviderHourlyWeather(
+    val date: LocalDate,
+    val time: LocalTime,
+    val temperatureCelsius: Int?,
+    val condition: String?,
+)
+
+/** Raw provider boundary data. Weather Context owns normalization and persistence. */
+data class ProviderWeatherData(
+    val apiTimeZone: String,
+    val current: ProviderCurrentWeather,
+    val daily: List<ProviderDailyWeather>,
+    val hourly: List<ProviderHourlyWeather> = emptyList(),
+)
+
 data class WeatherProviderResult(
     val payload: RedactedProviderPayload,
     val credentialWasReceived: Boolean,
     val redactedCredential: String,
+    val weatherData: ProviderWeatherData? = null,
+    val failure: WeatherProviderFailure? = null,
 )
+
+enum class WeatherProviderFailure {
+    INVALID_CREDENTIAL,
+    NETWORK,
+    UNKNOWN_CITY,
+}
 
 class ProviderCredential private constructor(
     private val value: String,
@@ -33,19 +74,26 @@ class ProviderCredential private constructor(
          */
         fun generatedForProbe(): ProviderCredential =
             ProviderCredential(System.nanoTime().toString(16))
+
+        fun fromUserInput(value: String): ProviderCredential = ProviderCredential(value)
     }
 }
 
 class WeatherProviderRequest private constructor(
     val credential: ProviderCredential,
+    val latitude: Double,
+    val longitude: Double,
 ) {
     fun hasCredential(): Boolean = true
 
     fun redactedCredential(): String = credential.redacted()
 
     companion object {
-        fun fromSyntheticProbe(): WeatherProviderRequest =
-            WeatherProviderRequest(ProviderCredential.generatedForProbe())
+        fun fromSyntheticProbe(latitude: Double = 0.0, longitude: Double = 0.0): WeatherProviderRequest =
+            WeatherProviderRequest(ProviderCredential.generatedForProbe(), latitude, longitude)
+
+        fun fromUserInput(apiKey: String, latitude: Double, longitude: Double): WeatherProviderRequest =
+            WeatherProviderRequest(ProviderCredential.fromUserInput(apiKey), latitude, longitude)
     }
 }
 
@@ -62,12 +110,14 @@ class RedactedWeatherFixtureAdapter(
         temperatureCelsius = 21,
         condition = "cloud",
     ),
+    private val weatherData: ProviderWeatherData? = null,
 ) : WeatherProvider {
     override fun fetch(request: WeatherProviderRequest): WeatherProviderResult =
         WeatherProviderResult(
             payload = payload,
             credentialWasReceived = request.hasCredential(),
             redactedCredential = request.redactedCredential(),
+            weatherData = weatherData,
         )
 }
 

@@ -2,8 +2,8 @@
 description: L2 epic for the always-visible kitchen clock and main display interaction surface.
 status: draft
 id: EP-001
-lifecycle: planned
-last_updated: 2026-08-03
+lifecycle: implemented
+last_updated: 2026-08-08
 ---
 # EP-001 — Glanceable main display
 
@@ -44,5 +44,10 @@ last_updated: 2026-08-03
 
 ## Design status
 
-Epic remains `draft`; its global architecture and platform boundary are now
-registered, while display feature design follows the Foundation Gate.
+Epic remains `draft`; its global architecture and platform boundary are
+registered, and its sole FT-001 implementation boundary is reconciled through
+W2. The W11 FT-001 follow-up is indexed as `failed` after final functional
+`PASS` plus semantic `semantic-fail`; its non-city active-countdown
+cancellation defect is linked from FT-001. Target-only runtime observations
+remain deferred under the accepted policy. EP-001 lifecycle remains
+`implemented`; no epic closure or promotion is inferred by this boundary sync.

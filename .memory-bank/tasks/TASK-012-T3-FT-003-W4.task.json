@@ -1,0 +1,148 @@
+{
+  "id": "TASK-012-T3-FT-003-W4",
+  "title": "Repair full-day hourly provider normalization for FT-003",
+  "status": "done",
+  "wave": "W4",
+  "feature": "FT-003",
+  "reqs": [
+    "REQ-009",
+    "REQ-022",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-004-T3-FT-002-W3"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host hourly provider-shape tests",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Record honest pre-implementation RED for the supported full-day provider-shape claim before changing production behavior; preserve any already-green condition without an unnecessary change.",
+    "Use a deterministic redacted fixture with 48 hourly records spanning two selected-city-local days and prove selection of 06:00, 09:00, 12:00, 15:00, 18:00, 21:00, 00:00 and 03:00 at the accepted city-local boundary, in order.",
+    "Prove all-or-nothing required-field validation for the selected slots: a missing required time, temperature or illustration input makes the normalized hourly result unavailable and never yields a partial or invented slot.",
+    "Inspect Weather Context → Yandex Weather Adapter and Forecast Sessions → Weather Context against the registered Boundary Map and Capability Interfaces; no raw-provider or private-storage bypass is permitted and the existing eight-slot public projection remains unchanged.",
+    "Run the required host build/unit checks, then obtain fresh /verify and T3 /red-verify evidence for this follow-up. Use only synthetic/redacted fixtures; target-device evidence is deferred and non-blocking for this host-provable provider-shape result, and no runtime PASS may be claimed without a target.",
+    "Scheduler closure: /verify VERDICT: PASS and /red-verify SEMANTIC_VERDICT: semantic-pass; host evidence passes, target evidence remains DEFERRED/non-blocking with no runtime PASS claim. Evidence: .tasks/TASK-012-T3-FT-003-W4/TASK-012-T3-FT-003-W4-S-VERIFY-final-report-docs-01.md and .tasks/TASK-012-T3-FT-003-W4/TASK-012-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-003/plan.md",
+    ".protocols/FT-003/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-003.md",
+    ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json",
+    ".memory-bank/tasks/TASK-005-T3-FT-003-W4.task.json",
+    ".memory-bank/bugs/TASK-005-hourly-provider-shape.md",
+    ".protocols/TASK-005-T3-FT-003-W4/red-verification.md",
+    ".tasks/TASK-005-T3-FT-003-W4/TASK-005-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md"
+  ],
+  "evidence_required": [
+    "[FT-003-AC-002; REQ-009] RED: the supported 48-record two-day provider shape is rejected and produces no hourly projection; GREEN: exactly the eight accepted slots are normalized in order, with 00:00 and 03:00 on the following selected-city-local day. Compare count, slot identity, order and day boundary; artifact is the deterministic redacted provider-shape projection result.",
+    "[FT-003-AC-005; REQ-009; REQ-026] RED: the current shape path rejects the valid full-day response, while the required-field failure path must remain unavailable; GREEN: a missing required field in any selected slot yields no normalized projection, no partial/invented slot and preserves the accepted fallback path. Compare valid-shape acceptance and selected-slot rejection separately; artifact is the redacted completeness result.",
+    "[FT-003-AC-003; REQ-022] RED: the current path rejects the 48-record timezone-crossing fixture, so it cannot establish selected-city API timezone labels or the following-day boundary; GREEN: the repaired path labels the selected slots with the selected-city API timezone, places 00:00 and 03:00 on the following city-local day, and remains independent of device timezone. Compare the same deterministic fixture's labels and day boundary; artifact is the redacted host timezone result."
+  ],
+  "purpose": "Correct the evidenced Weather Context normalization defect so the accepted FT-003 eight-slot projection is selected from the supported full-day provider response without weakening required-field completeness or changing the existing public forecast contract.",
+  "success_outcome": "A clean build and fresh deterministic evidence show that a supported 48-record two-city-local-day provider response produces the complete ordered eight-slot projection at the selected-city boundary, while any missing required field in a selected slot remains unavailable with no partial or fabricated result; TASK-005 historical failure and lifecycle state remain unchanged.",
+  "anti_goals": [
+    "Do not modify, reopen, close or replace TASK-005-T3-FT-003-W4; preserve its failed status and historical verification evidence.",
+    "Do not change the accepted FT-003 slot sequence, all-or-nothing rule, public capability contracts, module graph, lifecycle/status model, scheduler checkpoint or terminal state.",
+    "Do not implement or re-plan Forecast Sessions gestures, Main Display rendering, FT-004 or any other feature behavior.",
+    "Do not add a provider, dependency, schema field, event boundary, backend, live credential or secret-bearing fixture/evidence."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "direct reads or writes of Weather Context private storage from consumers",
+      "direct Forecast Sessions or Main Display access to raw provider fields",
+      "changes to .memory-bank/tasks/TASK-005-T3-FT-003-W4.task.json",
+      "changes to .protocols/TASK-005-T3-FT-003-W4/",
+      "changes to .protocols/AUTONOMOUS-RUN/status.md",
+      "changes to lifecycle/status values, scheduler checkpoints or terminal-state records",
+      "real API keys or secret-bearing source, logs, fixtures, screenshots or evidence",
+      "new provider, backend, event/message boundary, permission or unrelated FT-001–FT-009 behavior"
+    ],
+    "stop_conditions": [
+      "Stop and route to /feature-doctor FT-003 or /write-prd if the accepted eight slots, selected-city boundary, completeness rule or fallback target must change.",
+      "Stop and route to /spec-design if the repair requires a new module, graph edge, public contract, owner or composition-root business orchestration.",
+      "Stop and route back to /feature-to-tasks FT-003 with rebuild_required if execution exposes a changed identity, tier, dependency, acceptance or material scope.",
+      "Stop if verification requires a live request, live credential or unredacted artifact."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-002",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-003",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-005",
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/bugs/TASK-005-hourly-provider-shape.md",
+    ".protocols/TASK-005-T3-FT-003-W4/red-verification.md",
+    ".tasks/TASK-005-T3-FT-003-W4/TASK-005-T3-FT-003-W4-S-RED-VERIFY-final-report-docs-01.md",
+    ".memory-bank/tasks/TASK-005-T3-FT-003-W4.task.json"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#ft-003-hourly-mapping",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records",
+    ".memory-bank/domains/local-data.md#validation-and-serialization-boundaries",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Weather Context owns provider normalization, the complete eight-slot read model and its availability/completeness predicate; Forecast Sessions remains the consumer and session owner.",
+    "The existing eight-slot public projection and selected-city API timezone contract remain unchanged; only supported raw provider cardinality handling is repaired.",
+    "All selected required slot fields must be present; missing required data remains unavailable and never becomes a partial or fabricated projection.",
+    "Use synthetic/redacted provider fixtures only and preserve the local API-key and evidence-redaction rules.",
+    "No new module, dependency, graph edge, schema field, persistence owner or lifecycle state is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/weather-provider.md#ft-003-hourly-mapping",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records",
+    ".memory-bank/states/lifecycle-map.md#ft-003-hourly-session-contract"
+  ],
+  "verification_targets": [
+    "FT-003-AC-002 / REQ-009: a 48-record supported full-day response yields exactly the accepted ordered eight-slot projection, with 00:00 and 03:00 on the following selected-city-local day.",
+    "FT-003-AC-005 / REQ-009 / REQ-026: a missing required field in any selected slot yields unavailable hourly data and no partial, fabricated or session-opening projection.",
+    "FT-003-AC-003 / REQ-022 (timezone integration delta only): selected-city API timezone, rather than device timezone, controls hourly labels and the day boundary used for slot selection.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract: provider normalization and Weather Context consumption remain on registered edges with owner-only state access.",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures: deterministic synthetic fixtures prove the valid 48-record shape and selected-slot completeness without credentials.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: device evidence is deferred/non-blocking for this host-provable provider-shape repair and must not be represented as runtime PASS without an actual target."
+  ]
+}
