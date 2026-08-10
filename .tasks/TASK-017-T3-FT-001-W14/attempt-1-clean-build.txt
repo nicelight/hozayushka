@@ -1,0 +1,9 @@
+TASK: TASK-017-T3-FT-001-W14
+ATTEMPT: 1
+CLAIM: Clean Android debug build required by W14.
+COMMAND: ./gradlew clean assembleDebug
+CWD: /home/serg/Projects/Mobile_APPS/hozayushka
+INPUT_STATE_BASIS: HEAD=cea5db2d45c06bb7585d071856d96b77079c8284; workspace retained pre-existing dirty Memory Bank/W12/W13/Main Display files plus current W14 task card/protocol/evidence and W14 code/test changes; no relevant generated input or live credential; clean task rebuild started from Gradle clean.
+EXIT_CODE: 0
+RESULT: BUILD SUCCESSFUL; 34 actionable tasks executed. Existing unrelated MainActivity deprecation warning remained non-fatal. Debug APK checksum: d44418e6f2d970f7f986645bf4d5913fe279ad4420fc3ba36e582dfa902da553.
+COMPLETED_AT: 2026-08-10 01:26 Asia/Dushanbe.

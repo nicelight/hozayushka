@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.hozayushka.app.adapters.platform.PlatformRuntimeAdapter
 import com.hozayushka.app.adapters.weather.RedactedWeatherFixtureAdapter
+import com.hozayushka.app.adapters.weather.YandexWeatherAdapter
 import com.hozayushka.app.display.DisplayCapability
 import com.hozayushka.app.forecast.ForecastSessionCapability
 import com.hozayushka.app.settings.SettingsCapability
@@ -15,6 +16,8 @@ import com.hozayushka.app.timer.TimerCapability
 import com.hozayushka.app.weather.SharedPreferencesWeatherCacheStore
 import com.hozayushka.app.weather.WeatherCapability
 import com.hozayushka.app.weather.WeatherRefreshTrigger
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Composition root: creates owners/adapters and wires lifecycle-facing seams.
@@ -27,16 +30,12 @@ class FoundationRuntime private constructor(
     val forecast: ForecastSessionCapability,
     val timer: TimerCapability,
     val display: DisplayCapability,
+    private val weatherRefreshExecutor: ExecutorService,
 ) {
     private val weatherRefreshHandler = Handler(Looper.getMainLooper())
     private val scheduledWeatherRefresh = object : Runnable {
         override fun run() {
-            weather.refreshIfNeeded(
-                nowMillis = platform.nowMillis(),
-                networkAvailable = platform.isNetworkAvailable(),
-                trigger = WeatherRefreshTrigger.SCHEDULED,
-                requireStoredCredential = true,
-            )
+            enqueueWeatherRefresh(WeatherRefreshTrigger.SCHEDULED)
             weatherRefreshHandler.postDelayed(this, WEATHER_REFRESH_CADENCE_MILLIS)
         }
     }
@@ -45,18 +44,23 @@ class FoundationRuntime private constructor(
         fun create(context: Context): FoundationRuntime {
             val platform = PlatformRuntimeAdapter(context)
             val catalog = BundledLocationCatalog.fromAsset(context)
+            val weatherRefreshExecutor = Executors.newSingleThreadExecutor()
             var weatherCapability: WeatherCapability? = null
             val settings = SettingsCapability(
                 SharedPreferencesSettingsStateStore(
                     context.getSharedPreferences(SETTINGS_STORE, Context.MODE_PRIVATE),
                 ),
                 onValidLocationChanged = {
-                    weatherCapability?.refreshIfNeeded(
-                        nowMillis = platform.nowMillis(),
-                        networkAvailable = platform.isNetworkAvailable(),
-                        trigger = WeatherRefreshTrigger.LOCATION_CHANGE,
-                        requireStoredCredential = true,
-                    )
+                    weatherCapability?.let { capability ->
+                        weatherRefreshExecutor.execute {
+                            capability.refreshIfNeeded(
+                                nowMillis = platform.nowMillis(),
+                                networkAvailable = platform.isNetworkAvailable(),
+                                trigger = WeatherRefreshTrigger.LOCATION_CHANGE,
+                                requireStoredCredential = true,
+                            )
+                        }
+                    }
                 },
                 catalog = catalog,
             )
@@ -66,7 +70,8 @@ class FoundationRuntime private constructor(
                 cacheStore = SharedPreferencesWeatherCacheStore(
                     context.getSharedPreferences(WEATHER_STORE, Context.MODE_PRIVATE),
                 ),
-                provider = RedactedWeatherFixtureAdapter(),
+                provider = YandexWeatherAdapter(),
+                fixtureProvider = RedactedWeatherFixtureAdapter(),
             )
             val weather = requireNotNull(weatherCapability)
             val timer = TimerCapability(
@@ -91,6 +96,7 @@ class FoundationRuntime private constructor(
                     timer = timer,
                     forecast = forecast,
                 ),
+                weatherRefreshExecutor = weatherRefreshExecutor,
             )
         }
 
@@ -107,14 +113,20 @@ class FoundationRuntime private constructor(
 
     fun onActivityResumed() {
         platform.onActivityResumed()
-        weather.refreshIfNeeded(
-            nowMillis = platform.nowMillis(),
-            networkAvailable = platform.isNetworkAvailable(),
-            trigger = WeatherRefreshTrigger.LAUNCH,
-            requireStoredCredential = true,
-        )
+        enqueueWeatherRefresh(WeatherRefreshTrigger.LAUNCH)
         weatherRefreshHandler.removeCallbacks(scheduledWeatherRefresh)
         weatherRefreshHandler.postDelayed(scheduledWeatherRefresh, WEATHER_REFRESH_CADENCE_MILLIS)
         timer.rehydrateAt(platform.nowMillis())
+    }
+
+    private fun enqueueWeatherRefresh(trigger: WeatherRefreshTrigger) {
+        weatherRefreshExecutor.execute {
+            weather.refreshIfNeeded(
+                nowMillis = platform.nowMillis(),
+                networkAvailable = platform.isNetworkAvailable(),
+                trigger = trigger,
+                requireStoredCredential = true,
+            )
+        }
     }
 }

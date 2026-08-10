@@ -1,0 +1,194 @@
+{
+  "id": "TASK-017-T3-FT-001-W14",
+  "title": "Separate scalar clock ticks from Weather Context projection rebuilds",
+  "status": "done",
+  "wave": "W14",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-002",
+    "REQ-007",
+    "REQ-022",
+    "REQ-025"
+  ],
+  "depends_on": [
+    "TASK-016-T3-FT-001-W13"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host weather projection and display regression suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before changing production behavior, obtain fresh task-scoped RED from the current Weather Context path and a focused host probe: each 20 Hz Main Display refresh calls WeatherCapability.projection(now), which reloads and decodes the persisted weather record and rebuilds the display-ready projection. Do not use W13 evidence as this task's RED/GREEN.",
+    "Keep the required W13 scalar clock/date/colon refresh unchanged. Inside the existing Weather Context owner, reuse a capability-owned display-ready WeatherProjection snapshot so repeated scalar reads reuse it without repeated cache decode/projection construction.",
+    "Invalidate only after an accepted successful Weather refresh, when the observed validated location changes through the existing location reader, or at an existing projection boundary required by the current semantics: selected-city date/day-night or pressure-trend boundary and the 24-hour freshness transition. A failed refresh, network signal, timer state, lifecycle callback or unchanged scalar tick must not invalidate the snapshot. Do not add a public method, event, notification, edge, dependency or provider implementation.",
+    "Add focused host coverage in the existing WeatherContextTest.kt convention. From isolated in-memory state, distinguish repeated projection calls from one accepted refresh/location/freshness invalidation, prove failed refresh preserves the last successful projection, and retain the existing four-card, selected-city timezone, day/night, pressure-trend, fresh/stale and empty-contour semantics.",
+    "Run the clean build, complete host unit suite and static diff gate. Fresh output must show the existing Main Display scalar cadence remains available while the unchanged display-ready weather input avoids repeated record decode/build; no Main Display ticker lifecycle, Forecast, Yandex provider, Timer & Alert, audio, gesture or target-device behavior is changed.",
+    "Do not run or require emulator, physical-device, target-ROM, 1280x720 readability, fullscreen, keep-screen-on or audio evidence for this bounded host-verifiable optimization. Stop and route to /spec-design if the smallest implementation needs a new module, graph edge, public capability contract, event/message boundary, dependency or owner; stop and return to /feature-to-tasks FT-001 if the scope changes accepted behavior or cross-feature ownership. Do not modify historical task records, scheduler checkpoint, terminal state, RTM lifecycle or Planning Revision.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-10",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by task scope; no target-device runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-017-T3-FT-001-W14/handoff.md",
+        ".protocols/TASK-017-T3-FT-001-W14/verification.md",
+        ".tasks/TASK-017-T3-FT-001-W14/verifier-owned-evidence.md",
+        ".protocols/TASK-017-T3-FT-001-W14/red-verification.md",
+        ".tasks/TASK-017-T3-FT-001-W14/TASK-017-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "accepted_residual_risk": [
+        "W14 is host/static proof only; Samsung/custom-ROM/1280x720 physical evidence remains DEFERRED and no target-device runtime PASS is claimed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-016-T3-FT-001-W13.task.json",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    "PAPERCUTS/TECHDEBTS/W13-2026-08-10.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002 / REQ-002] Expected RED: repeated scalar-tick reads cause repeated WeatherCacheStore record loads and display-ready projection construction. GREEN: repeated calls for the same valid input reuse the Weather Context snapshot, while one accepted refresh/location/freshness boundary causes one new projection used by the existing four-card renderer. Compare cache-read/decode/build counts and card output; artifact is the focused WeatherContextTest result plus bounded source-diff evidence.",
+    "[REQ-007 / REQ-022 / REQ-025] RED_NOT_APPLICABLE: the accepted weather refresh, selected-city timezone/day-night, pressure-trend, offline-cache and stale-empty behavior is already the required product baseline; a meaningful RED would require intentionally breaking that behavior rather than observing this internal memoization debt. Alternative proof: fresh deterministic host regression output compares successful-refresh, failed-refresh, location-change, selected-city boundary and 24-hour stale transition results, including four empty contours and uninterrupted clock/timer availability; artifact is the task-local WeatherContextTest output.",
+    "[Runtime safety] Expected: host probes use isolated in-memory Weather Context/cache/provider fixtures with a known reset state, safe rerun and cleanup between cases; no live credential, persistent production storage, target device or private neighbor-state write is used. Compare fixture state before and after; artifact is the task-local test result and protocol evidence."
+  ],
+  "purpose": "Remove the confirmed TD-W13-001 upstream projection/decode debt while keeping the W13 scalar refresh cadence and all accepted Weather Context ownership and freshness semantics.",
+  "success_outcome": "The existing 20 Hz scalar clock refresh can read a capability-owned display-ready WeatherProjection snapshot without repeated persisted weather decode/projection construction; accepted successful refresh, validated location change and existing projection/freshness boundaries rebuild only the Weather Context snapshot, while public boundaries and product behavior remain unchanged.",
+  "anti_goals": [
+    "Do not reopen, rewrite, normalize or replace TASK-003-T3-FT-001-W2, TASK-014-T3-FT-001-W11, TASK-015-T3-FT-001-W12 or TASK-016-T3-FT-001-W13, their identity, lifecycle, evidence or protocol history.",
+    "Do not change the W13 Main Display ticker owner, scalar 20 Hz cadence, card renderer, Activity lifecycle gating or public WeatherReadPort/consumer contract.",
+    "Do not change Weather Context provider refresh cadence, normalized data, cache/history storage rules, projection meaning, freshness result, Yandex adapter behavior or API-key handling; only memoize the existing display-ready result inside its owner.",
+    "Do not optimize Forecast Sessions or any forecast ticker, Timer & Alert or audio behavior, gestures, Settings behavior, target-device evidence or product UI.",
+    "Do not add a module, dependency, event/message infrastructure, public contract, graph edge, product behavior or business orchestration outside Weather Context."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt"
+    ],
+    "forbidden_scope": [
+      "TASK-003-T3-FT-001-W2, TASK-014-T3-FT-001-W11, TASK-015-T3-FT-001-W12 and TASK-016-T3-FT-001-W13 identity, lifecycle, evidence and protocol history",
+      ".protocols/AUTONOMOUS-RUN/status.md and all scheduler checkpoint or terminal-state fields",
+      "app/src/main/kotlin/com/hozayushka/app/display/ and Main Display ticker, renderer, clock/date/colon or gesture behavior",
+      "app/src/main/kotlin/com/hozayushka/app/app/ and composition-root or Activity wiring",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/weather/ and Yandex provider transport/mapping",
+      "app/src/main/kotlin/com/hozayushka/app/settings/, app/src/main/kotlin/com/hozayushka/app/timer/ and app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "target-device, target-ROM, emulator, 1280x720, fullscreen, readability, keep-screen-on, audio, live credentials and secret-bearing artifacts",
+      "new module, dependency, public contract, graph edge, event/message boundary or owner"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if projection snapshot invalidation cannot remain inside the existing Weather Context owner and Main Display → Weather Context read boundary without a new module, edge, public contract, dependency or Planning Revision change.",
+      "Stop and return to /feature-to-tasks FT-001 if execution exposes a different accepted behavior, AC ownership, tier, dependency or material cross-feature scope.",
+      "Stop before a GREEN claim if the host probe cannot distinguish repeated scalar reads from accepted refresh/location/freshness invalidation while preserving existing weather semantics; do not substitute target-device evidence.",
+      "Stop before any modification outside the hard write boundary, direct storage bypass, credential use or scheduler/terminal-state write."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/tasks/TASK-016-T3-FT-001-W13.task.json",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    "PAPERCUTS/TECHDEBTS/W13-2026-08-10.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#AD-001",
+    ".memory-bank/architecture/system-architecture.md#AD-002",
+    ".memory-bank/architecture/system-architecture.md#AD-003",
+    ".memory-bank/architecture/system-architecture.md#AD-004",
+    ".memory-bank/architecture/system-architecture.md#AD-005",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/domains/local-data.md#ownership-matrix",
+    ".memory-bank/domains/local-data.md#ft-002-weather-context-records",
+    ".memory-bank/states/lifecycle-map.md#weather-data-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#weather-freshness-contract",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Task-owned implementation delta is only FT-001-AC-002 / REQ-002: preserve the existing four-card display-ready input while decoupling its upstream projection/decode work from the required W13 scalar 20 Hz clock refresh. REQ-007, REQ-022 and REQ-025 are governing weather/time/failure constraints and regression guards, not new feature behavior.",
+    "Weather Context is the primary capability owner for the memoized display-ready projection and remains the sole owner of refresh, normalization, cache/history, freshness and projection semantics. Main Display remains a read-only consumer through the existing Main Display → Weather Context edge.",
+    "Invalidate only after accepted successful refresh, observed validated location change or the existing selected-city/date/day-night/pressure-trend/24-hour freshness boundary needed by the current projection; failed refresh, network status, timer state, lifecycle and unchanged scalar ticks do not invalidate it.",
+    "Keep all mutable persistence behind Weather Context's existing private WeatherCacheStore path; no consumer or test writes production weather storage directly."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#MUST",
+    ".memory-bank/invariants.md#NEVER",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/states/lifecycle-map.md#weather-freshness-contract"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002 task-owned implementation delta: repeated scalar reads reuse one Weather Context display-ready projection snapshot without repeated persisted record decode/projection construction; an accepted weather input change yields one rebuilt projection and the existing exact four-card composition remains.",
+    "REQ-007 / REQ-025 regression target: successful refresh and validated location change invalidate the owner snapshot, failed refresh preserves the last successful result, and crossing the existing 24-hour freshness boundary returns four stale empty contours without affecting the clock/timer path.",
+    "REQ-022 regression target: selected-city timezone, calendar date and day/night projection remain correct across the existing required time boundaries; pressure arrows retain the accepted history thresholds and fallback.",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph and .memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context: the implementation remains inside Weather Context and the existing read edge, with no new module, owner, public contract, event or dependency.",
+    "Focused host quality probe: isolated counting cache/provider fixtures distinguish repeated scalar projection reads from refresh/location/freshness invalidation and leave all disposable state reset after each case."
+  ]
+}

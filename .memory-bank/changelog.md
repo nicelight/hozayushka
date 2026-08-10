@@ -114,3 +114,91 @@ status: active
   `/exe`, `/verify` and `/red-verify` evidence are required; scheduler-owned
   post-sync lint/strict-doctor and the failure-budget terminal halt remain
   outside this sync.
+
+## [2026-08-09] Wave 12 — FT-001 dispatch repair boundary sync
+- Reconciled: `TASK-015-T3-FT-001-W12` was already marked `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent semantic
+  `semantic-pass`; the authoritative task record and W12 evidence remain the
+  source of truth.
+- Updated: FT-001, its implementation plan, EP-001 routing, the FT-001/epic
+  indexes, spec-backbone handoff and the historical W11 defect note with the
+  completed W12 repair and evidence links. FT-006/EP-003 now record the
+  cross-feature regression repair without changing Timer & Alert ownership.
+- Recorded: generic `Tecno_Pova_6_API_35` public evidence covers the required
+  matrix and cleanup; Samsung GT-I9300I/custom-ROM/1280x720 physical evidence
+  remains `DEFERRED` and no target runtime `PASS` is claimed.
+- Preserved: FT-001/FT-006 lifecycles, direct RTM values (`REQ-004` remains
+  `implemented`; `REQ-013` remains the existing FT-006 contract), task index,
+  `spec-index.md`, canonical SDD/boundary contracts, TASK-003/TASK-014 history,
+  production code, task lifecycle/status source, scheduler checkpoint,
+  terminal state, retry counters, promotion and dependent-state decisions.
+- Deferred: scheduler-owned post-sync lint/strict-doctor, promotion and
+  dependent-state reconciliation remain outside this sync.
+
+## [2026-08-10] Wave 13 — FT-001 ticker debt boundary sync
+- Reconciled: the authoritative [TASK-016 task card](tasks/TASK-016-T3-FT-001-W13.task.json)
+  is already `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+  and independent durable semantic `semantic-pass`.
+- Linked: [executor handoff](../.protocols/TASK-016-T3-FT-001-W13/handoff.md),
+  [functional verification](../.protocols/TASK-016-T3-FT-001-W13/verification.md),
+  [verifier-owned evidence](../.tasks/TASK-016-T3-FT-001-W13/verifier-owned-evidence.md),
+  [durable semantic verification](../.protocols/TASK-016-T3-FT-001-W13/red-verification.md)
+  and [semantic report](../.tasks/TASK-016-T3-FT-001-W13/TASK-016-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md)
+  from the FT-001 feature and implementation-plan evidence surfaces.
+- Updated: FT-001/EP-001 lifecycle/spec evidence and feature/epic navigation;
+  direct RTM values `REQ-002`, `REQ-003` and `REQ-022` remain `implemented`,
+  and `spec-index.md` remains a pure registry.
+- Recorded: W13 is host/static proof only. Samsung/custom-ROM/1280x720
+  physical evidence remains `DEFERRED`, with no target-device runtime `PASS`
+  claim; Weather Context, Timer & Alert, Forecast and existing architecture
+  contracts remain unchanged.
+- Preserved: task statuses and task index, scheduler checkpoint, terminal
+  state, retry counters, queue semantics, promotion/dependent-state decisions,
+  production code and tests.
+- Deferred: scheduler-owned post-sync lint/strict-doctor, promotion and
+  dependent-state reconciliation remain outside this sync.
+
+## [2026-08-10] Wave 14 — FT-001 Weather Context projection boundary sync
+- Reconciled: the authoritative [TASK-017 task card](tasks/TASK-017-T3-FT-001-W14.task.json)
+  is already `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+  and independent durable semantic `semantic-pass`; claim-linked closure
+  evidence is preserved in the indexed task record.
+- Linked: W14 executor, functional, verifier-owned and semantic evidence from
+  FT-001, the FT-001 implementation plan, and the affected FT-002 Weather
+  Context feature/epic routing surfaces.
+- Updated: FT-001/FT-002 evidence and navigation, EP-001/EP-002 routing, the
+  FT-001 feature plan, the spec-backbone W14 record and task/feature/epic index
+  surfaces; existing RTM values, feature/epic lifecycles and `spec-index.md`
+  remain unchanged and registry-only.
+- Recorded: W14 is host/static proof only. Samsung/custom-ROM/1280x720 physical
+  evidence remains `DEFERRED`, with no target-device runtime `PASS` claim; no
+  provider, public contract, Forecast, Timer/audio, gesture or target-device
+  behavior changed.
+- Preserved: production/tests, historical task records, task status semantics,
+  dependencies, scheduler checkpoint, terminal state, retry/queue semantics,
+  Planning Revision `1` and promotion/dependent-state decisions.
+- Deferred: caller-owned post-sync lint/doctor, promotion and dependent-state
+  reconciliation remain outside this `/mb-sync` boundary.
+
+## [2026-08-10] Wave 15 — FT-002 production provider boundary sync
+- Reconciled: the authoritative [TASK-018 task card](tasks/TASK-018-T3-FT-002-W15.task.json)
+  is already `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+  and independent semantic `semantic-pass`; the attempt-1 semantic failure is
+  retained as historical evidence and attempt 2 is the current closure basis.
+- Linked: W15 handoff, functional verification, verifier-owned evidence and
+  semantic verification/evidence from the FT-002 feature and implementation
+  plan, with EP-002 and feature/epic indexes routed to the same task record.
+- Updated: W15 production Yandex request/mapping/failure/cache, synthetic
+  redaction, fixture isolation, off-UI wiring and minimum-permission outcome;
+  existing provider/public contracts, ownership graph, FT-002 lifecycle and
+  EP-002 lifecycle remain unchanged. Direct RTM values remain unchanged;
+  `REQ-024` remains `planned` under FT-008, and FT-003/FT-004/FT-008 checks are
+  compatibility regressions only.
+- Recorded: W15 is host/build/static/redacted proof only. Target Android/custom
+  ROM/device readiness and live-provider/network compatibility remain
+  `DEFERRED`; no target-device runtime `PASS` is claimed.
+- Preserved: task identity/status `done`, all historical task records, task
+  index, Planning Revision `1`, scheduler checkpoint, terminal state, retry and
+  queue semantics, production code and tests.
+- Deferred: scheduler-owned post-sync `mb-lint`, strict doctor, promotion and
+  dependent-state reconciliation remain outside this sync.

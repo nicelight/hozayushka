@@ -1,0 +1,10 @@
+TASK: TASK-017-T3-FT-001-W14
+ATTEMPT: 1
+CLAIM: Static diff integrity and hard-boundary/source-shape proof.
+COMMAND: git diff --check (with bounded source-shape inspection over WeatherCapability.kt)
+CWD: /home/serg/Projects/Mobile_APPS/hozayushka
+INPUT_STATE_BASIS: HEAD=cea5db2d45c06bb7585d071856d96b77079c8284; pre-existing dirty Main Display/app/Memory Bank paths were preserved; current W14 task-code diff names exactly WeatherCapability.kt and WeatherContextTest.kt; generated build/test outputs are ignored runtime artifacts.
+EXIT_CODE: 0
+RESULT: No whitespace errors. Source shape has one private `projectionSnapshot`, one `ProjectionSnapshot` type, one `projection()` cache miss load after the reuse check, private `rebuildProjection`, and private pressure-boundary calculation. `WeatherReadPort`/public `projection` signature remains unchanged; no W14-attributable forbidden production diff exists.
+COMPLETED_AT: 2026-08-10 01:28 Asia/Dushanbe.
+EVIDENCE: command output was empty for `git diff --check`; bounded source observations are recorded above and in the final protocol handoff.

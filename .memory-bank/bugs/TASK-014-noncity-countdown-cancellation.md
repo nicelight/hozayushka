@@ -1,7 +1,7 @@
 ---
-description: Scheduler-recorded task-local defect preventing TASK-014 closure.
+description: Historical scheduler-recorded task-local defect preventing TASK-014 closure.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-09
 source_of_truth: .tasks/TASK-014-T3-FT-001-W11/TASK-014-T3-FT-001-W11-S-RED-VERIFY-final-report-docs-01.md
 ---
 # TASK-014 non-city countdown cancellation defect
@@ -26,19 +26,28 @@ Evidence:
 
 ## Required recovery
 
-Route through the normal indexed task-planning/repair owner for FT-001. The
-repair must preserve the accepted city hold and delayed-navigation behavior,
-restore non-city active-countdown double-tap cancellation, and obtain fresh
-`/exe`, `/verify`, and `/red-verify` evidence. Do not claim Samsung,
-custom-ROM, 1280x720 or physical-device PASS from the generic emulator.
+The required recovery route was completed by the normal indexed FT-001 repair
+task [`TASK-015-T3-FT-001-W12`](../tasks/TASK-015-T3-FT-001-W12.task.json),
+which preserved city hold and delayed-navigation behavior, restored non-city
+active-countdown double-tap cancellation and obtained fresh `/exe`, `/verify`
+and `/red-verify` evidence. Do not claim Samsung, custom-ROM, 1280x720 or
+physical-device PASS from the generic emulator.
 
 Scheduler disposition: TASK-014 failed after the configured initial attempt
 plus two retries; no fourth retry is permitted in the current run.
 
 ## Repair planning
 
-The indexed FT-001 planning reconciliation creates
+The indexed FT-001 planning reconciliation created
 [`TASK-015-T3-FT-001-W12`](../tasks/TASK-015-T3-FT-001-W12.task.json) with the
-last successful W10 task as its dependency. W12 owns the public Main Display
-dispatch integration only; it does not reopen W11, alter REQ-013 semantics,
-move Timer & Alert ownership or claim host-only Android touch proof.
+last successful W10 task as its dependency. W12 is now `done` after fresh
+functional `PASS` and semantic `semantic-pass`. It owns the public Main
+Display dispatch integration only; it did not reopen W11, alter REQ-013
+semantics, move Timer & Alert ownership or claim host-only Android touch
+proof. See the [functional verification](../../.protocols/TASK-015-T3-FT-001-W12/verification.md),
+[semantic verification](../../.protocols/TASK-015-T3-FT-001-W12/red-verification.md),
+and [verifier-owned evidence](../../.tasks/TASK-015-T3-FT-001-W12/verifier-owned-evidence-attempt-1.md).
+
+The generic Android public matrix is execution-local; Samsung,
+custom-ROM and 1280x720 physical-device evidence remains `DEFERRED` with no
+target runtime `PASS` claim.

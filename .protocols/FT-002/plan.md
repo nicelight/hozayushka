@@ -1,7 +1,7 @@
 ---
 description: Planning surface for FT-002 main weather cards and local context.
 status: active
-last_updated: 2026-08-06
+last_updated: 2026-08-10
 ---
 # FT-002 — Feature plan
 
@@ -21,21 +21,29 @@ honest first-run/offline/stale/fallback states.
 - FT-002 integration claims: `REQ-022`, `REQ-023`, `REQ-024`, `REQ-025`
 - Global Backbone: `complete`, Planning Revision `1`
 - Foundation Gate: `TASK-002-T3-FT-000-W1`, status `done`
-- Immediate predecessor: `TASK-003-T3-FT-001-W2`, status `planned`, fresh approved task surface
+- Historical predecessor: `TASK-003-T3-FT-001-W2`, status `done`; latest
+  completed baseline for W15: `TASK-017-T3-FT-001-W14`, status `done`
 - Clarified PRD: `clarification_status: complete`
 
 ## Queue
 
 | Order | Task | Tier | Wave | Status | Depends on | Owner |
 |---|---|---|---|---|---|---|
-| 1 | `TASK-004-T3-FT-002-W3` | T3 | W3 | planned | `TASK-003-T3-FT-001-W2` | Weather Context capability |
+| 1 | `TASK-004-T3-FT-002-W3` | T3 | W3 | done | `TASK-003-T3-FT-001-W2` | Weather Context capability |
+| 2 | `TASK-018-T3-FT-002-W15` | T3 | W15 | planned | `TASK-017-T3-FT-001-W14` | Weather Context / Yandex adapter |
 
-One task is sufficient because the feature has one independently observable
-weather-context outcome whose normalized provider data, local state and display
-projection must be verified together. The task is not split by provider,
-storage, module, file or test artifact. Its primary owner is Weather Context;
-Main Display is an existing consumer and does not become a second weather-state
-owner.
+The original W3 task remains the owner of the independently observable
+Weather Context card/cache/history outcome. W15 is one cohesive follow-up
+because production transport, provider-shaped mapping, key redaction, bounded
+failure handling and composition-root selection are one independently
+verifiable provider integration outcome; it is not split by file, layer or test
+artifact. Weather Context remains the primary capability owner, while the
+Yandex adapter is the existing external-boundary change unit.
+
+W15 depends on the latest completed W14 baseline so it builds on the current
+Weather Context projection/decode path. This is a technical prerequisite, not
+a rewrite of W2-W14 history or a new product dependency between consumer
+features.
 
 ## RTM-facing ownership map
 
@@ -53,9 +61,12 @@ their proof and does not replace their ownership.
 ## Canonical SDD coverage
 
 All applicable concerns reuse the existing subject-based canonical specs. The
-local-secret link is included because the provider request and redacted fixture
-path are task-relevant T3 boundaries; API-key input, validation and persistence
-remain FT-008-owned behavior. No new specification or behavior example is
+provider contract already fixes the accepted endpoint/query/header, normalized
+semantic fields, failure atomicity and credential restrictions; Local Secret
+Handling already fixes ephemeral retrieval/redaction; Platform Runtime already
+fixes network-signal ownership and failure compatibility. The W15 manifest
+permission and platform/JDK transport are task-level implementation details,
+not a new public/provider contract. No new specification or behavior example is
 required.
 
 | Concern | Action | Canonical basis | Planning reason |
@@ -72,23 +83,35 @@ required.
 | Local API-key boundary | `reuse` | [Local API-Key Handling Contract](../../.memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract), [Evidence and Verification](../../.memory-bank/contracts/local-secret-handling.md#evidence-and-verification) | Provider requests and fixtures must remain synthetic/redacted; FT-008 owns user-facing key settings. |
 | Verification route | `reuse` | [Deterministic Host-Side Checks](../../.memory-bank/testing/runtime-verification.md#deterministic-host-side-checks), [Redacted Integration Fixtures](../../.memory-bank/testing/runtime-verification.md#redacted-integration-fixtures), [Target-Device Evidence](../../.memory-bank/testing/runtime-verification.md#target-device-evidence), [Platform Runtime Verification Route](../../.memory-bank/contracts/platform-runtime.md#verification-route) | Host checks prove data and signal/failure rules; device evidence is reserved for visual/runtime outcomes not reliably proven on host. |
 
+W15 has no canonical-spec extension or competing identity. Downstream forecast
+read models and the Settings credential/location seam remain compatible through
+the existing normalized Weather Context and Settings boundaries; these are
+dependency-context regression checks only, not W15-owned feature acceptance.
+The exact contract locators for that context are carried in the W15 task's
+`source_artifacts`; completed historical task records and lifecycle/RTM values
+are not rewritten.
+
 FT-002 frontmatter remains `spec_design_status: complete` with the existing
 subject links plus Local Secret Handling. No `needed_before_tasks` Backbone
 row remains and Planning Revision remains positive and unchanged at `1`.
 
 ## Scope boundary
 
-In scope: normalized current/daily provider mapping for the accepted card
+In scope for the historical W3 outcome: normalized current/daily provider mapping for the accepted card
 projection, four-card order and sizing, selected-city timezone/day-night and
 moon fallback, 78-color palette with sign/clamp rules, shared static glass,
 refresh triggers, successful cache/freshness, installation-relative seven-day
 history, pressure arrows, first-run yesterday, stale/offline/failed-refresh and
-unknown-condition states, plus the existing Main Display read boundary.
+unknown-condition states, plus the existing Main Display read boundary. W15
+adds the production Yandex request/response path, current/daily/hourly adapter
+mapping, finite timeout/error mapping, off-main composition wiring, the minimum
+`INTERNET` permission and synthetic/redacted host proof.
 
 Out of scope: FT-001 clock/date/fullscreen/gesture behavior, hourly or long-term
-forecast sessions, preset/countdown/overdue behavior, Settings catalog or API-key
-input/validation, personalization controls, backend/cloud/accounts, Google
-Services, reboot recovery, live credentials and any new dependency or graph edge.
+forecast session UI/state, preset/countdown/overdue behavior, Settings catalog or
+API-key input/validation, personalization controls, backend/cloud/accounts,
+Google Services, reboot recovery, live credentials and any new dependency or
+graph edge.
 
 ## Expected advisory change surface
 
@@ -111,8 +134,9 @@ Services, reboot recovery, live credentials and any new dependency or graph edge
   `app/src/test/resources/fixtures/` — deterministic host probes and redacted
   current/daily, missing-field, stale-cache and provider-failure fixtures.
 
-These paths are advisory and non-exhaustive. No hard `write_boundary` is set;
-the semantic scope, forbidden scope and stop conditions remain binding.
+These paths are advisory and non-exhaustive. W15's deliberate hard write
+boundary is recorded only on its indexed task card; the semantic scope,
+forbidden scope and stop conditions remain binding.
 
 ## Applicable quality gates and UAT
 
@@ -120,6 +144,9 @@ the semantic scope, forbidden scope and stop conditions remain binding.
   after the Weather Context and projection changes.
 - `./gradlew testDebugUnitTest` — proves deterministic mapping, palette,
   freshness, history, trend, fallback and boundary checks.
+- W15 additionally requires fake-transport request-shape, Yandex-shaped
+  current/daily/hourly mapping, timeout/error/cache-preservation,
+  off-main-wiring, fixture-isolation and secret/artifact redaction checks.
 - Target-device evidence from
   [Runtime Verification](../../.memory-bank/testing/runtime-verification.md#target-device-evidence)
   — only for accepted 1280×720 card readability and static pseudo-glass results
@@ -128,11 +155,13 @@ the semantic scope, forbidden scope and stop conditions remain binding.
 
 ## Claim-linked proof plan
 
-The task card owns all five FT-002 acceptance claims plus the provider-secret,
-resilience and unknown-condition integration obligations. Execution must first
-record honest pre-implementation RED for each applicable claim, preserve any
-already-green condition and then prove claim-equivalent GREEN with redacted
-fixtures and isolated local state.
+The W3 task card owns the original FT-002 acceptance claims. W15 owns only the
+production provider integration delta and its T3 harm-driving transport,
+secret, failure and wiring claims. Execution must first record honest
+pre-implementation RED for each applicable W15 claim, preserve any already-green
+condition and then prove claim-equivalent GREEN with redacted fixtures and
+isolated local state; W3/W14 evidence is dependency context, never inherited
+proof.
 
 | Claim | Decisive result | Artifact |
 |---|---|---|
@@ -143,6 +172,16 @@ fixtures and isolated local state.
 | `FT-002-AC-005 / REQ-008` | Installation-relative seven-day history, 3-hour/12-hour thresholds, yesterday maximum-change rule and dated first-run empty contour pass without layout shift. | Isolated history/trend probe output |
 | `FT-002-AC-006 / REQ-026` | Unknown condition and missing optional data use neutral fallbacks without crash or invented text while available temperature/color remains. | Redacted missing-field fixture result |
 | `FT-002-AC-007 / REQ-024` | Synthetic provider credentials are redacted and absent from source, resources, logs, fixtures, screenshots and evidence; FT-008 remains the owner of key input/validation. | Secret/artifact scan result |
+
+### W15 production integration claims
+
+| Claim | Decisive result | Artifact |
+|---|---|---|
+| Accepted Yandex request shape | Fake transport observes the canonical endpoint, coordinates, `hours=true` and header; no key value is retained in the receipt. | Redacted request-shape receipt |
+| Provider-shaped mapping | Redacted Yandex response produces existing current/daily/hourly DTOs and preserves selected-city timezone and required-data completeness. | Deterministic parser/compatibility output |
+| Timeout/error/fallback | Finite transport failures and malformed/incomplete required data do not replace the successful cache and preserve stable clock/timer behavior. | Isolated failure/cache comparison |
+| Local secret path | Synthetic key is retrieved only through Settings/WeatherAccessReader, used only for the request header and absent from artifacts/APK. | Secret/artifact scan receipt |
+| Composition/runtime wiring | Production adapter is selected, redacted fixture remains isolated, `INTERNET` is the only added permission and production refresh is off the UI thread. | Boundary/wiring and host executor receipt |
 
 ## Constraints and invariants
 
@@ -164,6 +203,8 @@ fixtures and isolated local state.
   network/provider weather is unavailable.
 - Never add live API keys, embedded/shared secrets, backend/cloud/accounts,
   Google Services, reboot recovery, realtime blur or a new graph edge.
+- W15 must not add a Gradle dependency or modify the accepted provider/public
+  capability contracts; a need for either is a planning halt.
 
 ## Direct normative inputs
 

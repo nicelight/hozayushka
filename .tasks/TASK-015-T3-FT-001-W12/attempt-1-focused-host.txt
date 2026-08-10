@@ -1,0 +1,8 @@
+TASK: TASK-015-T3-FT-001-W12
+ATTEMPT: 1
+COMMAND: ./gradlew testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest.activeCountdownDispatcherKeepsEveryCapturedSurfaceStreamToTerminalEvent
+RESULT: PASS (exit 0; BUILD SUCCESSFUL)
+
+Focused regression `activeCountdownDispatcherKeepsEveryCapturedSurfaceStreamToTerminalEvent` passed. It covers captured ACTION_DOWN -> terminal delivery for weather single/double, city hold/double, and preset active single streams; it also proves a later move is not dispatched after terminal cleanup. Timer state and single-tap hint assertions remained COUNTDOWN where required.
+
+This is host/unit evidence for the dispatcher boundary. It is not a Samsung target result.

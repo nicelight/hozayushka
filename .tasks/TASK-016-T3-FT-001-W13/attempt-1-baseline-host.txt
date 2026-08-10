@@ -1,0 +1,14 @@
+W13 baseline host evidence — Attempt 1, before production change
+
+Command: `./gradlew testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest`
+cwd: `/home/serg/Projects/Mobile_APPS/hozayushka`
+exit_code: 0
+source basis: current workspace after W12 unstaged dispatcher changes and
+before W13 production changes.
+
+Observed result:
+`BUILD SUCCESSFUL in 9s`; task `:app:testDebugUnitTest` executed; focused
+`DisplayProjectionTest` suite completed successfully.
+
+This is baseline/supporting evidence only, not W13 GREEN and not independent
+verification provenance.

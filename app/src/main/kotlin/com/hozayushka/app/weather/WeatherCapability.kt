@@ -354,8 +354,32 @@ class WeatherCapability(
     private val locationReader: LocationReader,
     private val cacheStore: WeatherCacheStore,
     private val provider: WeatherProvider,
+    private val fixtureProvider: WeatherProvider? = null,
 ) : WeatherReadPort {
     private var lastRefreshFailure: WeatherProviderFailure? = null
+    private var projectionSnapshot: ProjectionSnapshot? = null
+
+    private data class ProjectionSnapshot(
+        val location: LocationContext?,
+        val record: WeatherCacheRecord?,
+        val projection: WeatherProjection,
+        val builtAtMillis: Long,
+        val localDate: LocalDate,
+        val daytime: Boolean,
+        val nextPressureBoundaryMillis: Long?,
+    ) {
+        fun canReuse(currentLocation: LocationContext?, nowMillis: Long): Boolean {
+            if (location != currentLocation || nowMillis < builtAtMillis) return false
+            val zoneId = record?.snapshot?.apiTimeZone?.toZoneIdOrUtc()
+                ?: currentLocation?.apiTimeZone?.toZoneIdOrUtc()
+                ?: ZoneId.of("UTC")
+            val zonedNow = Instant.ofEpochMilli(nowMillis).atZone(zoneId)
+            if (zonedNow.toLocalDate() != localDate || isDaytime(nowMillis, zoneId) != daytime) return false
+            val updatedAt = record?.snapshot?.updatedAtMillis
+            if (updatedAt != null && nowMillis > updatedAt + FRESHNESS_WINDOW_MILLIS) return false
+            return nextPressureBoundaryMillis == null || nowMillis < nextPressureBoundaryMillis
+        }
+    }
 
     fun inlineErrorMessage(): String? = when (lastRefreshFailure) {
         WeatherProviderFailure.INVALID_CREDENTIAL -> "Неверный API-ключ"
@@ -371,71 +395,94 @@ class WeatherCapability(
 
     override fun projection(nowMillis: Long): WeatherProjection {
         val location = locationReader.currentLocation()
+        val cached = projectionSnapshot
+        if (cached != null && cached.canReuse(location, nowMillis)) return cached.projection
         val record = cacheStore.loadRecord()
+        return rebuildProjection(location, record, nowMillis)
+    }
+
+    private fun rebuildProjection(
+        location: LocationContext?,
+        record: WeatherCacheRecord?,
+        nowMillis: Long,
+    ): WeatherProjection {
         val zoneId = record?.snapshot?.apiTimeZone?.toZoneIdOrUtc()
             ?: location?.apiTimeZone?.toZoneIdOrUtc()
             ?: ZoneId.of("UTC")
         val today = Instant.ofEpochMilli(nowMillis).atZone(zoneId).toLocalDate()
+        val daytime = isDaytime(nowMillis, zoneId)
         val dates = WeatherCardSlot.entries.mapIndexed { index, slot ->
             slot to today.plusDays(index - 1L)
         }
-        if (record == null || location == null) {
-            return WeatherProjection(
+        val projection = when {
+            record == null || location == null -> WeatherProjection(
                 cityLabel = location?.cityLabel,
                 apiTimeZone = location?.apiTimeZone,
                 freshness = WeatherFreshness.NO_DATA,
                 cards = dates.map { (slot, date) -> emptyCard(slot, date) },
             )
-        }
-        val age = (nowMillis - record.snapshot.updatedAtMillis).coerceAtLeast(0L)
-        if (age > FRESHNESS_WINDOW_MILLIS) {
-            return WeatherProjection(
+            (nowMillis - record.snapshot.updatedAtMillis).coerceAtLeast(0L) > FRESHNESS_WINDOW_MILLIS -> WeatherProjection(
                 cityLabel = record.snapshot.cityLabel,
                 apiTimeZone = record.snapshot.apiTimeZone,
                 freshness = WeatherFreshness.STALE_EMPTY,
                 cards = dates.map { (slot, date) -> emptyCard(slot, date) },
             )
-        }
-        val byDate = record.daily.associateBy { it.date }
-        return WeatherProjection(
-            cityLabel = record.snapshot.cityLabel,
-            apiTimeZone = record.snapshot.apiTimeZone,
-            freshness = WeatherFreshness.FRESH,
-            cards = dates.map { (slot, date) ->
-                val day = byDate[date]
-                val daytime = isDaytime(nowMillis, zoneId)
-                val temperature = when {
-                    slot == WeatherCardSlot.TODAY && daytime -> record.snapshot.temperatureCelsius
-                    slot == WeatherCardSlot.TODAY -> day?.nightTemperatureCelsius ?: record.snapshot.temperatureCelsius
-                    daytime -> day?.dayTemperatureCelsius
-                    else -> day?.nightTemperatureCelsius
-                }
-                val condition = when {
-                    slot == WeatherCardSlot.TODAY && daytime -> record.snapshot.condition
-                    slot == WeatherCardSlot.TODAY -> day?.nightCondition ?: record.snapshot.condition
-                    daytime -> day?.dayCondition
-                    else -> day?.nightCondition
-                }
-                val moon = if (!daytime && day != null) day.moonPhase ?: "regular" else null
-                val trend = when (slot) {
-                    WeatherCardSlot.TODAY -> pressureTrend(record.history, nowMillis)
-                    WeatherCardSlot.YESTERDAY -> yesterdayTrend(record.history, date, zoneId)
-                    else -> PressureTrend(0, null)
-                }
-                WeatherCardProjection(
-                    slot = slot,
-                    date = date,
-                    temperatureCelsius = temperature,
-                    temperatureText = temperature?.let(::temperatureText),
-                    backgroundHex = temperature?.let(TemperaturePalette::colorFor),
-                    illustration = temperature?.let { conditionIllustration(condition, daytime) },
-                    moonPhase = moon,
-                    pressureArrowCount = trend.count,
-                    pressureDirection = trend.direction,
-                    isTodaySize = slot == WeatherCardSlot.TODAY,
+            else -> {
+                val byDate = record.daily.associateBy { it.date }
+                WeatherProjection(
+                    cityLabel = record.snapshot.cityLabel,
+                    apiTimeZone = record.snapshot.apiTimeZone,
+                    freshness = WeatherFreshness.FRESH,
+                    cards = dates.map { (slot, date) ->
+                        val day = byDate[date]
+                        val temperature = when {
+                            slot == WeatherCardSlot.TODAY && daytime -> record.snapshot.temperatureCelsius
+                            slot == WeatherCardSlot.TODAY -> day?.nightTemperatureCelsius ?: record.snapshot.temperatureCelsius
+                            daytime -> day?.dayTemperatureCelsius
+                            else -> day?.nightTemperatureCelsius
+                        }
+                        val condition = when {
+                            slot == WeatherCardSlot.TODAY && daytime -> record.snapshot.condition
+                            slot == WeatherCardSlot.TODAY -> day?.nightCondition ?: record.snapshot.condition
+                            daytime -> day?.dayCondition
+                            else -> day?.nightCondition
+                        }
+                        val moon = if (!daytime && day != null) day.moonPhase ?: "regular" else null
+                        val trend = when (slot) {
+                            WeatherCardSlot.TODAY -> pressureTrend(record.history, nowMillis)
+                            WeatherCardSlot.YESTERDAY -> yesterdayTrend(record.history, date, zoneId)
+                            else -> PressureTrend(0, null)
+                        }
+                        WeatherCardProjection(
+                            slot = slot,
+                            date = date,
+                            temperatureCelsius = temperature,
+                            temperatureText = temperature?.let(::temperatureText),
+                            backgroundHex = temperature?.let(TemperaturePalette::colorFor),
+                            illustration = temperature?.let { conditionIllustration(condition, daytime) },
+                            moonPhase = moon,
+                            pressureArrowCount = trend.count,
+                            pressureDirection = trend.direction,
+                            isTodaySize = slot == WeatherCardSlot.TODAY,
+                        )
+                    },
                 )
+            }
+        }
+        projectionSnapshot = ProjectionSnapshot(
+            location = location,
+            record = record,
+            projection = projection,
+            builtAtMillis = nowMillis,
+            localDate = today,
+            daytime = daytime,
+            nextPressureBoundaryMillis = if (projection.freshness == WeatherFreshness.FRESH) {
+                nextPressureBoundaryMillis(record?.history.orEmpty(), nowMillis)
+            } else {
+                null
             },
         )
+        return projection
     }
 
     override fun hourlyProjection(nowMillis: Long): HourlyForecastProjection? {
@@ -495,9 +542,15 @@ class WeatherCapability(
     fun refresh(
         request: WeatherProviderRequest,
         nowMillis: Long,
+    ): WeatherRefreshResult? = refreshWithProvider(provider, request, nowMillis)
+
+    private fun refreshWithProvider(
+        sourceProvider: WeatherProvider,
+        request: WeatherProviderRequest,
+        nowMillis: Long,
     ): WeatherRefreshResult? {
         val location = locationReader.currentLocation() ?: return null
-        val result = provider.fetch(request)
+        val result = sourceProvider.fetch(request)
         if (result.failure != null) {
             lastRefreshFailure = result.failure
             return null
@@ -512,18 +565,23 @@ class WeatherCapability(
             ),
             daily = emptyList(),
         )
+        val previous = cacheStore.loadRecord()
         if (structuredData != null) {
             val expectedCityDate = Instant.ofEpochMilli(nowMillis)
                 .atZone(data.apiTimeZone.toZoneIdOrUtc())
                 .toLocalDate()
-            if (!data.current.pressureMmHg.isFinite() || data.daily.none { it.date == expectedCityDate } ||
+            if (!data.current.pressureMmHg.isFinite() || data.daily.none {
+                    it.date == expectedCityDate &&
+                        it.dayTemperatureCelsius != null &&
+                        it.nightTemperatureCelsius != null
+                } ||
                 (data.daily.size >= LONG_TERM_DAYS.toInt() && !hasCompleteDaily(data.daily, expectedCityDate)) ||
-                (data.hourly.isNotEmpty() && !hasCompleteHourly(data.hourly, expectedCityDate))) {
+                (data.hourly.isNotEmpty() && !hasCompleteHourly(data.hourly, expectedCityDate)) ||
+                (data.hourly.isEmpty() && previous?.hourly?.isNotEmpty() == true)) {
                 return null
             }
         }
         val normalized = normalize(data, location, nowMillis)
-        val previous = cacheStore.loadRecord()
         val history = (previous?.history.orEmpty() + PressureHistoryEntry(nowMillis, data.current.pressureMmHg))
             .filter { it.recordedAtMillis >= nowMillis - HISTORY_WINDOW_MILLIS }
             .distinctBy { it.recordedAtMillis }
@@ -542,11 +600,12 @@ class WeatherCapability(
         )
         cacheStore.saveRecord(record)
         lastRefreshFailure = null
+        val projection = rebuildProjection(location, record, nowMillis)
         return WeatherRefreshResult(
             snapshot = record.snapshot,
             credentialWasReceived = result.credentialWasReceived,
             redactedCredential = result.redactedCredential,
-            projection = projection(nowMillis),
+            projection = projection,
         )
     }
 
@@ -587,15 +646,17 @@ class WeatherCapability(
     /** Existing Foundation probe route; request construction remains inside Weather Context. */
     fun refreshFoundationFixture(nowMillis: Long = System.currentTimeMillis()): WeatherRefreshResult? {
         val location = locationReader.currentLocation() ?: return null
-        return refresh(
-            WeatherProviderRequest.fromSyntheticProbe(location.latitude, location.longitude),
-            nowMillis,
+        return refreshWithProvider(
+            sourceProvider = fixtureProvider ?: provider,
+            request = WeatherProviderRequest.fromSyntheticProbe(location.latitude, location.longitude),
+            nowMillis = nowMillis,
         )
     }
 
     fun resetFoundationState() {
         cacheStore.reset()
         lastRefreshFailure = null
+        projectionSnapshot = null
     }
 
     private fun storedRequest(location: LocationContext): WeatherProviderRequest? {
@@ -704,6 +765,19 @@ private data class PressureTrend(
     val count: Int,
     val direction: PressureDirection?,
 )
+
+private fun nextPressureBoundaryMillis(
+    history: List<PressureHistoryEntry>,
+    nowMillis: Long,
+): Long? = history.asSequence()
+    .flatMap { entry ->
+        sequenceOf(
+            entry.recordedAtMillis + 3L * 60L * 60L * 1_000L,
+            entry.recordedAtMillis + 12L * 60L * 60L * 1_000L,
+        )
+    }
+    .filter { it > nowMillis }
+    .minOrNull()
 
 private fun pressureTrend(history: List<PressureHistoryEntry>, nowMillis: Long): PressureTrend {
     val current = history.maxByOrNull { it.recordedAtMillis } ?: return PressureTrend(0, null)

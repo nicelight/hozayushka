@@ -15,7 +15,7 @@ spec_design_links:
   - .memory-bank/domains/local-data.md
   - .memory-bank/states/lifecycle-map.md
   - .memory-bank/testing/runtime-verification.md
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # FT-002 — Main weather cards and local context
 
@@ -151,6 +151,63 @@ records no attached target and the resulting deferred scope.
 Attempt 1 remains supporting-only. Target card readability, static pseudo-glass
 and Android runtime/lifecycle observation remain `DEFERRED` and non-blocking
 with residual risk under the accepted policy; no runtime `PASS` is claimed.
+
+## W14 Weather Context projection/decode follow-up
+
+The indexed [`TASK-017-T3-FT-001-W14`](../tasks/TASK-017-T3-FT-001-W14.task.json)
+is `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and
+independent durable semantic `semantic-pass`. W14 proves the bounded upstream
+Weather Context optimization from `FT-001-AC-002 / REQ-002`: unchanged scalar
+reads reuse one capability-owned display-ready projection, while accepted
+successful refresh, validated location and existing date/day-night,
+pressure-trend and 24-hour freshness boundaries rebuild it. Failed refresh
+preserves the last successful snapshot; the four-card, timezone, day/night,
+pressure, fresh/stale and empty-contour semantics remain unchanged.
+
+See the [executor handoff](../../.protocols/TASK-017-T3-FT-001-W14/handoff.md),
+[functional verification](../../.protocols/TASK-017-T3-FT-001-W14/verification.md),
+[verifier-owned functional evidence](../../.tasks/TASK-017-T3-FT-001-W14/verifier-owned-evidence.md),
+[durable semantic verification](../../.protocols/TASK-017-T3-FT-001-W14/red-verification.md)
+and [semantic report](../../.tasks/TASK-017-T3-FT-001-W14/TASK-017-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md).
+
+Weather Context remains the owner of cache/history, refresh, freshness and
+projection semantics; this cross-feature W14 evidence does not add an FT-002
+acceptance criterion or change FT-002's implemented lifecycle/direct RTM
+values. W14 is host/static proof only. Existing Samsung/custom-ROM/1280x720
+physical target evidence remains `DEFERRED` and non-blocking, with no runtime
+`PASS` claim. No provider, public contract, new edge, dependency, forecast,
+timer/audio or target-device behavior changed.
+
+## W15 Production Yandex adapter boundary
+
+The indexed [`TASK-018-T3-FT-002-W15`](../tasks/TASK-018-T3-FT-002-W15.task.json)
+is `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and
+independent semantic `semantic-pass`. It replaces the composition root's
+production fixture-only provider with an actual Yandex REST adapter behind the
+existing `WeatherProvider` boundary, using the accepted endpoint/query/header,
+local Settings key retrieval/redaction, bounded transport failure mapping, the
+minimum `INTERNET` permission, off-UI refresh wiring and deterministic
+host/redacted tests. The existing redacted fixture path remains an isolated
+test/probe route and never performs live I/O.
+
+See the [task handoff](../../.protocols/TASK-018-T3-FT-002-W15/handoff.md),
+[functional verification](../../.protocols/TASK-018-T3-FT-002-W15/verification.md),
+[verifier-owned evidence](../../.tasks/TASK-018-T3-FT-002-W15/verifier-owned-evidence-attempt-2.md),
+[semantic verification](../../.protocols/TASK-018-T3-FT-002-W15/red-verification.md)
+and [semantic evidence](../../.tasks/TASK-018-T3-FT-002-W15/red-verifier-owned-evidence-attempt-2.md).
+
+W15 owns only the production transport/mapping/wiring delta and does not re-own
+the completed W3 card/cache/history acceptance. FT-003, FT-004 and FT-008 are
+checked only as compatible consumers/inputs through their accepted boundaries;
+their acceptance and historical task records remain unchanged. `REQ-024`
+remains `planned` under its FT-008 primary ownership; W15's synthetic-only
+redaction proof does not promote it. Existing provider/public contracts,
+ownership edges, Planning Revision `1`, scheduler state and terminal history
+remain unchanged.
+
+W15 is host/build/static/redacted proof only. Samsung/custom-ROM/1280x720
+target-device readiness and live-provider/network compatibility remain
+`DEFERRED`; no target-device runtime `PASS` is claimed.
 
 ## SDD Design Gate
 

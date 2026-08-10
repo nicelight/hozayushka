@@ -1,7 +1,7 @@
 ---
 description: Implementation plan for the FT-001 main clock and display shell.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # IMPL-FT-001 — Main clock and display shell
 
@@ -25,7 +25,7 @@ states, and city gestures that use the existing Settings boundary.
    behavior; retain host/build/unit/static gates and defer Samsung/custom-ROM
    acceptance. This task is preserved as `failed` after the independent
    semantic non-city cancellation finding.
-3. `TASK-015-T3-FT-001-W12` — own only the bounded Main Display
+3. `TASK-015-T3-FT-001-W12` (`done`) — own only the bounded Main Display
    `FT-001-AC-005` city hold/Settings-preservation delta. Exercise the existing
    downstream protected-cancellation contract (REQ-013; regression guard only;
    canonical basis in TASK-015 `normative_inputs`) through the public non-city
@@ -36,6 +36,23 @@ states, and city gestures that use the existing Settings boundary.
    behavior; do not re-own Timer & Alert semantics or add an architecture
    edge/module. The task depends on the last successful W10 baseline, while
    failed W11 remains evidence only.
+4. `TASK-016-T3-FT-001-W13` (`done`) — own the confirmed local Main Display
+   ticker debt. Consolidate scheduling under one idempotent owner, gate it on
+   existing Activity pause/resume and view attach/detach lifecycle, and reuse
+   the existing weather-card view tree when the projection/presentation inputs
+   are unchanged. Keep the current scalar 20 Hz clock/date/colon cadence;
+   Weather Context, Timer & Alert and Forecast Sessions remain owners of their
+   existing concerns. W13 is host-proof-only and does not plan target-device
+   evidence.
+5. `TASK-017-T3-FT-001-W14` (`done`) — based only on `TD-W13-001`, separate
+   the required scalar 20 Hz clock/date/colon refresh from repeated Weather
+   Context display-ready input construction. Reuse a capability-owned
+   `WeatherProjection` snapshot and invalidate it only on accepted successful
+   Weather refresh, validated location change or the existing projection/date/
+   day-night/pressure-trend/24-hour freshness boundary. Preserve Weather Context
+   cache/history/projection ownership and the existing Main Display read edge;
+   use only host counting fixtures, build, unit and static gates. W14 is
+   host-proof-only and does not claim target-device evidence.
 
 ## Primary owner and accepted graph
 
@@ -78,7 +95,9 @@ states, and city gestures that use the existing Settings boundary.
 
 ### Out of scope
 
-- Weather provider mapping, freshness, history, card content or palette.
+- Weather provider mapping, weather history, card content or palette. W14's
+  internal snapshot invalidation preserves, but does not re-own, existing
+  Weather Context freshness and projection semantics.
 - Hourly/long-term forecast session behavior.
 - Preset configuration, countdown lifecycle, cancellation or overdue alert.
 - Offline country/city catalog, API-key handling and personalization preview.
@@ -121,6 +140,44 @@ states, and city gestures that use the existing Settings boundary.
   and must not be used to claim Android touch reachability. Safe cleanup is
   mandatory, and Samsung/custom-ROM/1280x720 remains `DEFERRED`.
 
+### W13 Main Display ticker debt boundary
+
+- Own only the local ticker scheduler lifecycle and card-render reuse inside
+  `DisplayCapability.kt`, with wiring-only Activity pause/resume forwarding in
+  `MainActivity.kt` and focused host support in the existing display test.
+- Maintain one active loop at most while the Main Display is attached/resumed;
+  pause and detach must suppress rescheduling, and resume/attach must restore
+  one loop without duplicate starts. Keep the scalar clock/date/colon cadence
+  required by FT-001.
+- Avoid repeated weather-card view-tree reconstruction when the existing
+  Weather Context projection/presentation inputs are unchanged; rebuild only
+  on a changed input. This does not change Weather Context cache/refresh or
+  projection ownership and does not add a notification/public contract.
+- The task-owned feature deltas are `FT-001-AC-002`, `FT-001-AC-003` and
+  `FT-001-AC-004`; the colon/countdown path is a regression guard only. No
+  timer/audio ownership, provider work, gesture semantics, Forecast-wide
+  optimization, target-device evidence or new architecture is in scope.
+
+### W14 Weather Context projection/decode debt boundary
+
+- Own only the residual `TD-W13-001` cost confirmed after W13: each scalar
+  refresh must not reload/decode/build the same display-ready weather input.
+- Primary owner is `Weather Context` at
+  `app/src/main/kotlin/com/hozayushka/app/weather`; Main Display remains the
+  read-only consumer through the existing `Main Display → Weather Context`
+  contract. No Main Display ticker, Activity lifecycle, renderer or public
+  contract change is planned.
+- Reuse an in-memory capability-owned `WeatherProjection` snapshot and rebuild
+  only after accepted successful refresh, observed validated location change or
+  an existing selected-city/date/day-night/pressure-trend/24-hour freshness
+  boundary required by the current projection. Failed refresh and unchanged
+  scalar ticks preserve the snapshot.
+- The exact task-owned feature locator is `FT-001-AC-002 / REQ-002`.
+  `REQ-007`, `REQ-022` and `REQ-025` govern the preserved weather/time/failure
+  semantics and remain regression guards. No new FT-001 AC, RTM lifecycle,
+  module, edge, dependency, event, provider, Forecast, Timer/audio, gesture or
+  target-device scope is introduced.
+
 ## Expected advisory change surface
 
 - `app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt` —
@@ -145,8 +202,13 @@ states, and city gestures that use the existing Settings boundary.
 For W11 the expected delta narrows to `DisplayCapability.kt` and the existing
 `DisplayProjectionTest.kt` convention. For W12 the expected delta remains in
 those same two paths: the Main Display active-countdown dispatcher and focused
-host stream support. Exact implementation remains executor discretion; no new
-file or dependency is required by this plan.
+host stream support. For W13 the expected delta remains
+`DisplayCapability.kt`, `MainActivity.kt` and the existing
+`DisplayProjectionTest.kt`; no new file or dependency is required by this
+plan. Exact implementation remains executor discretion within the hard
+boundary carried by the W13 task card.
+For W14 the expected delta is only `WeatherCapability.kt` and the existing
+`WeatherContextTest.kt`; no new file, dependency or public wiring is required.
 
 These paths are advisory and non-exhaustive. No hard `write_boundary` is set;
 the semantic scope, forbidden scope and stop conditions remain binding.
@@ -170,6 +232,14 @@ the semantic scope, forbidden scope and stop conditions remain binding.
   cancellation, preset interaction and safe-cleanup observations. Host
   dispatch tests are supporting only; they do not prove public Android touch
   reachability.
+- For W13, the clean build, host unit suite and static diff gate must prove the
+  single scheduler owner, pause/resume gating and unchanged-versus-changed
+  card-tree refresh using an isolated fake scheduler. No emulator or physical
+  target route is part of this bounded debt task.
+- For W14, the same clean build, host unit suite and static diff gate plus an
+  isolated counting Weather Context fixture must prove repeated projection
+  reuse and accepted refresh/location/freshness invalidation. No emulator or
+  physical target route is part of this bounded debt task.
 
 ## Claim-linked proof plan
 
@@ -202,6 +272,61 @@ layout-history/timer/overdue checks remain regression guards. This does not
 reopen or rewrite TASK-014. Both tasks retain generic-emulator-only evidence
 and defer Samsung/custom-ROM results.
 
+## W12 boundary reconciliation
+
+`TASK-015-T3-FT-001-W12` is `done` after executor `PASS_FOR_HANDOFF`, fresh
+functional `PASS` and independent semantic `semantic-pass`. The completed
+boundary is the Main Display-local active-countdown dispatcher and its public
+generic-emulator proof for city hold/Settings preservation, non-city
+single/double regression behavior, preset/overdue guards and safe cleanup.
+The focused host stream output remains supporting evidence only. Samsung,
+custom-ROM and 1280x720 physical-device evidence remains `DEFERRED`; no target
+runtime `PASS` is claimed. FT-001/REQ-004 and FT-006/REQ-013 ownership and
+lifecycle values remain unchanged, and TASK-003/TASK-014 history remains
+preserved.
+
+## W13 boundary reconciliation
+
+`TASK-016-T3-FT-001-W13` is `done` after executor `PASS_FOR_HANDOFF`, fresh
+functional `PASS` and independent durable semantic `semantic-pass`. The
+completed boundary is the Main Display-local ticker owner, existing lifecycle
+gating and unchanged-versus-changed weather-card render reuse, proven by clean
+build, host unit and static diff gates. See the [executor handoff](../../../.protocols/TASK-016-T3-FT-001-W13/handoff.md),
+[functional verification](../../../.protocols/TASK-016-T3-FT-001-W13/verification.md),
+[verifier-owned evidence](../../../.tasks/TASK-016-T3-FT-001-W13/verifier-owned-evidence.md),
+[durable semantic verification](../../../.protocols/TASK-016-T3-FT-001-W13/red-verification.md)
+and [semantic report](../../../.tasks/TASK-016-T3-FT-001-W13/TASK-016-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md).
+
+FT-001 and direct RTM values `REQ-002`, `REQ-003` and `REQ-022` remain
+`implemented`; Weather Context, Timer & Alert, Forecast and the existing
+architecture/spec contracts remain unchanged. W13 is host/static proof only;
+Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED`, with no
+target-device runtime `PASS` claim. No feature/epic closure, promotion,
+dependent-state, scheduler checkpoint or terminal-state change is performed by
+this sync.
+
+## W14 boundary reconciliation
+
+`TASK-017-T3-FT-001-W14` is `done` after executor `PASS_FOR_HANDOFF`, fresh
+functional `PASS` and independent durable semantic `semantic-pass`. It is the
+smallest independent Weather Context memoization follow-up for `TD-W13-001`:
+repeated scalar reads reuse a display-ready projection snapshot, while accepted
+successful refresh, validated location and existing date/day-night/pressure-
+trend/24-hour freshness boundaries rebuild it. See the [executor handoff](../../../.protocols/TASK-017-T3-FT-001-W14/handoff.md),
+[functional verification](../../../.protocols/TASK-017-T3-FT-001-W14/verification.md),
+[verifier-owned evidence](../../../.tasks/TASK-017-T3-FT-001-W14/verifier-owned-evidence.md),
+[durable semantic verification](../../../.protocols/TASK-017-T3-FT-001-W14/red-verification.md)
+and [semantic report](../../../.tasks/TASK-017-T3-FT-001-W14/TASK-017-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md).
+
+The host proof remains inside the existing Weather Context test convention;
+no new canonical spec or behavior example is required. W14 is host/static
+proof only. Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED`
+with no target-device runtime `PASS` claim. W2 `done`, W11 `failed`, W12
+`done` and W13 `done` identities, evidence, protocols and terminal history
+remain unchanged. FT-001/EP-001 lifecycles, direct RTM values, scheduler
+checkpoint, terminal state and Planning Revision `1` remain unchanged; no
+feature closure, promotion or dependent-state transition is inferred.
+
 ## Constraints and invariants
 
 - Preserve Main Display ownership of composition and gestures; do not put
@@ -213,6 +338,9 @@ and defer Samsung/custom-ROM results.
 - Use device timezone for the main clock/date. Selected-city/API timezone is
   not allowed to shift the main clock.
 - Preserve the stable shell when weather is missing or the network is absent.
+- Keep Weather Context's private cache/history and display-ready projection
+  ownership intact; memoization is internal and does not add a consumer write
+  path or public invalidation contract.
 - Preserve the accepted colon states and do not infer timer arithmetic in Main
   Display; consume the Timer & Alert projection.
 - Do not add a dependency or change package, public contract, architecture,

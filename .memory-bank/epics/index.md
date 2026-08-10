@@ -1,7 +1,7 @@
 ---
 description: Router for the L2 product epics derived from the clarified PRD.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # Epics Index
 
@@ -18,9 +18,21 @@ outcomes from `TASK-007-T3-FT-005-W6`, `TASK-008-T3-FT-006-W7` and
 `TASK-009-T3-FT-007-W8`. EP-004 has indexed the completed FT-008 W9 outcome
 from `TASK-010-T3-FT-008-W9` and the completed FT-009 W10 outcome from
 `TASK-011-T3-FT-009-W10`. EP-001 also indexes the failed FT-001 W11
-follow-up `TASK-014-T3-FT-001-W11`; its semantic-fail cross-feature defect is
-linked from FT-006. EP-002, EP-003 and EP-004 lifecycles remain
+follow-up `TASK-014-T3-FT-001-W11` and completed W12 repair
+`TASK-015-T3-FT-001-W12`; W12's semantic-pass closes the bounded Main Display
+dispatch repair while its REQ-013 check remains a cross-feature regression
+guard linked from FT-006. W13's completed host/static ticker-debt boundary and
+W14's completed host/static Weather Context projection/decode boundary are
+linked from FT-001/FT-002 and do not alter EP-001's `implemented` lifecycle.
+EP-002 also indexes the completed FT-002 W15 production-provider boundary
+`TASK-018-T3-FT-002-W15`; its compatibility checks do not claim FT-003/FT-004/
+FT-008 acceptance or promote EP-002.
+EP-002, EP-003 and EP-004 lifecycles remain
 `planned` because no epic lifecycle decision was made by this boundary sync;
 FT-005/REQ-011 and FT-008/REQ-017/018/024 remain planned, and the FT-009 W10
 outcome does not promote EP-004. Target-device evidence remains
-deferred/non-blocking and no runtime `PASS` is claimed.
+deferred/non-blocking and no runtime `PASS` is claimed. EP-003's W12
+cross-feature repair does not change its `planned` lifecycle; W13 target-device
+evidence remains `DEFERRED`. W14 target-device evidence remains `DEFERRED`
+with no runtime `PASS` claim. W15 target-device/live-provider evidence remains
+`DEFERRED`, with no runtime `PASS` claim.

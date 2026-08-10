@@ -1,0 +1,27 @@
+W13 claim-linked GREEN — Attempt 1
+
+Focused host command after implementation:
+`./gradlew testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest`
+cwd: `/home/serg/Projects/Mobile_APPS/hozayushka`
+exit_code: 0
+result: `BUILD SUCCESSFUL in 2s`; focused suite including lifecycle ticker,
+50 ms cadence, projection reuse, timezone and colon/countdown checks passed.
+
+Final host gate:
+`./gradlew testDebugUnitTest`
+cwd: `/home/serg/Projects/Mobile_APPS/hozayushka`
+exit_code: 0
+result: `BUILD SUCCESSFUL in 3s`; task `:app:testDebugUnitTest` passed.
+
+Claim comparison:
+- `FT-001-AC-002 / REQ-002`: unchanged input returns no rebind and preserves
+  the same four-card node list; changed projection returns one rebind with four
+  cards.
+- `FT-001-AC-003 / REQ-002 / REQ-022`: duplicate lifecycle starts coalesce;
+  pause/detach suppress callbacks; resume/attach restores one loop; existing
+  device-time timezone assertion remains green.
+- `FT-001-AC-004 / REQ-003`: accepted RED_NOT_APPLICABLE path; fresh full host
+  regression retains online/offline/countdown colon values.
+
+Isolation/cleanup: the fake scheduler is in-memory, reset at case end, and no
+credentials, persistence, target device or private neighbor state is used.

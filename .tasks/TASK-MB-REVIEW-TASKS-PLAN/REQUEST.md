@@ -1,25 +1,25 @@
 ---
-description: Fresh independent review request for the FT-001 W12 post-repair planning surface.
+description: Fresh independent review request for the FT-002 W15 production Yandex adapter planning surface.
 status: active
 task_id: TASK-MB-REVIEW-TASKS-PLAN
-stage_id: S-TASKS-FT-001
-feature: FT-001
+stage_id: S-TASKS-FT-002
+feature: FT-002
+reviewed_task: TASK-018-T3-FT-002-W15
 ---
-# Review Request: FT-001 post-repair task plan
+# Review Request: FT-002 W15
 
-Review as `ROLE: Reviewer` whether `TASK-015-T3-FT-001-W12` is ready for the
-next planning/readiness boundary at Global Backbone `Planning Revision: 1`.
+Review as `ROLE: Reviewer` whether the current FT-002 planning surface is safe
+to hand to execution at Global Backbone `Planning Revision: 1`, with
+`TASK-018-T3-FT-002-W15` as the current planned production-provider follow-up.
 
-The review must confirm one cohesive Main Display-owned repair, the exact
-`FT-001-AC-005` ownership locator, and that `FT-006-AC-003 / REQ-013` remains
-only a canonical regression contract/evidence route rather than a cross-feature
-acceptance locator. Also inspect direct SDD links, complete T3 handoff,
-schema/index/REQ/AC/wave/dependency consistency, minimal ACTION_DOWN through
-ACTION_UP/ACTION_CANCEL dispatch, public city/non-city/preset/overdue routes,
-safe cleanup, and unchanged historical `TASK-003` (`done`) and `TASK-014`
-(`failed`) records.
+Check the canonical task handoff, direct SDD routes, provider/Yandex request
+contract, Weather Context and composition-root ownership, dependency/tier/wave
+identity, hard write boundary, claim-linked RED/GREEN/evidence sufficiency,
+secret/redaction rules, and the standing host/static non-emulator constraint.
+Treat FT-003, FT-004 and FT-008 only as compatible boundary consumers/inputs;
+do not reopen their historical records or transfer their acceptance ownership.
 
-This is read-only. Do not modify reviewed plans, task cards, index, lifecycle,
-scheduler state, production code, tests, or runtime state; do not run
-execute/build/test/verify/red-verify/mb-sync. Only this `REQUEST.md` and the
-feature report in this directory are review outputs.
+This review is read-only with respect to production code, task lifecycle,
+RTM/feature lifecycle, scheduler checkpoint and terminal state. Do not run an
+Android emulator, ADB, Gradle device task, live request, or target-device
+process. Only this request and the feature report are review outputs.

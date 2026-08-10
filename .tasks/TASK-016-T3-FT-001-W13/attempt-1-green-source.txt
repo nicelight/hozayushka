@@ -1,0 +1,19 @@
+W13 bounded source-shape GREEN — Attempt 1
+
+Command: bounded `rg`/`sed` source probe over
+`app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt` after
+implementation.
+cwd: `/home/serg/Projects/Mobile_APPS/hozayushka`
+source basis: git revision `cea5db2d45c06bb7585d071856d96b77079c8284` plus
+current W12/W13 workspace changes.
+
+Observed output:
+direct_main_ticker_start_markers=0
+card_tree_remove_sites=1
+ticker_owner_definitions=1
+green_source_shape=observed
+source_hash=02c05b036b5e072dfb15519761dc08d488d8c680a5ee76d22f131b32bacd6d56
+
+The only card-tree removal is inside the renderer's changed-input bind path;
+the Main Display ticker has one owner and lifecycle callbacks instead of local
+duplicate start sites.

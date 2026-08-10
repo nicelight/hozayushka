@@ -3,7 +3,7 @@ description: L2 epic for preset timer setup, resilient countdown and overdue ale
 status: draft
 id: EP-003
 lifecycle: planned
-last_updated: 2026-08-08
+last_updated: 2026-08-09
 ---
 # EP-003 — Timers and alert
 
@@ -66,5 +66,11 @@ FT-005/REQ-011 is still planned. No epic closure, promotion or dependent-state
 transition is inferred by this sync.
 The W11 semantic-fail evidence also records a non-city active-countdown
 double-tap cancellation defect against the existing FT-006 contract; FT-006
-and REQ-013 lifecycle state is preserved and the repair route remains the
-failed task's normal indexed FT-001 planning path.
+and REQ-013 lifecycle state is preserved and the repair route was the indexed
+FT-001 W12 task. W12 is now `done` after fresh functional `PASS` and semantic
+`semantic-pass`; its public Main Display dispatch repair restored the existing
+REQ-013 path without changing Timer & Alert ownership or semantics. Samsung,
+custom-ROM and 1280x720 physical-device evidence remains `DEFERRED`, and no
+runtime target `PASS` is claimed. EP-003 remains `planned` because FT-005 /
+REQ-011 is still planned; no epic closure, promotion or dependent-state
+transition is inferred by this boundary sync.

@@ -3,7 +3,7 @@ description: L2 epic for the always-visible kitchen clock and main display inter
 status: draft
 id: EP-001
 lifecycle: implemented
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # EP-001 — Glanceable main display
 
@@ -45,9 +45,16 @@ last_updated: 2026-08-08
 ## Design status
 
 Epic remains `draft`; its global architecture and platform boundary are
-registered, and its sole FT-001 implementation boundary is reconciled through
-W2. The W11 FT-001 follow-up is indexed as `failed` after final functional
-`PASS` plus semantic `semantic-fail`; its non-city active-countdown
-cancellation defect is linked from FT-001. Target-only runtime observations
-remain deferred under the accepted policy. EP-001 lifecycle remains
-`implemented`; no epic closure or promotion is inferred by this boundary sync.
+registered, and its FT-001 implementation history includes W2, the failed W11
+follow-up, the completed W12 repair, the completed W13 ticker-debt boundary
+and the completed W14 Weather Context projection/decode boundary. W14 records
+executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent durable
+semantic `semantic-pass` for the host/static memoization outcome; detailed
+evidence is linked from [FT-001](../features/FT-001-main-clock-display.md) and
+the affected [FT-002 Weather Context](../features/FT-002-weather-cards-context.md).
+W14 keeps the existing Main Display → Weather Context edge and does not change
+EP-001 acceptance or direct RTM ownership. Target-only runtime observations
+remain `DEFERRED` under the accepted policy, including Samsung/custom-ROM/
+1280x720 physical evidence, with no runtime `PASS` claim. EP-001 lifecycle
+remains `implemented`; no epic closure, promotion or dependent-state transition
+is inferred by this boundary sync.

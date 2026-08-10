@@ -1,0 +1,185 @@
+{
+  "id": "TASK-016-T3-FT-001-W13",
+  "title": "Consolidate Main Display ticker ownership and lifecycle-aware projection refresh",
+  "status": "done",
+  "wave": "W13",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-002",
+    "REQ-003",
+    "REQ-022"
+  ],
+  "depends_on": [
+    "TASK-015-T3-FT-001-W12"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/app/MainActivity.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host display scheduler and projection regression suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before changing production behavior, obtain fresh task-scoped RED from the current Main Display source and a focused host probe: the 50 ms loop has more than one scheduling entry point and its refresh path removes and recreates the four weather-card views on every tick. Do not use W2, W11 or W12 evidence as this task's RED/GREEN.",
+    "Implement one Main Display-owned ticker scheduler with one idempotent start/stop owner. The existing Activity pause/resume callbacks may only forward lifecycle to that owner through the existing application/platform seam; pause and detach must stop or prevent rescheduling, and resume/attach must restore exactly one loop. Keep MainActivity wiring-only.",
+    "Keep the existing scalar refresh cadence needed for device-time clock/date and accepted colon/countdown presentation, but retain the last rendered Main Display weather projection/presentation inputs and update the card view tree only when those inputs change. This is a local render optimization; Weather Context remains the sole owner of provider refresh, cache/history and weather projection semantics.",
+    "Add focused host coverage in the existing DisplayProjectionTest.kt convention. Start from a fresh detached/paused scheduler state, prove duplicate start/attach is coalesced, pause prevents callbacks and resume schedules one loop, and distinguish unchanged-projection scalar ticks from one changed-projection card-tree rebind. Reset the disposable fake scheduler between cases.",
+    "Run the clean build, complete host unit suite and static diff gate. Fresh regression output must retain the exact four-card shell, device-time date/time and online/offline/countdown colon behavior; no timer arithmetic, persistence, cancellation, overdue, audio or gesture semantics are reimplemented or changed.",
+    "Do not run or require emulator, physical-device, target-ROM, 1280x720 readability, fullscreen, keep-screen-on or audio evidence for this bounded debt task; those remain separate deferred evidence/decision work. Later task verification still owns the normal T3 /verify and /red-verify obligations for the host-verifiable scope.",
+    "Stop and route to /spec-design if lifecycle gating or render reuse requires a new module, graph edge, public capability/platform contract, event/message boundary, dependency or owner. Stop and return to /feature-to-tasks FT-001 if the implementation changes accepted product behavior, AC ownership, tier, dependency or cross-feature scope. Do not modify historical task records, scheduler checkpoint, terminal state or RTM lifecycle.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-10",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by task scope; no target-device runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-016-T3-FT-001-W13/handoff.md",
+        ".protocols/TASK-016-T3-FT-001-W13/verification.md",
+        ".tasks/TASK-016-T3-FT-001-W13/verifier-owned-evidence.md",
+        ".protocols/TASK-016-T3-FT-001-W13/red-verification.md",
+        ".tasks/TASK-016-T3-FT-001-W13/TASK-016-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "accepted_residual_risk": [
+        "W13 is host/static proof only; Samsung/custom-ROM/1280x720 physical evidence remains deferred and no target-device runtime PASS is claimed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-015-T3-FT-001-W12.task.json",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002 / REQ-002] Expected RED: the current Main Display refresh path schedules through two local entry points and rebuilds all four weather-card views at each 50 ms tick. GREEN: one scheduler owner is active at most once, and an unchanged weather projection leaves the existing four-card view tree intact; a changed projection produces exactly one bounded rebind. Compare callback and card-tree counts; artifact is the focused host probe plus bounded source-diff evidence.",
+    "[FT-001-AC-003 / REQ-002 / REQ-022] Expected RED: the current ticker has no explicit Activity pause gate, so an attached Main Display can continue its callback loop while the Activity is paused. GREEN: pause/detach produces no further callbacks and resume/attach restores one loop; resumed clock/date output still uses device timezone. Compare callback counts and deterministic date/time output from a fresh fake scheduler; artifact is the host lifecycle probe.",
+    "[FT-001-AC-004 / REQ-003] RED_NOT_APPLICABLE: the accepted colon/countdown projection is already expected to be GREEN in the current W12 baseline, and observing a meaningful RED would require intentionally breaking accepted Timer & Alert/display behavior rather than observing this scheduling debt; alternative proof: fresh before/after host regression output compares online, offline and countdown colon values while the ticker probe proves no duplicate scheduling.",
+    "[Runtime safety] Expected: host probes use only an isolated in-memory/fake scheduler with a known detached/paused initial state, safe reset between cases and no persistence, credentials, target-device access or private neighbor-state writes. Compare cleanup state before and after; artifact is the task-local host result and protocol evidence."
+  ],
+  "purpose": "Remove confirmed local Main Display ticker debt by giving scheduling one owner, honoring existing Activity lifecycle callbacks and avoiding repeated weather-card view-tree reconstruction without changing accepted display or neighbor ownership.",
+  "success_outcome": "The Main Display has one lifecycle-gated 20 Hz scalar ticker that cannot duplicate or run while paused/detached, and its weather-card view tree is reused until the existing Weather Context projection or presentation inputs change; clock/date/colon behavior and all accepted capability boundaries remain unchanged.",
+  "anti_goals": [
+    "Do not reopen, rewrite, normalize or replace TASK-003-T3-FT-001-W2, TASK-014-T3-FT-001-W11 or TASK-015-T3-FT-001-W12, their identity, lifecycle, evidence or protocol history.",
+    "Do not change Yandex provider mapping or Weather Context refresh cadence, cache/history storage, projection contract or provider ownership.",
+    "Do not change Timer & Alert state ownership, timer arithmetic, persistence, lifecycle recovery, cancellation, overdue behavior, audio ownership or gesture semantics; timer/colon checks are regression guards only.",
+    "Do not optimize Forecast Sessions or its ticker, change forecast behavior, or modify cross-surface gesture semantics.",
+    "Do not add a module, dependency, event/message infrastructure, public contract, graph edge, product control or new architecture; do not move orchestration into MainActivity, a generic utility or the composition root.",
+    "Do not run or claim target-device, target-ROM, physical 1280x720, fullscreen, readability, keep-screen-on or audio evidence for this task."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/MainActivity.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "TASK-003-T3-FT-001-W2, TASK-014-T3-FT-001-W11 and TASK-015-T3-FT-001-W12 identity, lifecycle, evidence and protocol history",
+      ".protocols/AUTONOMOUS-RUN/status.md and all scheduler checkpoint or terminal-state fields",
+      "app/src/main/kotlin/com/hozayushka/app/weather/ and Weather Context provider refresh, cache/history and projection contract",
+      "app/src/main/kotlin/com/hozayushka/app/timer/ and Timer & Alert state, lifecycle, cancellation, overdue or audio ownership",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt and any platform contract change",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/ and the createForecastView ticker or Forecast Sessions behavior",
+      "Yandex provider code, Settings & Location code, target-device evidence, live credentials and secret-bearing artifacts",
+      "new module, dependency, public contract, graph edge, event/message boundary or business orchestration in MainActivity, a generic utility or the composition root"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the lifecycle or render-reuse path cannot remain inside the existing Main Display owner and existing Activity/platform seam without a new module, edge, public contract, dependency or Planning Revision change.",
+      "Stop and return to /feature-to-tasks FT-001 if execution exposes a different accepted behavior, AC ownership, tier, dependency or material cross-feature scope.",
+      "Stop before a GREEN claim if host probes cannot distinguish one scheduler owner, pause/resume gating or unchanged-versus-changed card-tree refresh without target-device evidence; do not substitute target evidence because it is outside this task.",
+      "Stop before any modification outside the hard write boundary, private neighbor-state access, credential use or scheduler/terminal-state write."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-003",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-004",
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/tasks/TASK-015-T3-FT-001-W12.task.json",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#AD-001",
+    ".memory-bank/architecture/system-architecture.md#AD-003",
+    ".memory-bank/architecture/system-architecture.md#AD-004",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display remains the primary owner of ticker scheduling, scalar display refresh and local card-view reuse; MainActivity may only forward existing Activity lifecycle callbacks as wiring.",
+    "At most one ticker loop may be scheduled for an attached/resumed Main Display; attach, resume, pause and detach handling must be idempotent and must not leave a callback that reschedules itself while paused.",
+    "Retain the current scalar refresh cadence needed for the accepted clock/date and colon/countdown presentation; optimize only repeated weather projection/card view-tree work when the render inputs are unchanged.",
+    "Weather Context remains the owner of cache/history, refresh cadence, normalization and projection semantics; Main Display may consume only the existing read model and keep a private last-rendered presentation snapshot.",
+    "Use the existing Main Display → Weather Context, Main Display → Timer & Alert and Main Display → Android Runtime Adapter boundaries; do not add a new event/message or notification path.",
+    "Host proof starts from a known detached/paused fake-scheduler state, is safe to rerun, resets disposable state between cases and leaves no persistent or secret-bearing artifact."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#MUST",
+    ".memory-bank/invariants.md#NEVER",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002 task-owned implementation delta: a single Main Display ticker owner does not rebuild the four-card view tree on every 50 ms scalar tick; unchanged projection/presentation inputs retain the existing cards, while one changed input causes one bounded rebind and the exact four-card composition remains.",
+    "FT-001-AC-003 / REQ-002 / REQ-022 task-owned lifecycle delta: Activity pause and view detach stop or suppress ticker callbacks, Activity resume and view attach restore exactly one loop, and resumed clock/date output remains device-time based.",
+    "FT-001-AC-004 / REQ-003 regression target: fresh host output preserves online pulse, offline fixed brightness and active-countdown 382/618 ms colon projection; no Timer & Alert implementation or state ownership is changed.",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary and .memory-bank/contracts/boundary-map.md#dependency-graph: the change remains inside Main Display plus wiring-only MainActivity lifecycle forwarding, with no new module, owner, edge, public contract or dependency.",
+    "Focused host quality probe: from isolated detached/paused initial state, scheduler callback counts distinguish duplicate-start prevention, pause suppression, single resume scheduling and unchanged-versus-changed card-tree refresh; cleanup returns the fake scheduler to idle."
+  ]
+}

@@ -184,18 +184,113 @@ object CityInteractionRouter {
     }
 }
 
-internal class ActiveTimerCityTouchStream {
+internal class ActiveCountdownTouchDispatcher {
     private var captured = false
 
     fun shouldDispatch(actionMasked: Int, timerActive: Boolean): Boolean {
-        if (actionMasked == MotionEvent.ACTION_DOWN) {
-            captured = timerActive
-        }
+        if (actionMasked == MotionEvent.ACTION_DOWN) captured = timerActive
         val shouldDispatch = captured
         if (actionMasked == MotionEvent.ACTION_UP || actionMasked == MotionEvent.ACTION_CANCEL) {
             captured = false
         }
         return shouldDispatch
+    }
+}
+
+internal data class MainDisplayWeatherRenderInput(
+    val projection: WeatherProjection,
+    val glassIntensity: Float,
+)
+
+internal class MainDisplayWeatherCardRenderer {
+    private var lastRenderedInput: MainDisplayWeatherRenderInput? = null
+
+    fun renderIfChanged(
+        input: MainDisplayWeatherRenderInput,
+        render: () -> Unit,
+    ): Boolean {
+        if (input == lastRenderedInput) return false
+        lastRenderedInput = input
+        render()
+        return true
+    }
+}
+
+internal interface MainDisplayTickerScheduler {
+    fun post(runnable: Runnable)
+
+    fun postDelayed(runnable: Runnable, delayMillis: Long)
+
+    fun removeCallbacks(runnable: Runnable)
+}
+
+internal class MainDisplayTickerOwner(
+    private val scheduler: MainDisplayTickerScheduler,
+    private val onTick: () -> Unit,
+    private val tickIntervalMillis: Long = 50L,
+) {
+    private var attached = false
+    private var activityResumed = false
+    private var scheduled = false
+    private var running = false
+
+    private val ticker = object : Runnable {
+        override fun run() {
+            scheduled = false
+            if (!canRun()) return
+            running = true
+            try {
+                onTick()
+            } finally {
+                running = false
+                scheduleNextIfNeeded()
+            }
+        }
+    }
+
+    fun onViewAttachedToWindow() {
+        attached = true
+        scheduleIfNeeded()
+    }
+
+    fun onViewDetachedFromWindow() {
+        attached = false
+        stop()
+    }
+
+    fun onActivityResumed() {
+        activityResumed = true
+        scheduleIfNeeded()
+    }
+
+    fun onActivityPaused() {
+        activityResumed = false
+        stop()
+    }
+
+    fun dispose() {
+        attached = false
+        activityResumed = false
+        stop()
+    }
+
+    private fun canRun(): Boolean = attached && activityResumed
+
+    private fun scheduleIfNeeded() {
+        if (!canRun() || scheduled || running) return
+        scheduled = true
+        scheduler.post(ticker)
+    }
+
+    private fun scheduleNextIfNeeded() {
+        if (!canRun() || scheduled) return
+        scheduled = true
+        scheduler.postDelayed(ticker, tickIntervalMillis)
+    }
+
+    private fun stop() {
+        scheduler.removeCallbacks(ticker)
+        scheduled = false
     }
 }
 
@@ -256,6 +351,19 @@ class DisplayCapability(
     private val timer: TimerCapability,
     private val forecast: ForecastSessionCapability,
 ) {
+    private var activityResumed = false
+    private var activeMainDisplayTicker: MainDisplayTickerOwner? = null
+
+    internal fun onActivityResumed() {
+        activityResumed = true
+        activeMainDisplayTicker?.onActivityResumed()
+    }
+
+    internal fun onActivityPaused() {
+        activityResumed = false
+        activeMainDisplayTicker?.onActivityPaused()
+    }
+
     /** Main Display composes the Settings surface and supplies its local preview. */
     fun createSettingsView(context: Context, onBack: () -> Unit): View =
         settings.createDestinationView(
@@ -390,13 +498,6 @@ class DisplayCapability(
                 layoutSpec.weatherRowWeight,
             ),
         )
-        val initialProjection = weather.projection(platform.nowMillis())
-        initialProjection.cards.forEachIndexed { index, projection ->
-            cards.addView(weatherCard(context, projection, forecastClick(index, onOpenForecast), settings.settingsPresentationProjection().glassIntensity), LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
-                setMargins(if (index == 0) 0 else 8, 8, 0, 0)
-            })
-        }
-
         val presetButtons = TimerPresetSlot.entries.map { slot ->
             val presentation = timer.presetPresentationAt(platform.nowMillis()).first { it.slot == slot }
             presetButton(context, PresetPresentation.style(presentation))
@@ -411,6 +512,7 @@ class DisplayCapability(
         }
 
         var timerHintUntilMillis = 0L
+        val activeCountdownTouchDispatcher = ActiveCountdownTouchDispatcher()
 
         fun applyTimerGesture(gesture: TimerGesture) {
             val now = platform.nowMillis()
@@ -434,24 +536,6 @@ class DisplayCapability(
             if (CityInteractionRouter.route(citySelected, gesture) == CityInteraction.OPEN_SETTINGS) {
                 onOpenSettings()
             }
-        }
-
-        presetButtons.forEach { button ->
-            val slot = button.tag as TimerPresetSlot
-            val detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onDown(event: MotionEvent): Boolean = true
-
-                override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-                    handlePresetTap(slot)
-                    return true
-                }
-
-                override fun onDoubleTap(event: MotionEvent): Boolean {
-                    applyTimerGesture(TimerGesture.DOUBLE_TAP)
-                    return true
-                }
-            })
-            button.setOnTouchListener { _, event -> detector.onTouchEvent(event) }
         }
 
         val mainGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
@@ -484,27 +568,88 @@ class DisplayCapability(
                 route(CityGesture.LONG_HOLD)
             }
         })
+        fun dispatchActiveCountdownTouch(
+            event: MotionEvent,
+            detector: GestureDetector,
+        ): Boolean {
+            val timerActiveAtDown = event.actionMasked == MotionEvent.ACTION_DOWN &&
+                timer.snapshotAt(platform.nowMillis()).state == TimerLifecycleState.COUNTDOWN
+            val shouldDispatch = activeCountdownTouchDispatcher.shouldDispatch(
+                actionMasked = event.actionMasked,
+                timerActive = timerActiveAtDown,
+            )
+            if (shouldDispatch) detector.onTouchEvent(event)
+            return shouldDispatch
+        }
+
         root.setOnTouchListener { _, event ->
-            mainGestureDetector.onTouchEvent(event)
-            false
+            if (dispatchActiveCountdownTouch(event, mainGestureDetector)) {
+                true
+            } else {
+                mainGestureDetector.onTouchEvent(event)
+                false
+            }
         }
 
         val activeTimerTouchListener = View.OnTouchListener { _, event ->
-            if (timer.snapshotAt(platform.nowMillis()).state == TimerLifecycleState.IDLE) {
-                false
-            } else {
-                mainGestureDetector.onTouchEvent(event)
-                true
+            dispatchActiveCountdownTouch(event, mainGestureDetector)
+        }
+        val activeTimerCityTouchListener = View.OnTouchListener { _, event ->
+            dispatchActiveCountdownTouch(event, activeTimerCityGestureDetector)
+        }
+
+        val weatherCardRenderer = MainDisplayWeatherCardRenderer()
+
+        fun bindWeatherCards(input: MainDisplayWeatherRenderInput) {
+            cards.removeAllViews()
+            input.projection.cards.forEachIndexed { index, cardProjection ->
+                val card = weatherCard(
+                    context,
+                    cardProjection,
+                    forecastClick(index, onOpenForecast),
+                    input.glassIntensity,
+                )
+                cards.addView(
+                    card,
+                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
+                        setMargins(if (index == 0) 0 else 8, 8, 0, 0)
+                    },
+                )
+                card.setOnTouchListener(activeTimerTouchListener)
             }
         }
-        val activeTimerCityTouchStream = ActiveTimerCityTouchStream()
-        val activeTimerCityTouchListener = View.OnTouchListener { _, event ->
-            val timerActive = timer.snapshotAt(platform.nowMillis()).state != TimerLifecycleState.IDLE
-            val shouldDispatch = activeTimerCityTouchStream.shouldDispatch(event.actionMasked, timerActive)
-            if (shouldDispatch) {
-                activeTimerCityGestureDetector.onTouchEvent(event)
+
+        fun renderWeatherCardsIfChanged(now: Long) {
+            val input = MainDisplayWeatherRenderInput(
+                projection = weather.projection(now),
+                glassIntensity = settings.settingsPresentationProjection().glassIntensity,
+            )
+            weatherCardRenderer.renderIfChanged(input) {
+                bindWeatherCards(input)
             }
-            shouldDispatch
+        }
+
+        renderWeatherCardsIfChanged(platform.nowMillis())
+
+        presetButtons.forEach { button ->
+            val slot = button.tag as TimerPresetSlot
+            val detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(event: MotionEvent): Boolean = true
+
+                override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+                    handlePresetTap(slot)
+                    return true
+                }
+
+                override fun onDoubleTap(event: MotionEvent): Boolean {
+                    applyTimerGesture(TimerGesture.DOUBLE_TAP)
+                    return true
+                }
+            })
+            button.setOnTouchListener { _, event ->
+                val captured = dispatchActiveCountdownTouch(event, detector)
+                if (captured) true else detector.onTouchEvent(event)
+            }
         }
 
         val overdueOverlay = FrameLayout(context).apply {
@@ -617,24 +762,8 @@ class DisplayCapability(
             }
             val mode = ColonProjection.mode(connectivity, timerState)
             colon.alpha = ColonProjection.brightness(mode, now)
-            val projection = weather.projection(now)
             forecastMessage.text = forecast.snapshotAt(now).message.orEmpty()
-            cards.removeAllViews()
-            projection.cards.forEachIndexed { index, cardProjection ->
-                val card = weatherCard(
-                    context,
-                    cardProjection,
-                    forecastClick(index, onOpenForecast),
-                    settings.settingsPresentationProjection().glassIntensity,
-                )
-                cards.addView(
-                    card,
-                    LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
-                        setMargins(if (index == 0) 0 else 8, 8, 0, 0)
-                    },
-                )
-                card.setOnTouchListener(activeTimerTouchListener)
-            }
+            renderWeatherCardsIfChanged(now)
             val presetStyles = PresetPresentation.styles(timer.presetPresentationAt(now)).associateBy { it.slot }
             presetButtons.forEach { button ->
                 val slot = button.tag as TimerPresetSlot
@@ -642,22 +771,34 @@ class DisplayCapability(
             }
         }
 
-        val ticker = object : Runnable {
-            override fun run() {
-                refresh()
-                root.postDelayed(this, 50L)
-            }
-        }
+        val ticker = MainDisplayTickerOwner(
+            scheduler = object : MainDisplayTickerScheduler {
+                override fun post(runnable: Runnable) {
+                    root.post(runnable)
+                }
+
+                override fun postDelayed(runnable: Runnable, delayMillis: Long) {
+                    root.postDelayed(runnable, delayMillis)
+                }
+
+                override fun removeCallbacks(runnable: Runnable) {
+                    root.removeCallbacks(runnable)
+                }
+            },
+            onTick = ::refresh,
+        )
+        activeMainDisplayTicker?.dispose()
+        activeMainDisplayTicker = ticker
         root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(view: View) {
-                view.post(ticker)
+                ticker.onViewAttachedToWindow()
             }
 
             override fun onViewDetachedFromWindow(view: View) {
-                view.removeCallbacks(ticker)
+                ticker.onViewDetachedFromWindow()
             }
         })
-        root.post(ticker)
+        if (activityResumed) ticker.onActivityResumed()
         return root
     }
 

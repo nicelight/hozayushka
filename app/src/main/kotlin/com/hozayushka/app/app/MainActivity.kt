@@ -20,10 +20,12 @@ class MainActivity : Activity() {
         super.onResume()
         app.runtime.platform.applyFoundationWindow(window)
         app.runtime.onActivityResumed()
+        app.runtime.display.onActivityResumed()
         if (!settingsOpen) renderMainSurface()
     }
 
     override fun onPause() {
+        app.runtime.display.onActivityPaused()
         app.runtime.onActivityPaused()
         super.onPause()
     }

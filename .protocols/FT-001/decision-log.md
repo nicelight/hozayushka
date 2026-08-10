@@ -1,7 +1,7 @@
 ---
 description: Decision log for FT-001 task decomposition.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # FT-001 — Decision log
 
@@ -74,3 +74,63 @@ last_updated: 2026-08-08
   non-city double, preset guards and safe cleanup. Samsung/custom-ROM/1280x720
   remains `DEFERRED`; scheduler checkpoint, terminal state and RTM lifecycle
   are outside this planning reconciliation.
+
+## 2026-08-09 — W13 bounded Main Display ticker debt
+
+- Current code evidence confirms one bounded local implementation-debt outcome:
+  `DisplayCapability.createMainView()` has two local ticker start paths (the
+  attach callback and an unconditional post), and each 50 ms refresh reads the
+  weather projection, removes the card tree and recreates all four cards.
+  Activity `onPause`/`onResume` and the existing platform lifecycle seam are
+  present, while no Main Display lifecycle owner is currently gating this
+  ticker.
+- Create `TASK-016-T3-FT-001-W13` as one planned T3 task depending on the
+  already terminal `TASK-015-T3-FT-001-W12`. The single outcome is to make the
+  Main Display ticker have one idempotent owner, stop/suppress it on Activity
+  pause and view detach, restart one loop on resume/attach, and reuse the
+  existing weather-card view tree until the existing projection/presentation
+  inputs change. The 20 Hz scalar cadence remains so clock/date/colon behavior
+  is not redesigned.
+- Reuse the registered architecture, Boundary Map, Main Display → Weather
+  Context, Main Display → Timer & Alert and Display Runtime contracts. MainActivity
+  may only forward existing lifecycle signals; no new public contract, module,
+  graph edge, dependency or event/message boundary is selected. Weather
+  Context cache/refresh ownership, Timer & Alert/audio ownership, gesture
+  semantics, Forecast-wide optimization and target-device evidence are
+  explicitly excluded. Host-only scheduler/projection probes are sufficient
+  for this bounded debt; if they are not, execution must stop rather than
+  expand scope.
+- Planning Revision remains `1`; historical W2/W11/W12 task identity,
+  lifecycle, evidence and protocol history remain untouched, as do scheduler
+  checkpoint and terminal-state artifacts. No execution, `/verify`,
+  `/red-verify` or `/mb-sync` is performed in this planning run.
+
+## 2026-08-10 — W14 projection/decode debt follow-up
+
+- Advisory `TD-W13-001` confirms one residual W13 debt only: the scalar 20 Hz
+  refresh still reloads/decode-builds the Weather Context display-ready
+  projection even when the visible weather input is unchanged. W13's ticker,
+  lifecycle gating and card-tree reuse are accepted terminal history and are not
+  reopened.
+- Create exactly one new indexed task,
+  `TASK-017-T3-FT-001-W14`, with status `planned`, depending only on terminal
+  `TASK-016-T3-FT-001-W13`. Its task-owned locator is
+  `FT-001-AC-002 / REQ-002`; `REQ-007`, `REQ-022` and `REQ-025` remain governing
+  weather/time/failure constraints and regression guards, not new product
+  behavior or RTM lifecycle claims.
+- Select the smallest sufficient path: memoize the existing display-ready
+  `WeatherProjection` inside Weather Context and invalidate only after an
+  accepted successful refresh, observed validated location change or an
+  existing date/day-night/pressure-trend/24-hour freshness boundary. Failed
+  refresh, network status, timer/lifecycle callbacks and unchanged scalar ticks
+  do not invalidate it. The existing Main Display → Weather Context edge,
+  `WeatherReadPort`, ownership of cache/history/projection semantics and all
+  public boundaries remain unchanged.
+- The hard write boundary is the existing `WeatherCapability.kt` and
+  `WeatherContextTest.kt`. Host counting fixtures, clean build, full host unit
+  suite and static diff are sufficient; Forecast, Yandex provider, Timer/audio,
+  gestures, ticker lifecycle and target-device evidence remain excluded. No
+  new canonical spec or behavior-spec file is created.
+- Planning Revision remains `1`; W2/W11/W12/W13 terminal records, scheduler
+  checkpoint, terminal state and RTM lifecycle remain untouched. This run does
+  not execute, verify, sync, review or mark anything done.

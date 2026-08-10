@@ -5,12 +5,15 @@ import com.hozayushka.app.adapters.weather.ProviderDailyWeather
 import com.hozayushka.app.adapters.weather.ProviderHourlyWeather
 import com.hozayushka.app.adapters.weather.ProviderWeatherData
 import com.hozayushka.app.adapters.weather.WeatherProvider
+import com.hozayushka.app.adapters.weather.WeatherProviderFailure
 import com.hozayushka.app.adapters.weather.WeatherProviderRequest
 import com.hozayushka.app.adapters.weather.WeatherProviderResult
 import com.hozayushka.app.adapters.weather.RedactedProviderPayload
 import com.hozayushka.app.settings.InMemorySettingsStateStore
 import com.hozayushka.app.settings.LocationContext
 import com.hozayushka.app.settings.SettingsCapability
+import com.hozayushka.app.weather.WeatherCacheRecord
+import com.hozayushka.app.weather.WeatherCacheStore
 import com.hozayushka.app.weather.InMemoryWeatherCacheStore
 import com.hozayushka.app.weather.PressureDirection
 import com.hozayushka.app.weather.TemperaturePalette
@@ -20,11 +23,14 @@ import com.hozayushka.app.weather.WeatherCapability
 import com.hozayushka.app.weather.WeatherFreshness
 import com.hozayushka.app.weather.WeatherIllustration
 import com.hozayushka.app.weather.WeatherRefreshTrigger
+import com.hozayushka.app.weather.WeatherSnapshot
 import java.time.LocalDate
 import java.time.LocalTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -51,6 +57,80 @@ class WeatherContextTest {
         assertEquals("#448153", projection.cards[1].backgroundHex)
         assertEquals(WeatherIllustration.CLOUD, projection.cards[1].illustration)
         assertEquals(2, projection.cards[1].date.dayOfMonth)
+    }
+
+    @Test
+    fun repeatedProjectionReadsReuseOneDisplayReadySnapshot() {
+        val store = CountingWeatherCacheStore()
+        val weather = weatherWith(QueueProvider(sampleData()), store)
+        weather.refresh(request(), midday)
+        store.resetLoadCount()
+
+        val first = weather.projection(midday)
+        val second = weather.projection(midday)
+
+        assertSame(first, second)
+        assertEquals(0, store.loadRecordCalls)
+    }
+
+    @Test
+    fun acceptedRefreshInvalidatesOnceAndFailedRefreshPreservesLastProjection() {
+        val store = CountingWeatherCacheStore()
+        val weather = weatherWith(
+            QueueProvider(sampleData(pressure = 100.0), sampleData(pressure = 104.1)),
+            store,
+        )
+        weather.refresh(request(), midday)
+        val beforeRefresh = weather.projection(midday)
+
+        val accepted = weather.refresh(request(), midday + 30L * 60L * 1_000L)
+        assertNotNull(accepted)
+        assertNotSame(beforeRefresh, accepted!!.projection)
+        assertSame(accepted.projection, weather.projection(midday + 30L * 60L * 1_000L))
+
+        val failingStore = CountingWeatherCacheStore()
+        val failingWeather = weatherWith(SuccessThenFailureProvider(sampleData()), failingStore)
+        failingWeather.refresh(request(), midday)
+        val successfulProjection = failingWeather.projection(midday)
+        failingStore.resetLoadCount()
+
+        assertNull(failingWeather.refresh(request(), midday + 1_000L))
+        assertSame(successfulProjection, failingWeather.projection(midday + 1_000L))
+        assertEquals(0, failingStore.loadRecordCalls)
+    }
+
+    @Test
+    fun locationTimePressureAndFreshnessBoundariesRebuildTheSnapshot() {
+        val store = CountingWeatherCacheStore()
+        val settings = InMemorySettingsStateStore()
+        val locationReader = SettingsCapability(settings).also { it.saveFoundationLocation(location) }
+        val weather = WeatherCapability(
+            locationReader = locationReader,
+            cacheStore = store,
+            provider = QueueProvider(sampleData(pressure = 100.0), sampleData(pressure = 104.1)),
+        )
+        weather.refresh(request(), midday - 3L * 60L * 60L * 1_000L)
+        weather.refresh(request(), midday)
+
+        val first = weather.projection(midday)
+        assertSame(first, weather.projection(midday + 1_000L))
+
+        locationReader.saveFoundationLocation(location.copy(cityLabel = "Changed city"))
+        val afterLocation = weather.projection(midday + 1_000L)
+        assertNotSame(first, afterLocation)
+
+        val afterPressureBoundary = weather.projection(midday + 3L * 60L * 60L * 1_000L + 1L)
+        assertNotSame(afterLocation, afterPressureBoundary)
+        assertEquals(0, afterPressureBoundary.cards[1].pressureArrowCount)
+
+        val night = weather.projection(midday + 6L * 60L * 60L * 1_000L)
+        assertNotSame(afterPressureBoundary, night)
+        assertEquals(WeatherIllustration.MOON, night.cards[1].illustration)
+
+        val stale = weather.projection(midday + 24L * 60L * 60L * 1_000L + 1L)
+        assertNotSame(night, stale)
+        assertEquals(WeatherFreshness.STALE_EMPTY, stale.freshness)
+        assertTrue(stale.cards.all { it.temperatureCelsius == null && it.pressureArrowCount == 0 })
     }
 
     @Test
@@ -257,6 +337,55 @@ class WeatherContextTest {
     }
 
     @Test
+    fun incompleteFullDailyConditionDataDoesNotReplaceSuccessfulCache() {
+        val complete = fullDailyData(hourly = fullDayHourly(LocalDate.of(2024, 1, 2)))
+        val incomplete = complete.copy(
+            daily = complete.daily.mapIndexed { index, day ->
+                if (index == 4) day.copy(nightCondition = null) else day
+            },
+        )
+        val weather = weatherWith(QueueProvider(complete, incomplete))
+
+        assertNotNull(weather.refresh(request(), midday))
+        val cachedLongTerm = weather.longTermProjection(midday)
+        val cachedSnapshot = weather.snapshot()
+        assertNotNull(cachedLongTerm)
+        assertTrue(requireNotNull(cachedLongTerm).cards.none { it.illustration == WeatherIllustration.NEUTRAL_CLOUD })
+
+        assertNull(weather.refresh(request(), midday + 1_000L))
+        assertEquals(cachedLongTerm, weather.longTermProjection(midday + 1_000L))
+        assertEquals(cachedSnapshot, weather.snapshot())
+    }
+
+    @Test
+    fun emptyHourlyPayloadDoesNotReplaceSuccessfulHourlyCache() {
+        val complete = sampleData(hourly = fullDayHourly(LocalDate.of(2024, 1, 2)))
+        val invalidHourlyPayloads = listOf(
+            emptyList<ProviderHourlyWeather>(),
+            complete.hourly.map {
+                if (it.date == LocalDate.of(2024, 1, 2) && it.time == LocalTime.of(12, 0)) {
+                    it.copy(condition = null)
+                } else {
+                    it
+                }
+            },
+        )
+
+        invalidHourlyPayloads.forEach { invalidHourly ->
+            val weather = weatherWith(QueueProvider(complete, complete.copy(hourly = invalidHourly)))
+
+            assertNotNull(weather.refresh(request(), midday))
+            val cachedHourly = weather.hourlyProjection(midday)
+            val cachedSnapshot = weather.snapshot()
+            assertNotNull(cachedHourly)
+
+            assertNull(weather.refresh(request(), midday + 1_000L))
+            assertEquals(cachedHourly, weather.hourlyProjection(midday + 1_000L))
+            assertEquals(cachedSnapshot, weather.snapshot())
+        }
+    }
+
+    @Test
     fun yesterdayUsesLargestChangeAndHistoryIsInstallationRelativeSevenDays() {
         val provider = QueueProvider(
             sampleData(pressure = 100.0),
@@ -280,9 +409,12 @@ class WeatherContextTest {
         assertEquals(0, weather.projection(eightDaysLater).cards[1].pressureArrowCount)
     }
 
-    private fun weatherWith(provider: WeatherProvider = QueueProvider(sampleData())): WeatherCapability {
+    private fun weatherWith(
+        provider: WeatherProvider = QueueProvider(sampleData()),
+        cacheStore: WeatherCacheStore = InMemoryWeatherCacheStore(),
+    ): WeatherCapability {
         val settings = SettingsCapability(InMemorySettingsStateStore()).also { it.saveFoundationLocation(location) }
-        return WeatherCapability(settings, InMemoryWeatherCacheStore(), provider)
+        return WeatherCapability(settings, cacheStore, provider)
     }
 
     private fun request(): WeatherProviderRequest = WeatherProviderRequest.fromSyntheticProbe()
@@ -313,6 +445,20 @@ class WeatherContextTest {
         )
     }
 
+    private fun fullDailyData(hourly: List<ProviderHourlyWeather>): ProviderWeatherData =
+        sampleData(hourly = hourly).copy(
+            daily = (0L until 10L).map { offset ->
+                ProviderDailyWeather(
+                    date = LocalDate.of(2024, 1, 2).plusDays(offset),
+                    dayTemperatureCelsius = 2 + offset.toInt(),
+                    nightTemperatureCelsius = 3 + offset.toInt(),
+                    dayCondition = "cloud",
+                    nightCondition = "clear",
+                    moonPhase = "half",
+                )
+            },
+        )
+
     private fun fullDayHourly(startDate: LocalDate): List<ProviderHourlyWeather> =
         (0..1).flatMap { dayOffset ->
             (0..23).map { hour ->
@@ -337,6 +483,52 @@ class WeatherContextTest {
                 credentialWasReceived = request.hasCredential(),
                 redactedCredential = request.redactedCredential(),
                 weatherData = value,
+            )
+        }
+    }
+
+    private class CountingWeatherCacheStore : WeatherCacheStore {
+        private val delegate = InMemoryWeatherCacheStore()
+        var loadRecordCalls: Int = 0
+            private set
+
+        override fun load(): WeatherSnapshot? = delegate.load()
+
+        override fun save(snapshot: WeatherSnapshot) = delegate.save(snapshot)
+
+        override fun loadRecord(): WeatherCacheRecord? {
+            loadRecordCalls += 1
+            return delegate.loadRecord()
+        }
+
+        override fun saveRecord(record: WeatherCacheRecord) = delegate.saveRecord(record)
+
+        override fun reset() = delegate.reset()
+
+        fun resetLoadCount() {
+            loadRecordCalls = 0
+        }
+    }
+
+    private class SuccessThenFailureProvider(
+        private val success: ProviderWeatherData,
+    ) : WeatherProvider {
+        private var calls = 0
+
+        override fun fetch(request: WeatherProviderRequest): WeatherProviderResult {
+            if (calls++ == 0) {
+                return WeatherProviderResult(
+                    payload = RedactedProviderPayload(success.current.temperatureCelsius, success.current.condition.orEmpty()),
+                    credentialWasReceived = request.hasCredential(),
+                    redactedCredential = request.redactedCredential(),
+                    weatherData = success,
+                )
+            }
+            return WeatherProviderResult(
+                payload = RedactedProviderPayload(0, ""),
+                credentialWasReceived = request.hasCredential(),
+                redactedCredential = request.redactedCredential(),
+                failure = WeatherProviderFailure.NETWORK,
             )
         }
     }

@@ -61,9 +61,7 @@ class ProviderCredential private constructor(
 ) {
     fun redacted(): String = REDACTED_VALUE
 
-    internal fun use(block: (String) -> Unit) {
-        block(value)
-    }
+    internal fun <T> use(block: (String) -> T): T = block(value)
 
     companion object {
         private const val REDACTED_VALUE = "[REDACTED]"

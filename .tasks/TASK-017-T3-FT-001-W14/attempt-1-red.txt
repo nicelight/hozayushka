@@ -1,0 +1,11 @@
+TASK: TASK-017-T3-FT-001-W14
+ATTEMPT: 1
+CLAIM: FT-001-AC-002 / REQ-002 — repeated scalar reads reuse one Weather Context display-ready projection without repeated cache record load/decode/build.
+PROBE: com.hozayushka.app.WeatherContextTest.repeatedProjectionReadsReuseOneDisplayReadySnapshot
+COMMAND: ./gradlew testDebugUnitTest --tests 'com.hozayushka.app.WeatherContextTest.repeatedProjectionReadsReuseOneDisplayReadySnapshot'
+CWD: /home/serg/Projects/Mobile_APPS/hozayushka
+INPUT_STATE_BASIS: HEAD=cea5db2d45c06bb7585d071856d96b77079c8284; before this RED probe only the in-boundary WeatherContextTest probe was modified; WeatherCapability.kt was unchanged; no credentials/device/persistent production state used.
+EXIT_CODE: 1
+RESULT: RED — WeatherContextTest failed at assertSame(WeatherProjection, WeatherProjection) on WeatherContextTest.kt:67. The current projection path returns a new display-ready projection for repeated equal input; the counting fixture therefore did not observe snapshot reuse. Current source also directly calls cacheStore.loadRecord() at WeatherCapability.kt:374 for every projection call.
+OBSERVATION: This is an honest pre-production failure of the task-owned memoization claim, not setup, syntax, unrelated, or artificial failure.
+ARTIFACT: Gradle output above; XML/report path app/build/test-results/testDebugUnitTest/TEST-com.hozayushka.app.WeatherContextTest.xml.

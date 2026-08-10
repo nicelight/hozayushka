@@ -1,0 +1,10 @@
+TASK: TASK-017-T3-FT-001-W14
+ATTEMPT: 1
+CLAIM: Full host regression gate for W14 Weather Context optimization and protected existing Main Display/weather/timer/forecast behavior.
+COMMAND: ./gradlew testDebugUnitTest
+CWD: /home/serg/Projects/Mobile_APPS/hozayushka
+INPUT_STATE_BASIS: HEAD=cea5db2d45c06bb7585d071856d96b77079c8284; same declared workspace deviations as the clean-build receipt; current W14 implementation/test surface remains only WeatherCapability.kt and WeatherContextTest.kt; generated test outputs were freshly produced by this command; no credentials/device/persistent production state.
+EXIT_CODE: 0
+RESULT: BUILD SUCCESSFUL; 59 tests across 9 suites, all `skipped=0`, `failures=0`, `errors=0`. WeatherContextTest is 13/13 and DisplayProjectionTest remains 9/9, preserving W13 scalar/display regression coverage.
+COMPLETED_AT: 2026-08-10 01:27 Asia/Dushanbe.
+EVIDENCE: app/build/test-results/testDebugUnitTest/*.xml; WeatherContext XML reports tests=13 failures=0 errors=0; DisplayProjection XML reports tests=9 failures=0 errors=0.

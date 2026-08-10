@@ -1,0 +1,266 @@
+{
+  "id": "TASK-018-T3-FT-002-W15",
+  "title": "Wire the production Yandex Weather adapter behind the accepted provider boundary",
+  "status": "done",
+  "wave": "W15",
+  "feature": "FT-002",
+  "reqs": [
+    "REQ-005",
+    "REQ-007",
+    "REQ-022",
+    "REQ-024",
+    "REQ-025",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-017-T3-FT-001-W14"
+  ],
+  "touched_files": [
+    "app/src/main/AndroidManifest.xml",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/app/",
+    "app/src/test/kotlin/com/hozayushka/app/",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host adapter and weather-context tests",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and task integrity lint",
+      "command": "node scripts/mb-lint.mjs",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Obtain fresh task-scoped RED from the current source before production changes: FoundationRuntime wires RedactedWeatherFixtureAdapter, the manifest has no INTERNET permission, and no Yandex request-shape/transport path exists. Do not reuse W3 or W14 proof as this task's RED/GREEN.",
+    "Keep the existing WeatherProvider, WeatherProviderRequest and WeatherReadPort shapes and accepted graph. Implement the Yandex adapter with the accepted https://api.weather.yandex.ru/v2/forecast endpoint, lat/lon query parameters, hours=true, and X-Yandex-Weather-Key header; use only Android/JDK platform transport and no new Gradle dependency.",
+    "Parse a redacted Yandex-shaped response into the existing ProviderWeatherData boundary for current, daily and hourly fields, preserving selected-city API timezone and the existing Weather Context normalization/completeness rules. Verify downstream read-model compatibility only; do not claim forecast-session or consumer-surface acceptance. Do not move cache, history, freshness or fallback ownership into the adapter.",
+    "Map finite connection/read timeout, I/O, malformed response and non-success responses through the existing WeatherProviderFailure categories; preserve the last successful cache and the accepted clock/timer/cancellation/overdue path on failure. Optional condition/moon omissions retain the existing neutral fallbacks.",
+    "Retrieve the key only through the existing WeatherAccessReader request path, place it only in the request header, and prove with synthetic credentials that it never enters URLs, source, resources, logs, fixtures, screenshots, APK or evidence. Keep the redacted fixture probe path isolated so it cannot issue a live request.",
+    "Wire the production adapter and the existing redacted fixture adapter at the composition root without changing the public capability graph. Refresh calls that can reach production transport run off the UI thread through existing Android/JDK primitives; the composition root remains wiring-only and Weather Context remains the refresh/cache/fallback owner.",
+    "Run downstream hourly/long-term read-model and Settings credential/location boundary checks only as compatibility regressions through the existing contracts; do not claim their feature acceptance and do not reopen or rewrite their historical task records, feature lifecycle, RTM lifecycle, scheduler checkpoint or terminal state.",
+    "Run deterministic host/redacted checks only for this task; do not use a live key or live external request. Target-device/network-readiness evidence remains deferred and must not be claimed as runtime PASS without an authorized target.",
+    {
+      "stage": "reviewer_verification",
+      "mode": "manual_reviewer",
+      "decision": "functional_pass_semantic_fail",
+      "decided_at": "2026-08-10",
+      "gate_summary": {
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-fail",
+        "target_evidence": "DEFERRED; no target-device runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-018-T3-FT-002-W15/verification.md",
+        ".tasks/TASK-018-T3-FT-002-W15/TASK-018-T3-FT-002-W15-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-018-T3-FT-002-W15/red-verification.md",
+        ".tasks/TASK-018-T3-FT-002-W15/TASK-018-T3-FT-002-W15-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [
+        "Incomplete full-daily data can be normalized/persisted as neutral-cloud and exposed through the existing long-term read model.",
+        "An empty hourly payload can replace a previously successful hourly cache."
+      ],
+      "lifecycle_note": "Historical attempt-1 semantic failure; scheduler authorized bounded correction and retry within budget."
+    },
+    {
+      "stage": "reviewer_verification_attempt_2",
+      "mode": "manual_reviewer",
+      "attempt": 2,
+      "decision": "functional_pass_semantic_pass",
+      "decided_at": "2026-08-10",
+      "gate_summary": {
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED; no target-device runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-018-T3-FT-002-W15/verification.md",
+        ".tasks/TASK-018-T3-FT-002-W15/verifier-owned-evidence-attempt-2.md",
+        ".protocols/TASK-018-T3-FT-002-W15/red-verification.md",
+        ".tasks/TASK-018-T3-FT-002-W15/red-verifier-owned-evidence-attempt-2.md",
+        ".tasks/TASK-018-T3-FT-002-W15/TASK-018-T3-FT-002-W15-S-EXE-final-report-code-02.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; target/device evidence remains deferred and no runtime PASS is claimed."
+    },
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-10",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no target-device runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-018-T3-FT-002-W15/handoff.md",
+        ".protocols/TASK-018-T3-FT-002-W15/verification.md",
+        ".tasks/TASK-018-T3-FT-002-W15/verifier-owned-evidence-attempt-2.md",
+        ".protocols/TASK-018-T3-FT-002-W15/red-verification.md",
+        ".tasks/TASK-018-T3-FT-002-W15/red-verifier-owned-evidence-attempt-2.md"
+      ],
+      "accepted_residual_risk": [
+        "Target Android/custom-ROM readability, lifecycle and live-provider/network compatibility remain DEFERRED; no runtime PASS is claimed without explicit emulator/device approval."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json",
+    ".memory-bank/tasks/TASK-017-T3-FT-001-W14.task.json",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md"
+  ],
+  "evidence_required": [
+    "[Weather Provider Boundary; PRD Integrations / Dependencies] Expected RED: the current production composition has only the redacted fixture adapter and no request-shape proof. GREEN: a fake transport captures the exact accepted endpoint, lat/lon, hours=true and X-Yandex-Weather-Key header while the credential value is redacted in the receipt; artifact is a redacted request-shape receipt.",
+    "[FT-002-AC-002; REQ-005, REQ-022] Expected RED: no production-shaped Yandex response reaches the existing provider DTOs. GREEN: a redacted Yandex-shaped response yields current and selected-city-timezone daily data through the existing WeatherProvider boundary, while downstream normalized read-model compatibility remains intact without claiming consumer/session acceptance; artifact is deterministic redacted parse/compatibility output.",
+    "[FT-002-AC-004; REQ-007, REQ-025] Expected RED: the production path has no bounded transport-failure result or cache-preserving integration proof. GREEN: timeout, I/O, auth/status and malformed/incomplete required responses map to existing failure behavior, do not replace the last successful normalized cache, and leave the stable clock/timer path usable; artifact is an isolated host sequence with decisive failure mapping and cache comparison.",
+    "[FT-002-AC-006; REQ-026] Expected RED: production-shaped optional/missing fields have no adapter-to-context proof. GREEN: optional condition/moon omissions retain the existing neutral cloud/regular-moon fallback, while missing required data remains unavailable without crash or fabricated values; artifact is a redacted missing-field result.",
+    "[FT-002-AC-007; REQ-024] RED_NOT_APPLICABLE: meaningful pre-implementation RED would require placing a real or user-like credential into source, resources, logs, fixtures, screenshots or evidence, which the accepted local-secret contract forbids; alternative proof: a synthetic credential is observed only as an in-memory header input, all durable/request receipts are redacted, and source/resource/APK/log/evidence scans find no real credential; artifact is the isolated redaction scan receipt.",
+    "[Platform Runtime Boundary Ownership; REQ-007, REQ-025] Expected RED: production refresh is not wired to an actual transport or a non-UI execution path. GREEN: the manifest adds only INTERNET beside existing ACCESS_NETWORK_STATE, the production adapter is wired at the composition root, refresh transport is dispatched off the UI thread, and the redacted fixture route cannot perform live I/O; artifact is the static boundary/wiring receipt plus the deterministic executor/fixture probe."
+  ],
+  "purpose": "Replace the production fixture-only weather source with a real Yandex REST adapter while preserving the accepted WeatherProvider boundary, local-key contract, Weather Context ownership and compatible forecast consumers.",
+  "success_outcome": "The assembled application wires a production Yandex adapter that sends the accepted redacted request shape, parses current/daily/hourly data through existing DTOs, performs bounded off-UI transport with existing failure/fallback behavior, and is proven by host/redacted tests without a new dependency, public edge, secret leak or live test request.",
+  "anti_goals": [
+    "Do not change the WeatherProvider, WeatherProviderRequest, WeatherReadPort, capability graph or public consumer contracts.",
+    "Do not move cache/history/freshness/fallback ownership out of Weather Context or make the composition root a business owner.",
+    "Do not implement or re-plan forecast-session UI/state, Settings key/location behavior, or any timer/display behavior.",
+    "Do not add a Gradle dependency, backend/proxy, second provider, event/message boundary, shared key, Google Services or any permission beyond INTERNET required for the accepted provider request.",
+    "Do not issue live requests from host tests or the redacted fixture/probe route, and do not use a real user credential."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/AndroidManifest.xml",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/test/kotlin/com/hozayushka/app/",
+      "app/src/test/resources/fixtures/"
+    ],
+    "forbidden_scope": [
+      "all historical TASK-001 through TASK-017 records, their lifecycle/evidence/protocol history and all scheduler checkpoint or terminal-state artifacts",
+      "app/build.gradle.kts, build.gradle.kts and gradle.properties dependency/plugin changes",
+      "Settings & Location private storage, API-key UI/validation, catalog behavior or direct Settings-to-provider access",
+      "Main Display, Forecast Sessions, Timer & Alert and their private storage or business rules",
+      "new modules, graph edges, public/provider capability contract changes, event/message infrastructure or composition-root business orchestration",
+      "real credentials, unredacted request/response data, live network calls in tests, screenshots or evidence"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the smallest production path requires a new module, graph edge, public contract, ownership rule, event/message boundary or composition-root business behavior.",
+      "Stop and return to /feature-to-tasks FT-002 with HALT_CLARIFICATION_REQUIRED if an external dependency, permission beyond INTERNET, security/storage policy, provider endpoint/query/header change or a split into independently deployable outcomes is required.",
+      "Stop if production transport cannot remain off the UI thread while keeping the accepted synchronous WeatherProvider boundary and existing composition/runtime ownership.",
+      "Stop if any verification path requires a real key, live external request, unredacted artifact or target-device claim outside the accepted deferred route."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-002",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-004",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-006",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-007",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json",
+    ".memory-bank/tasks/TASK-017-T3-FT-001-W14.task.json",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/contracts/capability-interfaces.md#ft-004-long-term-forecast-session-surface",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location",
+    ".memory-bank/contracts/weather-provider.md#ft-003-hourly-mapping",
+    ".memory-bank/contracts/weather-provider.md#ft-004-long-term-mapping"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#external-boundary-adapters",
+    ".memory-bank/architecture/system-architecture.md#runtime-composition",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-006---user-api-keys-are-local-and-redacted",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/contracts/capability-interfaces.md#ft-004-long-term-forecast-session-surface",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#ft-002-current-and-daily-mapping",
+    ".memory-bank/contracts/weather-provider.md#ft-003-hourly-mapping",
+    ".memory-bank/contracts/weather-provider.md#ft-004-long-term-mapping",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/contracts/weather-provider.md#verification-route",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification",
+    ".memory-bank/contracts/platform-runtime.md#boundary-ownership",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Weather Context remains the primary owner of refresh orchestration, normalized data, cache/history, freshness and product fallback; the Yandex adapter owns only transport and provider-to-existing-DTO mapping.",
+    "Use the accepted Yandex REST endpoint, coordinates, hours=true and X-Yandex-Weather-Key header; do not put the key in a URL or any durable/diagnostic artifact.",
+    "Use only existing Android/JDK transport and execution primitives. INTERNET is the minimum network permission; retain ACCESS_NETWORK_STATE for the existing signal and add no other permission or Gradle dependency.",
+    "Keep production refresh transport off the UI thread through composition-root wiring while preserving the existing synchronous WeatherProvider boundary for deterministic host tests.",
+    "The redacted fixture adapter remains an isolated disposable probe provider; it must never be the production provider and must never make live I/O.",
+    "Selected-city API timezone remains the source for weather dates/day-night/hourly labels; device timezone remains the FT-001 clock/date source.",
+    "Downstream forecast read models and the Settings credential/location seam are checked only through existing accepted contracts; no completed historical record or feature lifecycle is rewritten."
+  ],
+  "invariants": [
+    ".memory-bank/contracts/boundary-map.md#dependency-graph: only registered Weather Context → Yandex Weather Adapter and existing Settings/forecast consumer boundaries are used.",
+    ".memory-bank/contracts/weather-provider.md#refresh-cache-and-failure-rules: only successful normalized data replaces the local cache; provider failure preserves usable clock/timer behavior.",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract: the user key remains local and appears only during the authorized provider request, never in source/resources/logs/fixtures/evidence.",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules: network absence is a signal and does not expand V1 into backend, reboot recovery or another platform boundary.",
+    ".memory-bank/contracts/weather-provider.md#ft-003-hourly-mapping and #ft-004-long-term-mapping: provider fields remain compatible with existing downstream read models, and incomplete required data remains unavailable rather than fabricated."
+  ],
+  "verification_targets": [
+    "Weather Provider Boundary / PRD Integrations: exact endpoint https://api.weather.yandex.ru/v2/forecast, lat/lon coordinates, hours=true and X-Yandex-Weather-Key header are observed through a fake transport with a redacted receipt.",
+    "FT-002-AC-002 / REQ-005 / REQ-022: a redacted production-shaped response maps current/daily values and selected-city timezone through the existing DTO boundary without changing card presentation or device clock ownership.",
+    "Downstream read-model compatibility / existing forecast and Settings contracts: normalized hourly/long-term data remains structurally compatible and incomplete required fields do not fabricate downstream sessions; this is a regression check only and does not claim foreign feature acceptance.",
+    "FT-002-AC-004 / REQ-007 / REQ-025: finite timeout, I/O, auth/status and malformed/incomplete response paths preserve the successful cache and accepted clock/timer/failure fallback behavior.",
+    "FT-002-AC-006 / REQ-026: missing optional condition/moon fields retain neutral cloud/regular-moon fallback and preserve available temperature/color without crash or invented text.",
+    "FT-002-AC-007 / REQ-024: synthetic-only request and redacted artifact scans prove absence of real credentials from source, resources, APK, logs, fixtures and evidence.",
+    "Platform Runtime Boundary Ownership / Boundary Map Dependency Graph: only INTERNET is added beside existing ACCESS_NETWORK_STATE, production refresh is wired off the UI thread, the fixture route cannot perform live I/O, and no public edge or owner bypass is introduced.",
+    "Tier-policy T3 claim proof: each owned transport, mapping, failure, secret and wiring claim has fresh isolated RED/GREEN or the explicit accepted RED_NOT_APPLICABLE alternative above; no dependency evidence is inherited."
+  ]
+}

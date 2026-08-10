@@ -11,7 +11,7 @@ spec_design_links:
   - .memory-bank/contracts/capability-interfaces.md
   - .memory-bank/contracts/platform-runtime.md
   - .memory-bank/testing/runtime-verification.md
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # FT-001 — Main clock and display shell
 
@@ -143,22 +143,95 @@ fresh execution and verification.
 
 ## W12 public active-countdown dispatch repair
 
-The normal indexed repair plan creates [`TASK-015-T3-FT-001-W12`](../tasks/TASK-015-T3-FT-001-W12.task.json)
-with `planned` status. It owns only the bounded Main Display
-`FT-001-AC-005` city hold/Settings-preservation acceptance delta. The existing
-downstream protected-cancellation contract (REQ-013; regression guard only;
-canonical basis in TASK-015 `normative_inputs`) is exercised by the public
-non-city weather-card single/double checks to prevent cross-feature regression;
-it is not a W12 acceptance locator, a new FT-006 task, or an FT-006 lifecycle
-change. The repair remains inside Main Display and the existing Timer & Alert
-and Settings & Location contracts: it captures one active public touch stream
-through terminal delivery without live-state rechecking, while preserving city
-long-hold -> Settings, selected/empty city taps, preset interactions and
-overdue behavior. This does not reopen or rewrite TASK-014's failed historical
+The authoritative [`TASK-015-T3-FT-001-W12`](../tasks/TASK-015-T3-FT-001-W12.task.json)
+record is now `done` after executor `PASS_FOR_HANDOFF`, fresh functional
+`PASS` and independent semantic `semantic-pass`. It owns only the bounded Main
+Display `FT-001-AC-005` city hold/Settings-preservation acceptance delta. The
+existing downstream protected-cancellation contract (REQ-013; regression guard
+only; canonical basis in TASK-015 `normative_inputs`) was exercised by the
+public non-city weather-card single/double checks to prevent cross-feature
+regression; it is not a W12 acceptance locator, a new FT-006 task, or an
+FT-006 lifecycle change. The repair remains inside Main Display and the
+existing Timer & Alert and Settings & Location contracts: it captures one
+active public touch stream through terminal delivery without live-state
+rechecking, while preserving city long-hold -> Settings, selected/empty city
+taps, preset interactions and overdue behavior. See the [functional
+verification](../../.protocols/TASK-015-T3-FT-001-W12/verification.md),
+[semantic verification](../../.protocols/TASK-015-T3-FT-001-W12/red-verification.md),
+and [verifier-owned evidence](../../.tasks/TASK-015-T3-FT-001-W12/verifier-owned-evidence-attempt-1.md).
+
+This does not reopen or rewrite TASK-014's failed historical
 layout/reachability record; TASK-014 remains `failed` and unchanged, and
-TASK-003 remains `done` and unchanged. Host stream evidence cannot replace the
-mandatory generic-emulator public scenarios.
-Samsung/custom-ROM/1280x720 remains `DEFERRED`.
+TASK-003 remains `done` and unchanged. Host stream evidence remains supporting
+only; generic-emulator public evidence is decisive for the W12 reachability
+claims. Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED` with
+no promoted target-device `PASS`. FT-001 lifecycle and its direct RTM values
+remain `implemented`; no feature closure or scheduler promotion is inferred by
+this boundary sync.
+
+## W13 bounded Main Display ticker debt
+
+The authoritative [`TASK-016-T3-FT-001-W13`](../tasks/TASK-016-T3-FT-001-W13.task.json)
+record is now `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+and independent durable semantic `semantic-pass`. It owns one local
+implementation-debt outcome inside Main Display: consolidate
+ticker scheduling under one owner, gate callbacks on existing Activity
+pause/resume and view attach/detach lifecycle, and retain the last rendered
+weather-card presentation so unchanged 20 Hz scalar ticks do not rebuild the
+four-card view tree. The current clock/date/colon cadence remains intact;
+Weather Context retains cache/projection ownership and Timer & Alert retains
+timer semantics. This is a reuse of the existing architecture, Boundary Map,
+capability and platform contracts, not a new feature acceptance criterion or
+public boundary. See the [executor handoff](../../.protocols/TASK-016-T3-FT-001-W13/handoff.md),
+[functional verification](../../.protocols/TASK-016-T3-FT-001-W13/verification.md),
+[verifier-owned functional evidence](../../.tasks/TASK-016-T3-FT-001-W13/verifier-owned-evidence.md),
+[durable semantic verification](../../.protocols/TASK-016-T3-FT-001-W13/red-verification.md)
+and [semantic report](../../.tasks/TASK-016-T3-FT-001-W13/TASK-016-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md).
+
+W13 is host-proof-only by operator scope. Yandex provider work, timer/audio
+ownership, cross-surface gesture semantics, Forecast-wide optimization and
+target-device evidence remain excluded and require separate evidence/decision.
+Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED` with no
+promoted target-device `PASS`. FT-001 lifecycle and direct RTM values
+`REQ-002`, `REQ-003` and `REQ-022` remain `implemented`; the W2 `done`, W11
+`failed` and W12 `done` task records and their protocol/scheduler history remain
+unchanged. No feature closure, promotion or scheduler-state transition is
+inferred by this boundary sync.
+
+## W14 bounded Weather Context projection/decode follow-up
+
+The authoritative [`TASK-017-T3-FT-001-W14`](../tasks/TASK-017-T3-FT-001-W14.task.json)
+record is `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+and independent durable semantic `semantic-pass`. Based only on advisory
+`TD-W13-001`, it owns no new feature behavior or acceptance criterion: its
+exact implementation delta remains under `FT-001-AC-002 / REQ-002`, separating
+the required W13 scalar 20 Hz clock/date/colon refresh from repeated Weather
+Context display-ready input construction. The existing capability-owned
+`WeatherProjection` snapshot is reused inside Weather Context and invalidated
+only after an accepted successful Weather refresh, an observed validated
+location change or an existing selected-city date/day-night/pressure-trend/
+24-hour freshness boundary. A failed refresh, network signal, timer/lifecycle
+callback or unchanged scalar tick does not invalidate it.
+
+See the [executor handoff](../../.protocols/TASK-017-T3-FT-001-W14/handoff.md),
+[functional verification](../../.protocols/TASK-017-T3-FT-001-W14/verification.md),
+[verifier-owned functional evidence](../../.tasks/TASK-017-T3-FT-001-W14/verifier-owned-evidence.md),
+[durable semantic verification](../../.protocols/TASK-017-T3-FT-001-W14/red-verification.md)
+and [semantic report](../../.tasks/TASK-017-T3-FT-001-W14/TASK-017-T3-FT-001-W14-S-RED-VERIFY-final-report-docs-01.md).
+
+Weather Context remains the sole owner of provider refresh, normalized data,
+cache/history, freshness and projection semantics; Main Display remains a
+read-only consumer through the existing `Main Display → Weather Context` edge.
+Direct FT-001 RTM values remain implemented; `REQ-007` and `REQ-025` remain
+the existing Weather Context/Timer & Alert requirements and regression guards,
+not new W14 lifecycle claims. W14 is host/static proof only. Samsung/custom-ROM/
+1280x720 physical evidence remains `DEFERRED` with no promoted target-device
+`PASS`. Forecast, Yandex provider, Timer/audio, gestures and target-device
+behavior remain excluded; no public boundary, module, dependency, event,
+provider implementation or Planning Revision changes. W2 `done`, W11
+`failed`, W12 `done` and W13 `done` task records and their protocol history
+remain unchanged. No feature closure, promotion or scheduler-state transition
+is inferred by this boundary sync.
 
 ## SDD Design Gate
 
@@ -168,6 +241,8 @@ and dependency graph. Feature-level design is complete for task planning.
 
 Applicable global specs: [System Architecture](../architecture/system-architecture.md),
 [Boundary Map](../contracts/boundary-map.md), [Capability Interfaces](../contracts/capability-interfaces.md),
+[Weather Provider](../contracts/weather-provider.md), [Weather Card Presentation](../contracts/weather-card-presentation.md),
+[Local Data](../domains/local-data.md), [Lifecycle Map](../states/lifecycle-map.md),
 [Platform Runtime](../contracts/platform-runtime.md) and [Runtime Verification](../testing/runtime-verification.md).
 The feature does not choose the UI toolkit or test level. Exact implementation
 choices remain execution discretion unless they change an accepted boundary or

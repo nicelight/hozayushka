@@ -1,7 +1,7 @@
 ---
 description: Global SDD backbone, area matrix and Foundation Dev Path routing state.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 ---
 # SDD Spec Backbone
 
@@ -148,12 +148,61 @@ details are intentionally routed without changing the accepted backbone:
   task-local bug note are linked from FT-001 and FT-006. TASK-003, FT-001 and
   FT-006 lifecycle/RTM values, dependencies, Planning Revision `1`, the
   scheduler checkpoint and terminal state remain unchanged; `spec-index.md`
-  remains a pure registry. Normal indexed FT-001 planning now retains the
-  failed W11 record and adds planned `TASK-015-T3-FT-001-W12`, whose only
-  task-owned acceptance is the bounded FT-001-AC-005 city
+  remains a pure registry. Normal indexed FT-001 planning retained the
+  failed W11 record and added `TASK-015-T3-FT-001-W12` (initially `planned`),
+  whose only task-owned acceptance is the bounded FT-001-AC-005 city
   hold/Settings-preservation delta. The existing downstream protected-
   cancellation contract (REQ-013) remains a regression guard only; its exact
   FT-006 canonical basis is retained in TASK-015 `normative_inputs`, with no
   new FT-006 task or lifecycle change. No new design or contract decision is
   made here; lifecycle/RTM values, existing-task dependencies, Planning
   Revision `1`, scheduler checkpoint and terminal state remain unchanged.
+- The W12 boundary records `TASK-015-T3-FT-001-W12` as `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent semantic
+  `semantic-pass`. The task-owned acceptance remains the bounded FT-001-AC-005
+  Main Display city hold/Settings-preservation delta; REQ-013 is a regression
+  guard only. FT-001 remains `implemented`; FT-006, REQ-013 and Timer & Alert
+  ownership remain unchanged. Generic-emulator evidence is decisive for the
+  public matrix, while Samsung/custom-ROM/1280x720 physical evidence remains
+  `DEFERRED` with no promoted runtime `PASS`. The task registry already indexes
+  W12; `requirements.md` RTM and `spec-index.md` remain unchanged and pure,
+  respectively. Scheduler checkpoint, terminal state, retry counters,
+  promotion and dependent-state reconciliation remain outside this sync.
+- The W13 boundary records `TASK-016-T3-FT-001-W13` as `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent durable semantic
+  `semantic-pass`; executor, functional and semantic evidence is linked from
+  FT-001 and its implementation plan. FT-001/EP-001 lifecycles and direct RTM
+  values `REQ-002`, `REQ-003` and `REQ-022` remain `implemented`; Weather
+  Context, Timer & Alert, Forecast and the accepted architecture/spec contracts
+  remain unchanged. W13 is host/static proof only; Samsung/custom-ROM/1280x720
+  physical evidence remains `DEFERRED` with no target-device runtime `PASS`
+  claim. The task registry already indexes W13, `spec-index.md` remains a pure
+  registry, and no feature/epic closure, promotion, dependent-state,
+  scheduler-checkpoint or terminal-state transition is performed by this sync.
+- The W14 boundary records `TASK-017-T3-FT-001-W14` as `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent durable semantic
+  `semantic-pass`; executor, functional and semantic evidence is linked from
+  FT-001, FT-002 and the FT-001 implementation plan. The task-owned locator
+  remains `FT-001-AC-002 / REQ-002`; `REQ-007`, `REQ-022` and `REQ-025` remain
+  governing regression constraints, with existing RTM values unchanged.
+  Weather Context keeps cache/history, refresh, freshness and projection
+  ownership, and the existing Main Display → Weather Context edge remains
+  unchanged. W14 is host/static proof only; Samsung/custom-ROM/1280x720
+  physical evidence remains `DEFERRED` with no target-device runtime `PASS`
+  claim. The task registry already indexes W14, `spec-index.md` remains a
+  pure registry, and no feature/epic closure, promotion, dependent-state,
+  scheduler-checkpoint or terminal-state transition is performed by this sync.
+- The W15 boundary records `TASK-018-T3-FT-002-W15` as `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent semantic
+  `semantic-pass`; current task-owned evidence is linked from FT-002, its
+  implementation plan and EP-002 routing. W15 proves the accepted Yandex
+  request/mapping/failure/cache, synthetic redaction, fixture isolation and
+  off-UI wiring delta behind the existing provider boundary. Direct RTM values
+  `REQ-005`, `REQ-007`, `REQ-022`, `REQ-025` and `REQ-026` remain `implemented`;
+  `REQ-024` remains `planned` under FT-008. Existing provider/public contracts,
+  graph ownership, FT-002 lifecycle and EP-002 lifecycle remain unchanged.
+  W15 is host/build/static/redacted proof only; target-device and live-provider
+  compatibility remain `DEFERRED`, with no runtime `PASS` claim. The task
+  registry already indexes W15, `spec-index.md` remains a pure registry, and
+  no promotion, dependent-state, scheduler-checkpoint or terminal-state
+  transition is performed by this sync.

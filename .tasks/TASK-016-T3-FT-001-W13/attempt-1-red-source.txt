@@ -1,0 +1,35 @@
+W13 claim-linked RED — Attempt 1, before production change
+
+Command:
+set -e
+source_file=app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt
+sed -n '277,672p' "$source_file" | nl -ba | rg 'view\.post\(ticker\)|root\.post\(ticker\)|postDelayed\(this, 50L\)'
+start_count=$(sed -n '277,672p' "$source_file" | rg -n 'view\.post\(ticker\)|root\.post\(ticker\)' | wc -l)
+remove_count=$(sed -n '277,672p' "$source_file" | rg -n 'cards\.removeAllViews\(\)' | wc -l)
+add_count=$(sed -n '277,672p' "$source_file" | rg -n 'cards\.addView\(' | wc -l)
+
+cwd: /home/serg/Projects/Mobile_APPS/hozayushka
+source basis: current workspace before W13 production change; W12 unstaged
+dispatcher edits in the same source/test files were preserved.
+
+Observed output:
+W13_RED_MAIN_DISPLAY_PROBE
+main ticker scheduling entries:
+   381 root.postDelayed(this, 50L)
+   386 view.post(ticker)
+   393 root.post(ticker)
+main_start_count=2
+remove_all_count=1
+card_add_count=2
+focused_host_probe=PASS_FOR_RED_OBSERVATION
+red_claim=duplicate_main_display_start_and_every_tick_card_tree_rebuild
+source_hash=0313323f33d8c8776dd67de05e44ba5e17fea51fe5c59feafd945a909994a041
+
+Claim comparison:
+- `FT-001-AC-002 / REQ-002`: RED observed — every scalar refresh removes and
+  recreates the weather-card tree.
+- `FT-001-AC-003 / REQ-002 / REQ-022`: RED observed for the lifecycle portion
+  — Main Display ticker has no Activity pause gate; scalar timezone behavior is
+  retained as regression coverage.
+- `FT-001-AC-004 / REQ-003`: accepted `RED_NOT_APPLICABLE`; do not break the
+  already-green colon/countdown contract to manufacture RED.

@@ -1,0 +1,9 @@
+TASK: TASK-017-T3-FT-001-W14
+ATTEMPT: 1
+CLAIM: FT-001-AC-002 / REQ-002 with REQ-007 / REQ-022 / REQ-025 regression path — Weather Context reuses unchanged projection input and invalidates at accepted boundaries without changing four-card/time/freshness/pressure semantics.
+COMMAND: ./gradlew testDebugUnitTest --tests com.hozayushka.app.WeatherContextTest
+CWD: /home/serg/Projects/Mobile_APPS/hozayushka
+INPUT_STATE_BASIS: HEAD=cea5db2d45c06bb7585d071856d96b77079c8284; current W14 production/test changes are limited to WeatherCapability.kt and WeatherContextTest.kt; isolated in-memory settings/cache/provider fixtures; no credentials/device/persistent production state.
+EXIT_CODE: 0
+RESULT: GREEN — BUILD SUCCESSFUL; 13 WeatherContextTest cases completed, including repeated snapshot reuse with zero cache loads after accepted refresh, accepted refresh replacement, failed-refresh identity preservation, observed location change, pressure boundary, selected-city night/day and stale-empty transition.
+ARTIFACT: app/build/test-results/testDebugUnitTest/TEST-com.hozayushka.app.WeatherContextTest.xml.

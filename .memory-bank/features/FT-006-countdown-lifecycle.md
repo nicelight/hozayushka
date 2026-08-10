@@ -4,7 +4,7 @@ status: draft
 id: FT-006
 epic: EP-003
 lifecycle: implemented
-last_updated: 2026-08-08
+last_updated: 2026-08-09
 spec_design_status: complete
 spec_design_links:
   - .memory-bank/contracts/boundary-map.md
@@ -133,10 +133,17 @@ bug note and the [semantic report](../../.tasks/TASK-014-T3-FT-001-W11/TASK-014-
 rows remain unchanged; repair is routed through normal indexed FT-001
 planning.
 
-The planned [`TASK-015-T3-FT-001-W12`](../tasks/TASK-015-T3-FT-001-W12.task.json)
-is the repair owner for the public Main Display dispatch delta only: it must
-deliver the existing double-tap command from a non-city weather-card touch
-stream and cross-check the accepted single-tap hint, city hold/double and
-overdue/preset guards. `TASK-008-T3-FT-006-W7`, FT-006 lifecycle/RTM values and
-Timer & Alert semantic ownership remain unchanged; no new timer contract is
-introduced.
+The indexed [`TASK-015-T3-FT-001-W12`](../tasks/TASK-015-T3-FT-001-W12.task.json)
+repair is now `done` after fresh functional `PASS` and semantic
+`semantic-pass`. It repaired only the public Main Display dispatch path:
+non-city weather-card double tap cancels through the existing Timer & Alert
+contract, while single-tap protection, city hold/double, preset and overdue
+guards remain intact. See the [functional verification](../../.protocols/TASK-015-T3-FT-001-W12/verification.md),
+[semantic verification](../../.protocols/TASK-015-T3-FT-001-W12/red-verification.md),
+and [verifier-owned evidence](../../.tasks/TASK-015-T3-FT-001-W12/verifier-owned-evidence-attempt-1.md).
+
+This is a cross-feature regression repair owned by FT-001, not a new FT-006
+task or timer contract. `TASK-008-T3-FT-006-W7`, FT-006 lifecycle,
+REQ-012/013/014/025 RTM values and Timer & Alert semantic ownership remain
+unchanged. Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED`;
+generic-emulator evidence is not promoted to a target-device `PASS`.
