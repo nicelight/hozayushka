@@ -16,20 +16,17 @@ Close or safely reconcile one product feature's tasking surface:
 - applicable feature-level SDD concern coverage and canonical spec links;
 - one implementation plan;
 - optional evidence-grounded behavior examples;
-- the smallest cohesive schema-backed JSON task queue;
+- an execution-cohesive schema-backed JSON task queue;
 - verification-ready T2/T3 single-card handoff.
 
 This command plans; it never executes tasks.
 </objective>
 
 <input_contract>
-`$ARGUMENTS`:
-- `FT-<NNN>`: one product feature;
-- `--all`: every product feature in priority order, excluding `FT-000`.
-
-Without arguments, ask the operator to select a feature in interactive mode;
-unattended orchestration uses `--all`. Reject `FT-000`; Foundation tasking
-belongs to `/foundation-to-tasks`.
+Accept exactly one product `FT-<NNN>`. Without arguments, ask the operator to
+select one feature in interactive mode; unattended callers must supply it
+explicitly. Reject `FT-000` and every non-single-feature target; Foundation
+tasking belongs to `/foundation-to-tasks`.
 
 Before any durable plan or task write, require:
 - target feature, linked epic, governing REQ/RTM, clarified PRD, and applicable
@@ -46,22 +43,19 @@ Before any durable plan or task write, require:
   transitive dependency of every product task;
 - `.memory-bank/tasks/index.json`, every existing indexed task for the target,
   and existing plan/protocol/behavior evidence used for reconciliation;
-- parsed `.memory-bank/schemas/task.schema.json` and
-  `.memory-bank/workflows/tier-policy.md#tier-classification-and-escalation`,
-  `#hard-write-boundary`, `#task-scoped-acceptance-evidence`, and
-  `#claim-linked-red--green-for-t2t3` before drafting even provisional task
-  records.
+- `.memory-bank/workflows/execute-loop.md#fresh-feature-tasking-boundary`,
+  `#execution-cohesive-task-boundary`, and
+  `.memory-bank/workflows/tier-policy.md#task-claim-and-dependency-ownership`
+  before slicing;
+- available `.memory-bank/schemas/task.schema.json` and remaining applicable
+  tier-policy sections; parse them after boundary acceptance and before drafting
+  task records.
 
 Block task drafting when clarification is explicitly `pending|blocked`, feature
 design is `blocked`, a decomposition-relevant unresolved marker remains, global
 backbone/foundation readiness is invalid, or schema/tier policy is unavailable
-or incompatible. Missing clarification metadata alone is allowed.
-
-For `--all`, preflight the complete target set before planning writes. Report
-all blockers and create no partial affected queue. After that preflight, keep
-the active planning working set to one feature at a time before moving to the
-next target. This is bounded working focus, not a physical context reset or a
-new execution mode.
+or incompatible. `PLANNING_RECONCILIATION_REQUIRED` is an instruction to
+reconcile, not a blocker. Missing clarification metadata alone is allowed.
 </input_contract>
 
 <hard_invariants>
@@ -81,14 +75,14 @@ new execution mode.
   requires an explicit operator request.
 - If repair needs identity, tier, wave, dependency, AC, or material-scope
   changes, report `rebuild_required`; do not hide a new task behind repair.
-- One task has one cohesive independently verifiable outcome. Do not split by
-  file, module, layer, artifact, or tests. Split only for independent outcomes,
-  hard dependencies/waves, or materially different risk/rollback. Task count
-  is not an optimization target.
+- Every task boundary satisfies
+  `.memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary`.
 - Product feature, architecture slice/module, and task are distinct. A feature
   may cross slices and a slice may support several features. A task normally
-  has one primary owning slice/module, but a cohesive cross-slice outcome is
-  valid when one orchestration owner and every crossed boundary are explicit.
+  has one primary owning slice/module. A task may cross slices only after the
+  execution-cohesion rule leaves one indivisible outcome; an orchestration
+  owner and explicit crossed boundaries establish ownership, not merge
+  evidence.
 - `boundary-map.md` alone owns module identity and topology; plans and tasks
   link relevant graph/contract blocks without copying the subgraph.
 - `touched_files` is advisory and non-exhaustive. A non-empty
@@ -120,9 +114,9 @@ or canonical spec identity belongs to the operator.
   Constitution, or Foundation artifact; record it in
   `.protocols/FT-<NNN>/decision-log.md` when useful for handoff, remove
   contradictory wording, and revalidate before task writes.
-- Route shared/global decisions to `/spec-design`, PRD-owned acceptance to
-  `/write-prd`, missing REQ/AC decomposition to `/prd-to-features`, and
-  feature-local ambiguity to `/feature-doctor FT-<NNN>`.
+- Route accepted shared/global design changes to `/spec-redesign`, PRD-owned
+  acceptance to `/write-prd`, missing REQ/AC decomposition to
+  `/prd-to-features`, and feature-local ambiguity to `/feature-doctor FT-<NNN>`.
 - Unattended flow records the question and affected scope, writes no affected
   tasks, returns `HALT_CLARIFICATION_REQUIRED` for product clarification or
   `HALT_BLOCKING_QUESTIONS` for design/contract decisions, and names the exact
@@ -141,7 +135,8 @@ policy, the agent chooses:
 - whether a resumable concern note is useful or an in-memory audit is enough;
 - `reuse|extend|create|not_applicable|block` for each applicable concern;
 - the minimal canonical artifact shape;
-- task slicing, dependency/wave shape, and cheapest sufficient verification;
+- task slicing and, after boundary acceptance, dependency/wave shape and
+  cheapest sufficient verification;
 - whether 0-3 behavior examples materially reduce real ambiguity.
 
 Architecture, Interfaces/Contracts, Data, state, security, runtime, operations,
@@ -168,8 +163,8 @@ Create/update only the existing artifacts:
 The implementation plan captures goals, scope/non-goals, cohesive strategy,
 dependencies, expected advisory change surface, tests/gates/UAT, applicable
 Constitution constraints, source/normative inputs, invariants, verification
-targets, and direct canonical links. A concise provisional outline may be kept
-in `plan.md` only when it improves resume safety; it is not another task model.
+targets, and direct canonical links. `.protocols/FT-<NNN>/plan.md` is bounded
+resume state, not another task model.
 
 Reconcile the feature with the canonical graph before handoff. Every
 task-relevant change unit and inter-module interaction must resolve to a
@@ -177,31 +172,21 @@ registered node and an accepted edge with an exact contract heading, or block.
 For changed providers, cover relevant consumers until a compatible boundary
 stops propagation. Leaf modules/edges inside accepted architecture preserve
 Planning Revision; global architecture or ownership changes route to
-`/spec-design`. The plan records only affected module/contract links and the
+`/spec-redesign`. The plan records only affected module/contract links and the
 implementation reason for task order, dependencies, and waves.
 
-When the expected advisory change surface names a new, moved, or renamed
-project-authored source path, treat its code root, directories, and complete
-filename as one context surface. Apply the accepted owner/code root and
-naming/path convention, the nearest relevant local pattern when available, and
-governing framework/tooling/generator/scaffold semantics. Use only necessary
-semantic nesting, avoid mechanical directory/filename repetition, preserve
-required or reserved filename parts, and do not infer import/module, public
-path, package export, route, or build-target identities from name similarity.
-Carry an evidence-backed expected path through existing plan fields and advisory
-`touched_files`; leave an immaterial exact filename choice to `/exe` instead of
-turning it into a blocker, new task field, or hard `write_boundary`.
+Expected project-authored paths follow `AGENTS.md#source-path-semantics`. Carry
+an evidence-backed expected path through existing plan fields and advisory
+`touched_files`; leave an immaterial exact filename choice to `/exe`, not a
+blocker, new task field, or hard `write_boundary`.
 
 When the accepted architecture defines modules or capability slices, the plan
-also identifies the primary owning slice/module and code root for each planned
-outcome. A cross-slice outcome names one orchestration owner, the public
-boundaries crossed, and the ownership or direct-write bypasses that remain
-forbidden. That owner must be one capability slice; do not place business
-orchestration in an HTTP/UI/bot handler, generic utility/shared helper, or the
-composition root. Use an owner already accepted in the global architecture;
-if none applies unambiguously, route the material boundary to `/spec-design`
-instead of creating an orchestration slice during task planning. Do not derive
-task count from slice, layer, or file count.
+names the primary owner and code root for each outcome. A cross-slice outcome
+names one accepted capability owner, crossed public boundaries, and forbidden
+ownership/direct-write bypasses; business orchestration does not belong in a
+transport handler, generic helper, or composition root. Missing accepted
+ownership routes to `/spec-redesign`. Do not derive task count from slices,
+layers, or files.
 
 ## Canonical SDD coverage
 
@@ -218,6 +203,13 @@ applicable canonical spec defining:
 - `MUST` / `MUST NOT` rules;
 - edge cases/errors;
 - verification target.
+
+Before handoff, resolve each evidenced material boundary decision in its owning
+canonical artifact when execution would otherwise determine public or
+cross-boundary behavior, compatibility or migration, authority, or state/data
+ownership. Unresolved authority uses the existing operator-decision and blocker
+route. This constrains outcomes, not analysis order, inapplicable coverage, or
+implementation tactics.
 
 Direct routes include Architecture Specification, Component/API/Event/Data
 Contracts, Data Specification for internal models/storage/migrations, domain or
@@ -254,6 +246,8 @@ spec_design_links:
 - unresolved concern means `blocked` and no affected task handoff;
 - no `needed_before_tasks` Backbone Area Matrix row may remain after a
   successful handoff.
+- Successful reconciliation removes `PLANNING_RECONCILIATION_REQUIRED` even
+  when no artifact change was needed; blocked/incomplete handoff keeps it.
 
 ## Optional behavior specs
 
@@ -269,45 +263,63 @@ relevant examples as described by the hard invariant above.
 
 ## JSON task records
 
-Before task emission, internally separate authoritative acceptance, claim
-ownership across dependencies, slicing, and minimal proof. Do not persist this
-analysis or let generated detail create authority.
+Before boundary confirmation, use only authoritative feature acceptance,
+current queue constraints, applicable canonical specs/owners,
+`.memory-bank/workflows/execute-loop.md#execution-cohesive-task-boundary`, and
+`.memory-bank/workflows/tier-policy.md#task-claim-and-dependency-ownership`.
+Do not persist slicing analysis or let generated detail create authority.
 
-Run one bounded acceptance-closure scan: material edge/failure outcomes have an
-AC or sourced authoritative exclusion, material NFRs have an accepted REQ/AC
-result and verification method, and every AC has one owning task. Reconcile an
-obvious missing locator; for an existing indexed queue, use `rebuild_required`
-for identity, tier, dependency, AC, accepted target/condition, or material-scope
-changes, and the owning blocker route for unresolved authority.
+Close the eligible exact claim set before slicing. Add the minimally sufficient
+atomic AC for each independent material feature outcome not already covered by
+an exact AC. A distinct material technical acceptance result may use an exact
+single-obligation canonical locator; a multi-obligation section is context, not
+a claim. Constraints, safeguards, methods, and artifact formats do not become
+claims without accepted authority. Material edge/failure outcomes require an AC
+or sourced exclusion; material NFRs require an accepted REQ/AC result and
+verification method.
 
-For a provisional task with an independent material outcome but no exact
-feature AC, automatically add the minimally sufficient atomic ACs grounded in
-applicable accepted specs and REQ. Use task scope to identify missing acceptance
-ownership; specs are the authority. Choose AC count, boundaries, and proof
-mapping by KISS. This defines the required result, not analysis order or tactic.
-Stop only at a real contradiction or unresolved material decision in
-authoritative sources.
+Run one slicing pass:
+1. Enumerate recursively the grounded material implementation, proof,
+   failure/retry/rollout/rollback surfaces exposed by exact claims and canonical
+   owners; do not group them into units yet.
+2. For every surface, state separately `implementation result | independent
+   proof`. A surface that reaches the shared completion definition is an
+   unmerged unit; a claim, owner, section, command, transaction, or flow is not
+   an atomic unit by itself.
+3. Merge only when accepted contracts and, when available, bounded code/change
+   evidence show that separate completion is impossible; otherwise keep sibling
+   tasks.
 
-Before initially emitting JSON task records, form provisional candidates and
-run one bounded execution-path sanity check per candidate. Inspect only one
-plausible evidence-backed path from the first necessary change through the main
-implementation steps to the observable outcome and cheapest sufficient
-verification. Use the target feature, direct canonical specs, necessary
-dependency records, and the plausible code/change surface when available.
+Use claims and owners as split signals and assign every eligible exact claim one
+resulting task owner. Existing-queue identity, tier, dependency, AC,
+target/condition, or material-scope changes use `rebuild_required`; unresolved
+authority uses its existing blocker route.
 
-Look only for hidden work that changes the task boundary. Retain a cohesive
-candidate; re-slice when the path exposes an independent prerequisite or
-outcome, a separate rollout/rollback unit, a blocking dependency, or materially
-different risk/tier route; use the existing blocker and operator-decision route
-when a material branch remains unresolved. End the check as soon as that
-boundary decision is possible. Do not compare speculative architectures, write
-pseudocode, perform an unrelated full audit, persist the check, or add a field,
-artifact, status, or report. Newly produced candidates receive the same bounded
-check before emission.
+In direct interactive use, show the named
+`unmerged units -> justified merges -> final task candidates`: each unmerged
+unit as `implementation result | independent proof`, each merge with the
+source/code fact that makes those completions inseparable, and each final
+candidate outcome.
+Counts alone are insufficient. For a new queue, assign no task IDs, tiers,
+waves, concrete `depends_on`, or record fields before explicit boundary
+acceptance. Wait for acceptance or a specific split/consolidation request;
+apply requests only when contracts and execution cohesion remain valid.
 
-This check does not silently re-slice an existing indexed queue. If it exposes
-a material identity, dependency, tier, AC, or scope change during
-reconciliation, use the existing `rebuild_required` route.
+After acceptance, persist the concise boundary outline in
+`.protocols/FT-<NNN>/plan.md` as the first durable task-planning write.
+Unattended orchestration performs the same pass without the operator checkpoint.
+Keep slicing limited to direct sources and enough code/proof surface for the
+boundary decision; do not persist a check/report or perform a full audit.
+Slicing never silently changes an existing indexed queue.
+
+After the boundary pass is accepted interactively or completed unattended,
+parse `.memory-bank/schemas/task.schema.json` and read
+`.memory-bank/workflows/tier-policy.md#tier-classification-and-escalation`,
+`#hard-write-boundary`, `#task-scoped-acceptance-evidence`,
+`#claim-linked-red--green-for-t2t3`, `#tier-obligations`, and
+`#closure-authority`. Then assign IDs, tiers, waves, concrete `depends_on`, proof
+fields, and other record content. Existing queues retain the identity and
+lifecycle constraints above.
 
 Create/reconcile
 `.memory-bank/tasks/TASK-<NNN>-T<N>-FT-<NNN>-W<N>.task.json` and index each
@@ -320,63 +332,24 @@ Additionally require:
   A grounded locator may be added to a historical task without inventing
   RED/GREEN evidence or changing its lifecycle;
 - every T1/T2/T3 task has concrete governing `REQ-*` links;
-- every newly created or reconciled `planned|ready` task at any tier that proves
-  a material NFR has its governing `REQ-*`, exact AC locator, non-empty
-  `verification_targets`, and non-empty `evidence_required` identifying the
-  result, decisive conditions, pass/fail comparison, and artifact without
-  repeating linked method. Shared probes map every covered AC explicitly;
-- human/expert review names its criterion/rubric, reviewer role, and artifact;
-  it is evidence, not a T3 checkpoint;
-- every task has a cohesive, independently observable outcome and grounded
-  dependency graph;
-- `depends_on` keeps dependency proof with its owner. Downstream cards map only
-  their task-owned outcome and integration delta; regression checks remain
-  gates or `verification_targets` for that outcome;
 - every required Foundation final-gate dependency is direct or transitive;
-- fields such as `source_artifacts`, `normative_inputs`, `constraints`,
-  `invariants`, `verification_targets`, purpose/outcome, and runtime context
-  contain only task-relevant evidence;
-- for a task governed by accepted module/slice boundaries, put the directly
-  relevant architecture, graph-section, and exact contract-heading paths in
-  existing `source_artifacts` and/or `normative_inputs`, the expected code
-  surface in advisory `touched_files`, and applicable ownership/bypass rules in
-  existing constraints, invariants, anti-goals, or runtime context;
-- express the primary owning slice/module and any cross-slice orchestration
-  through those existing fields and linked specs; do not add an `owning_slice`
-  field, mechanically copy a slice code root into `write_boundary`, or forbid
-  task-required tests, migrations, composition, or public-contract changes;
-- for a cross-slice task, make the owning capability and the prohibition on
-  transport-handler, generic-util, and composition-root business orchestration
-  directly legible through existing linked specs and constraint fields;
+- for accepted module/slice boundaries, map direct architecture/graph/contract
+  links, expected files, owner, crossed boundaries, and ownership/bypass rules
+  through existing fields. Do not add `owning_slice`, mechanically copy a code
+  root into `write_boundary`, place cross-slice business orchestration in a
+  forbidden technical owner, or exclude task-required work;
 - carry an applicable existing project-native architecture check through
   `gates` or `verification_targets`. If an accepted rule requires a missing
   check, plan that accepted work instead of emitting a nonexistent command;
 - when a linked runtime/state rule requires reproducibility, carry its known
   initial state, safe rerun, observable result, and cleanup/isolation proof;
   do not infer this process for simple/stateless work;
-- optional `anti_goals`, forbidden scope, constraints, invariants,
-  `evidence_required`, and stop conditions remain empty/absent when not
-  grounded;
-- every T2/T3 task has non-empty `purpose`, scalar `success_outcome`, and the
-  direct task-relevant subset of canonical specs through existing SDD paths;
-  it also carries advisory
-  expected change surface and/or a deliberate hard write scope, and at least
-  one real gate command and/or non-empty verification target;
-- every newly created or reconciled `planned|ready` T2/T3 task maps the
-  tier-policy proof scope through `verification_targets`; `evidence_required`
-  contains only the minimal result contract defined there. Shared probes
-  produce a distinguishable result for each claim;
+- populate fields only with task-relevant grounded evidence; leave optional
+  fields empty/absent. T2/T3 records satisfy tier obligations and carry advisory
+  expected change surface and/or a justified hard write scope;
 - an AC-linked mapping retains its exact `FT-<NNN>-AC-<NNN>` ID. A
   not-applicable mapping uses `<AC-ID> RED_NOT_APPLICABLE: <reason>;
-  alternative proof: <proof>`;
-- when meaningful RED is not applicable, record one concrete task-specific
-  accepted reason in `evidence_required`. The reason must explain why absence
-  of the accepted behavior cannot or should not be observed without falsifying
-  the task; tier, convenience, or a missing test harness is insufficient;
-- for T3, cover every task-owned harm-driving claim required by accepted
-  requirements or evidenced material risk, inside already authorized
-  isolated/disposable state with safe rerun and cleanup. The proof path never
-  grants broader permissions;
+  alternative proof: <proof>` and the tier-policy justification rule;
 - mutable persistence names the real runtime storage path and a read/write or
   repository-integration proof; otherwise the applicable spec records why it
   is not relevant.
@@ -404,15 +377,10 @@ Before handoff:
   credible claim-linked RED/GREEN path or a concrete accepted not-applicable
   reason; reject inherited dependency proof, unsupported evidence requirements,
   and unsafe or permission-expanding T3 probes;
-- when accepted module/slice boundaries apply, confirm a fresh executor can
-  locate the primary owner/code root, public boundary, forbidden bypasses,
-  eligible cross-slice orchestration owner when relevant, forbidden technical
-  placements for that orchestration, and proof path directly from the card and
-  its linked specs;
-- when advisory change surfaces name project-authored source, confirm the
-  proposed paths preserve accepted owner/code-root, naming/path,
-  framework/tooling/generator/scaffold, and executable-identity semantics; any
-  remaining exact filename choice must be immaterial execution discretion;
+- for module/slice boundaries and advisory project-authored paths, confirm a
+  fresh executor can locate the owner/root, public boundary, forbidden bypasses,
+  proof path, and an expected path compliant with
+  `AGENTS.md#source-path-semantics`; any remaining filename choice is immaterial;
 - confirm every accepted operator decision is durably applied and no material
   branch remains unresolved.
 
@@ -430,12 +398,10 @@ In the final chat response, report:
 - immediate next step.
 
 - Successful single-feature result -> `/review-tasks-plan FT-<NNN>`.
-- Successful `--all` -> one fresh-context `/review-tasks-plan FT-<NNN>` per
-  task-linked product feature.
 - Blocked PRD-owned target/scope/pass-fail decision -> `/write-prd`;
   feature-local product clarification -> `/feature-doctor
   FT-<NNN>`; missing REQ/AC decomposition -> `/prd-to-features`; blocked
-  shared/global decision -> `/spec-design`.
+  shared/global decision -> `/spec-redesign`.
 
 Conditional `/mb-doctor` and execution happen only after the task-plan review;
 they are not performed by this command.
