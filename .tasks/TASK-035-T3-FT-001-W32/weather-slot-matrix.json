@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "slot_order": ["YESTERDAY", "TODAY", "TOMORROW", "DAY_AFTER"],
+  "raster_measurement_tolerance": "max(2px, 0.005H)",
+  "states": [
+    {"name": "NO_DATA", "projection_available": [true, true, true, true], "shell_slots": 4},
+    {"name": "PARTIAL_ASYNC", "projection_available": [true, false, false, false], "shell_slots": 4},
+    {"name": "POPULATED_REDACTED", "projection_available": [true, true, true, true], "shell_slots": 4}
+  ],
+  "green_geometry": {
+    "2460x1080": {"card_heights": [302, 302, 302, 302], "card_bottoms": [1056, 1056, 1056, 1056]},
+    "1280x720": {"card_heights": [201, 201, 201, 201], "card_bottoms": [696, 696, 696, 696]}
+  },
+  "result": "pass",
+  "source": "app/build/test-results/testDebugUnitTest/TEST-com.hozayushka.app.DisplayProjectionTest.xml"
+}

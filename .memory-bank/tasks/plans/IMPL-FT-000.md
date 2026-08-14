@@ -1,7 +1,7 @@
 ---
 description: Implementation plan for the FT-000 executable Android Foundation baseline.
 status: active
-last_updated: 2026-08-06
+last_updated: 2026-08-10
 ---
 # IMPL-FT-000 — Foundation executable baseline
 
@@ -46,5 +46,6 @@ not fabricate execution evidence or mark either task done.
 The final gate is `done` by explicit owner decision. The owner accepted the
 existing host-only evidence and recorded the omitted fresh independent/
 adversarial checks plus deferred target-device compatibility as residual risk.
-Route to `/feature-to-tasks FT-<NNN>` for the first product feature;
+Revision `2` revalidation keeps the queue unchanged and adds no Foundation
+work. Route to `/feature-to-tasks --all` for product task reconciliation;
 `/autopilot` must not select FT-000 work.

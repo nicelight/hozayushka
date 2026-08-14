@@ -1,0 +1,94 @@
+{
+  "attempt": 1,
+  "coordinate_system": "fullscreen host frame pixels",
+  "raster_measurement_tolerance": "max(2px, 0.005H)",
+  "red": [
+    {
+      "size": "2460x1080",
+      "band_bounds": {"top": 405, "bottom": 1056},
+      "band_ratio": 0.6027778,
+      "clock_zone_ratio": 0.39722222,
+      "clock_bounds": {"left": 551, "top": 24, "right": 2208, "bottom": 405},
+      "card_bounds": [
+        {"left": 32, "top": 405, "right": 527, "bottom": 1056},
+        {"left": 551, "top": 405, "right": 1170, "bottom": 1056},
+        {"left": 1194, "top": 405, "right": 1689, "bottom": 1056},
+        {"left": 1713, "top": 405, "right": 2208, "bottom": 1056}
+      ],
+      "preset_bounds": [
+        {"left": 2208, "top": 186, "right": 2428, "bottom": 406},
+        {"left": 2208, "top": 430, "right": 2428, "bottom": 650},
+        {"left": 2208, "top": 674, "right": 2428, "bottom": 894}
+      ]
+    },
+    {
+      "size": "1280x720",
+      "band_bounds": {"top": 272, "bottom": 696},
+      "band_ratio": 0.5888889,
+      "clock_zone_ratio": 0.41111112,
+      "clock_bounds": {"left": 273, "top": 24, "right": 1028, "bottom": 272},
+      "card_bounds": [
+        {"left": 32, "top": 272, "right": 249, "bottom": 696},
+        {"left": 273, "top": 272, "right": 546, "bottom": 696},
+        {"left": 570, "top": 272, "right": 787, "bottom": 696},
+        {"left": 811, "top": 272, "right": 1028, "bottom": 696}
+      ],
+      "preset_bounds": [
+        {"left": 1038, "top": 36, "right": 1238, "bottom": 236},
+        {"left": 1038, "top": 260, "right": 1238, "bottom": 460},
+        {"left": 1038, "top": 484, "right": 1238, "bottom": 684}
+      ]
+    }
+  ],
+  "green": [
+    {
+      "size": "2460x1080",
+      "band_bounds": {"top": 754, "bottom": 1056},
+      "band_ratio": 0.27962962,
+      "clock_zone_ratio": 0.7203704,
+      "clock_bounds": {"left": 551, "top": 24, "right": 2208, "bottom": 754},
+      "city_bounds": {"left": 32, "top": 24, "right": 527, "bottom": 389},
+      "date_bounds": {"left": 32, "top": 389, "right": 527, "bottom": 754},
+      "card_heights": [302, 302, 302, 302],
+      "card_bottoms": [1056, 1056, 1056, 1056],
+      "card_bounds": [
+        {"left": 32, "top": 754, "right": 527, "bottom": 1056},
+        {"left": 551, "top": 754, "right": 1170, "bottom": 1056},
+        {"left": 1194, "top": 754, "right": 1689, "bottom": 1056},
+        {"left": 1713, "top": 754, "right": 2208, "bottom": 1056}
+      ],
+      "preset_bounds": [
+        {"left": 2208, "top": 186, "right": 2428, "bottom": 406},
+        {"left": 2208, "top": 430, "right": 2428, "bottom": 650},
+        {"left": 2208, "top": 674, "right": 2428, "bottom": 894}
+      ]
+    },
+    {
+      "size": "1280x720",
+      "band_bounds": {"top": 495, "bottom": 696},
+      "band_ratio": 0.27916667,
+      "clock_zone_ratio": 0.7208333,
+      "clock_bounds": {"left": 273, "top": 24, "right": 1028, "bottom": 495},
+      "city_bounds": {"left": 32, "top": 24, "right": 249, "bottom": 259},
+      "date_bounds": {"left": 32, "top": 259, "right": 249, "bottom": 495},
+      "card_heights": [201, 201, 201, 201],
+      "card_bottoms": [696, 696, 696, 696],
+      "card_bounds": [
+        {"left": 32, "top": 495, "right": 249, "bottom": 696},
+        {"left": 273, "top": 495, "right": 546, "bottom": 696},
+        {"left": 570, "top": 495, "right": 787, "bottom": 696},
+        {"left": 811, "top": 495, "right": 1028, "bottom": 696}
+      ],
+      "preset_bounds": [
+        {"left": 1038, "top": 36, "right": 1238, "bottom": 236},
+        {"left": 1038, "top": 260, "right": 1238, "bottom": 460},
+        {"left": 1038, "top": 484, "right": 1238, "bottom": 684}
+      ]
+    }
+  ],
+  "source": {
+    "red_test_log": ".tasks/TASK-035-T3-FT-001-W32/red-focused.log",
+    "green_test_log": ".tasks/TASK-035-T3-FT-001-W32/green-focused.log",
+    "green_junit_report": "app/build/test-results/testDebugUnitTest/TEST-com.hozayushka.app.DisplayProjectionTest.xml"
+  }
+}

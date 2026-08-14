@@ -1,0 +1,35 @@
+{
+  "task_id": "TASK-033-T3-FT-001-W30",
+  "attempt": 1,
+  "decision": "RED_NOT_APPLICABLE",
+  "slot_order": ["YESTERDAY", "TODAY", "TOMORROW", "DAY_AFTER"],
+  "fixture_states": {
+    "NO_DATA": ["EMPTY_SHELL", "EMPTY_SHELL", "EMPTY_SHELL", "EMPTY_SHELL"],
+    "PARTIAL": ["SHELL", "VALUE", "SHELL", "SHELL"],
+    "POPULATED": ["VALUE", "VALUE", "VALUE", "VALUE"]
+  },
+  "hosts": {
+    "2460x1080": {
+      "bounds_by_slot": {
+        "YESTERDAY": [32, 374, 527, 1056],
+        "TODAY": [551, 374, 1170, 1056],
+        "TOMORROW": [1194, 374, 1689, 1056],
+        "DAY_AFTER": [1713, 374, 2208, 1056]
+      },
+      "layout_shift_across_fixtures": false,
+      "fabricated_values": false
+    },
+    "1280x720": {
+      "bounds_by_slot": {
+        "YESTERDAY": [32, 252, 249, 696],
+        "TODAY": [273, 252, 546, 696],
+        "TOMORROW": [570, 252, 787, 696],
+        "DAY_AFTER": [811, 252, 1028, 696]
+      },
+      "layout_shift_across_fixtures": false,
+      "fabricated_values": false
+    }
+  },
+  "read_only_projection_observation": "Populated values are fixture projection values; NO_DATA and partial missing values remain shells."
+}
+

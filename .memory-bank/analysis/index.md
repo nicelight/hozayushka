@@ -35,6 +35,8 @@ status: active
 - Product Brief и operator clarifications собраны в Constitution-checked PRD.
 - `/spec-init` завершил pre-PRD framing: glossary reconciled, scenario/lifecycle
   inputs captured, and handoff to `/prd-to-features` is ready.
-- `/prd-to-features` создал L1 product, 26 stable REQ IDs, четыре L2 epics и
-  девять L3 features; handoff направлен на свежий `/review-feat-plan`.
+- `/prd-to-features` создал L1 product, 30 stable REQ definitions и 30 RTM rows:
+  `REQ-000` — Foundation baseline, а `REQ-001`–`REQ-029` — 29 product REQ;
+  provider reconciliation добавила `REQ-027`–`REQ-029` без renumbering. Четыре
+  L2 epics и девять L3 features переданы на свежий `/review-feat-plan`.
 - Roadmap entities и task records на этапе discovery не создавались.

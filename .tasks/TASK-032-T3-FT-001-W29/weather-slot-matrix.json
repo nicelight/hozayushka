@@ -1,0 +1,58 @@
+{
+  "task_id": "TASK-032-T3-FT-001-W29",
+  "attempt": 2,
+  "receipt_status": "supporting-only",
+  "claim": "FT-001-AC-002 / REQ-002 and REQ-005: four stable ordered weather slots survive NO_DATA, async/in-flight refresh and populated redacted-fixture projection without fabricated values or layout shift",
+  "command": "./gradlew --offline --no-daemon --console=plain :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+  "cwd": "/home/serg/Projects/Mobile_APPS/hozayushka",
+  "exit_code": 0,
+  "completed_at": "2026-08-13 15:32 +0500",
+  "input_state_basis": "same Attempt 2 snapshot as geometry.json; deterministic in-memory redacted fixture, no provider/network/runtime",
+  "slot_order": ["yesterday", "today", "tomorrow", "day_after"],
+  "cases": [
+    {
+      "case": "NO_DATA",
+      "freshness": "NO_DATA",
+      "input_cards": 4,
+      "ordered_output_slots": ["yesterday", "today", "tomorrow", "day_after"],
+      "projection_presence": {"yesterday": true, "today": true, "tomorrow": true, "day_after": true},
+      "values": "all temperature/illustration/palette/pressure values null or empty",
+      "shell_preserved": true,
+      "fabricated_values": false,
+      "layout_shift": false
+    },
+    {
+      "case": "PARTIAL_ASYNC_REFRESH_IN_FLIGHT",
+      "partial": true,
+      "freshness": "NO_DATA",
+      "input_cards": 1,
+      "input_card": "today",
+      "ordered_output_slots": ["yesterday", "today", "tomorrow", "day_after"],
+      "projection_presence": {"yesterday": false, "today": true, "tomorrow": false, "day_after": false},
+      "values": "only the supplied today projection is populated; absent slots stay absent",
+      "shell_preserved": true,
+      "fabricated_values": false,
+      "layout_shift": false
+    },
+    {
+      "case": "POPULATED_REDACTED_FIXTURE",
+      "freshness": "FRESH",
+      "input_cards": 4,
+      "input_order": "reversed fixture input",
+      "ordered_output_slots": ["yesterday", "today", "tomorrow", "day_after"],
+      "projection_presence": {"yesterday": true, "today": true, "tomorrow": true, "day_after": true},
+      "values": "redacted fixture uses 21 °C, CLOUD, #FFE0A3, one UP pressure arrow per card",
+      "shell_preserved": true,
+      "fabricated_values": false,
+      "layout_shift": false
+    }
+  ],
+  "geometry_basis": "MainDisplayGeometry fixes the four card bounds and orderedDisplayWeatherSlots maps by WeatherCardSlot.entries; exact bounds are in geometry.json for both required sizes.",
+  "source_locators": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:997-1011",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:1488-1522",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:1525-1535",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt:209-243"
+  ],
+  "evidence": "Focused XML reports w29WeatherSlotsStayOrderedAndShellsSurviveNoDataAsyncAndPopulatedInputs passed. This receipt does not claim provider, target or independent verification."
+}

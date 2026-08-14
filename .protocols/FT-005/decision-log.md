@@ -1,9 +1,16 @@
 ---
 description: Decision log for FT-005 preset timer task decomposition.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-10
 ---
 # FT-005 — Decision log
+
+## 2026-08-10 — Revision-2 plan reconciled without a task
+
+- Provider migration does not change preset acceptance or Timer ownership.
+- W6 remains `done` with unchanged identity, dependency and evidence; queue
+  action is `reconciled` and no follow-up is created.
+- Exact next owner is fresh `/review-tasks-plan --all`.
 
 ## 2026-08-07 — Clean task surface generated
 

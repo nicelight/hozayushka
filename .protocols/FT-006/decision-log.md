@@ -1,9 +1,39 @@
 ---
 description: Decision log for FT-006 countdown lifecycle task decomposition.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-12
 ---
 # FT-006 — Decision log
+
+## 2026-08-12 — W27 active countdown presentation follow-up created
+
+- The operator's post-terminal visual observation is accepted as a bounded
+  presentation detail under `FT-006-AC-001`; it does not add a lifecycle state,
+  change Timer & Alert semantics, reopen W23 audio repair or alter overdue
+  ownership under FT-007.
+- One cohesive T3 task, `TASK-030-T3-FT-006-W27`, is created after done
+  `TASK-029-T3-FT-001-W26` and remains `planned`. Its primary owner is Main
+  Display; it depends directly on W26, with Foundation remaining transitive.
+- The exact hard write boundary is `DisplayCapability.kt` plus
+  `DisplayProjectionTest.kt`. TimerCapability, TimerAlertPolicy and
+  PlatformRuntimeAdapter remain read-only/regression owners. W7, W23 and W26
+  task identities, statuses, evidence and terminal history remain unchanged.
+- The task requires fresh claim-linked host visual/lifecycle RED/GREEN proof;
+  target/device/audio runtime is `DEFERRED`, and no emulator/device/adb/network
+  action is authorized. No fixed dp, ratio or gradient-stop decision is made;
+  such a numeric product decision routes to `/feature-doctor FT-006`.
+- Existing architecture, boundary, capability-interface, platform-runtime,
+  lifecycle and testing specs are reused. No canonical spec, behavior spec,
+  module, graph edge, public contract, dependency policy or Planning Revision
+  is changed.
+- Queue action is `created`; next route is fresh `/review-tasks-plan FT-006`.
+
+## 2026-08-10 — Revision-2 plan reconciled without a task
+
+- Provider migration does not change countdown lifecycle acceptance.
+- W7 remains `done` with unchanged identity, dependency and evidence; queue
+  action is `reconciled` and no follow-up is created.
+- Exact next owner is fresh `/review-tasks-plan --all`.
 
 ## 2026-08-07 — Clean task surface generated
 

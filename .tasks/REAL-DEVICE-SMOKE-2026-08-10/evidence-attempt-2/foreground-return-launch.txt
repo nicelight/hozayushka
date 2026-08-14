@@ -1,0 +1,8 @@
+Starting: Intent { cmp=com.hozayushka.app/.app.MainActivity }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+LaunchState: HOT
+Activity: com.hozayushka.app/.app.MainActivity
+TotalTime: 121
+WaitTime: 152
+Complete

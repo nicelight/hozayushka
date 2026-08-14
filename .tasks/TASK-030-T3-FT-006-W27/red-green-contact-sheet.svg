@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="410" viewBox="0 0 1320 410" role="img" aria-labelledby="title desc">
+  <title id="title">W27 same-size RED/GREEN active countdown contact sheet</title>
+  <desc id="desc">The red baseline shares the standard shell and uses a smaller countdown. The green projection hides weather, city, date and cards, enlarges countdown digits, and keeps the second preset color identity.</desc>
+  <rect width="1320" height="410" fill="#10131c"/>
+  <g font-family="sans-serif" fill="#f5f7ff">
+    <text x="24" y="28" font-size="18" font-weight="700">W27 host comparison · same rendered size 1280×720</text>
+    <text x="24" y="52" font-size="12" fill="#aeb7cc">Deterministic geometry receipt; target/device/audio runtime is DEFERRED.</text>
+  </g>
+
+  <g transform="translate(24,72)">
+    <rect width="620" height="310" rx="12" fill="#171d2b" stroke="#e45a6f" stroke-width="3"/>
+    <text x="18" y="27" font-family="sans-serif" font-size="16" font-weight="700" fill="#ff93a0">RED · standard surface</text>
+    <text x="18" y="49" font-family="sans-serif" font-size="12" fill="#c8d0e0">countdown 132 &lt; idle 196 · cards/city/date remain</text>
+    <rect x="18" y="62" width="100" height="56" fill="#28334a" stroke="#8794ae"/>
+    <text x="68" y="87" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#e6ebf7">city</text>
+    <text x="68" y="104" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#aeb7cc">date</text>
+    <rect x="132" y="62" width="350" height="56" fill="#20283a" stroke="#8794ae"/>
+    <text x="307" y="86" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#eef2ff">12:34</text>
+    <text x="307" y="106" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#ffbf68">03:00</text>
+    <g fill="#273148" stroke="#71809d">
+      <rect x="18" y="132" width="136" height="128"/><rect x="162" y="132" width="136" height="128"/>
+      <rect x="306" y="132" width="136" height="128"/><rect x="450" y="132" width="136" height="128"/>
+    </g>
+    <text x="302" y="282" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ff93a0">weather cards visible</text>
+    <g fill="none" stroke="#ff4fa3" stroke-width="4">
+      <circle cx="570" cy="91" r="22"/><circle cx="570" cy="151" r="22"/><circle cx="570" cy="211" r="22"/>
+    </g>
+    <text x="570" y="276" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#aeb7cc">preset controls</text>
+  </g>
+
+  <g transform="translate(676,72)">
+    <rect width="620" height="310" rx="12" fill="#171d2b" stroke="#5de6bd" stroke-width="3"/>
+    <text x="18" y="27" font-family="sans-serif" font-size="16" font-weight="700" fill="#6ff2c7">GREEN · dedicated countdown surface</text>
+    <text x="18" y="49" font-family="sans-serif" font-size="12" fill="#c8d0e0">countdown 228 &gt; idle 188.75 · transparent neon circle · SECOND #FF4FA3</text>
+    <rect x="18" y="62" width="500" height="194" fill="#141a27" stroke="#34425c"/>
+    <circle cx="268" cy="159" r="83" fill="none" stroke="#ffffff" stroke-width="7"/>
+    <circle cx="268" cy="159" r="83" fill="none" stroke="#ff4fa3" stroke-width="4" stroke-dasharray="8 7" opacity=".9"/>
+    <text x="268" y="169" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="700" fill="#f8fbff">03:00</text>
+    <text x="268" y="237" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#b7c2d8">Для отмены нажмите дважды</text>
+    <g fill="none" stroke="#ff4fa3" stroke-width="7">
+      <circle cx="570" cy="91" r="22"/><circle cx="570" cy="151" r="22"/><circle cx="570" cy="211" r="22"/>
+    </g>
+    <circle cx="570" cy="151" r="28" fill="none" stroke="#ff4fa3" stroke-width="3" opacity=".7"/>
+    <text x="570" y="276" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#aeb7cc">SECOND stays selected/active</text>
+  </g>
+</svg>

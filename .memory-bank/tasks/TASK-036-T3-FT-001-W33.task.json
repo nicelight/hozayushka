@@ -1,0 +1,235 @@
+{
+  "id": "TASK-036-T3-FT-001-W33",
+  "title": "Repair mixed-state Main Display card allocation and prove the equal bottom band physically",
+  "status": "blocked",
+  "wave": "W33",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-005",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-035-T3-FT-001-W32"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Focused display projection suite",
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "required": true
+    },
+    {
+      "name": "Full host unit suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Android debug lint",
+      "command": "./gradlew lintDebug",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before any production write, capture fresh task-scoped RED from the current W32-dependent baseline: deterministic host mixed-state render at 2460x1080 and 1280x720 with Yesterday empty and today/tomorrow/day_after populated, plus a fresh physical baseline on the unlocked TECNO LI6 serial 1156725456009666 after an operator-authorized baseline build/install. Record the actual View/card bounds; do not reuse W32 or W31 RED/GREEN evidence.",
+    "Correct only the shared Main Display View allocation in DisplayCapability.kt and its focused host support in DisplayProjectionTest.kt so the empty/populated mixed state uses one common weather-band allocation: all four cards have equal height and common bottom alignment, Yesterday is never taller, the band remains 25-30% and the clock zone 70-75%, and city/date, maximum-fit HH:mm and timer controls remain in their accepted regions.",
+    "Add a deterministic host regression for the exact mixed fixture (Yesterday empty, today/tomorrow/day_after populated) and assert the resulting four-card geometry and state/order. Add an allocation-level assertion or receipt over the real View tree when the project-native test harness exposes it without widening the hard boundary; if it is not feasible, record the concrete harness limitation and retain the mixed-state regression without inventing a second mechanism.",
+    "Obtain claim-equivalent GREEN from the same host fixture and fresh physical route. On the unlocked TECNO LI6 serial 1156725456009666, after the built APK is installed under the existing operator authorization, capture a fresh screenshot of the mixed state and measured card bounds proving the empty Yesterday shell is the same bottom-aligned band height as the three populated cards. Emulator, AVD and QEMU are forbidden.",
+    "Run all five project-native gates and the existing Main Display visual-QA/boundary review. Preserve Weather Context/provider/normalization/cache/history/freshness ownership, Timer & Alert countdown/cancellation/overdue/audio ownership, runtime/fullscreen/timer behavior and no-data shell semantics; do not synthesize weather values.",
+    "Planner does not install or upload an APK. Execution may install only under the already-granted operator authorization; stop immediately on any emulator request, unauthorized device action, provider/weather change, timer/runtime ownership change, or write outside the exact two-file boundary.",
+    {
+      "stage": "scheduler_reconciliation_history",
+      "mode": "scheduler",
+      "decision": "superseded",
+      "decided_at": "2026-08-14",
+      "prior_transition": "blocked -> failed (policy-invalid; superseded)",
+      "gate_summary": {
+        "planning_review": "APPROVE",
+        "execution": "NOT_STARTED",
+        "functional_verification": "NOT_APPLICABLE",
+        "semantic_verification": "NOT_APPLICABLE",
+        "replacement": "TASK-037-T3-FT-001-W34 completed successfully"
+      },
+      "failure_reason": "W33 was blocked by failed W32 before execution. An attempted blocked -> failed reconciliation was rejected by scheduler policy because direct dependents of failed tasks must remain blocked. W34 is the separate successful recovery successor against the W31 baseline.",
+      "accepted_evidence": [
+        ".memory-bank/tasks/TASK-035-T3-FT-001-W32.task.json",
+        ".memory-bank/tasks/TASK-037-T3-FT-001-W34.task.json",
+        ".tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-EXE-final-report-code-01.md",
+        ".tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "W33 remains blocked because it was never executed and its direct dependency W32 is failed; the attempted failed disposition is superseded as policy-invalid. W34 is the successful indexed recovery route.",
+      "failure_budget_note": "W33 consumed no execution retry; W34 is the successful indexed recovery route.",
+      "next_action": "Run the documented terminal HALT_DEPENDENCY_DEADLOCK route; resume requires a new operator-authorized recovery planning cycle."
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/main-display-presentation.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-035-T3-FT-001-W32.task.json",
+    ".tasks/TASK-035-T3-FT-001-W32/physical-smoke.png",
+    ".tasks/TASK-035-T3-FT-001-W32/verifier-owned-evidence.md",
+    ".tasks/TASK-034-T3-FT-001-W31/physical-visual-receipt.md",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002 / REQ-002 / REQ-005] Fresh host RED/GREEN at 2460x1080 and 1280x720 must include the mixed fixture with Yesterday empty and the other three slots populated, raw four-card bounds, band_ratio, clock_zone_ratio, card-height spread and bottom-alignment spread. PASS requires the accepted 25-30% / 70-75% ratios, equal card heights and common bottom alignment within raster_measurement_tolerance = max(2px, 0.005H), no Yesterday outlier, and fixed slot order. Artifacts: .tasks/TASK-036-T3-FT-001-W33/geometry.json and mixed-state-matrix.json.",
+    "[FT-001-AC-002 / REQ-002 / REQ-005] The deterministic host mixed-state regression must fail against the confirmed separated-container allocation or otherwise expose its unequal/vertically displaced card bounds before the bounded change, then pass after it. Artifact: .tasks/TASK-036-T3-FT-001-W33/mixed-state-regression.md.",
+    "[FT-001-AC-002 / REQ-002 / REQ-005] When project-native access permits allocation-level inspection, record the real View-tree card allocation/measure receipt and show all four cards share the same band height and bottom; if not feasible within the two-file boundary, record the concrete harness limitation and the deterministic mixed-state alternative proof. Artifact: .tasks/TASK-036-T3-FT-001-W33/view-allocation-receipt.md.",
+    "[FT-001-AC-002 / REQ-001 / REQ-002 / REQ-005 / REQ-023] Fresh physical RED/GREEN on unlocked TECNO LI6 serial 1156725456009666, after build/install under operator authorization, must include same-state screenshots and measured bounds for Yesterday, today, tomorrow and day_after. GREEN requires the empty Yesterday shell to occupy the same compact bottom band as the three populated cards, preserve common bottom alignment/order, city/date and timer placement, and avoid any claimed emulator substitute. Artifacts: .tasks/TASK-036-T3-FT-001-W33/physical-red.png, physical-green.png and physical-visual-receipt.md.",
+    "[FT-001-AC-002 / REQ-002 / REQ-023] Fresh host and physical receipts must show the complete HH:mm remains contained in the 70-75% clock zone without overlap after the shared allocation correction; record raw bounds and the visual-QA comparison. Artifact: .tasks/TASK-036-T3-FT-001-W33/clock-and-region-receipt.json.",
+    "[Weather Context read-only regression] RED_NOT_APPLICABLE: changing provider selection, refresh, normalization, cache/history, freshness or data availability would falsify the exact Main Display allocation boundary; alternative proof: mixed fixture uses the existing display projection and static boundary review shows no WeatherCapability/provider write. Artifact: .tasks/TASK-036-T3-FT-001-W33/weather-boundary-regression.md.",
+    "[Timer & Alert/runtime read-only regression] RED_NOT_APPLICABLE: changing timer lifecycle, countdown/cancellation/overdue/audio or fullscreen/runtime ownership would cross the exact Main Display boundary; alternative proof: focused/full host regressions, physical screenshot and static boundary review show preserved timer/runtime behavior. Artifact: .tasks/TASK-036-T3-FT-001-W33/timer-runtime-boundary-regression.md.",
+    "T3 isolation and cleanup: deterministic host fixtures are disposable and redacted; physical verification uses only the authorized unlocked TECNO serial, leaves no emulator/AVD/QEMU state, contains no provider key or secret-bearing evidence, and preserves W31/W32 identity, status, evidence, checkpoint and terminal history. Artifact: .tasks/TASK-036-T3-FT-001-W33/boundary-static-review.md and host-gates.md."
+  ],
+  "purpose": "Correct the confirmed physical mixed-state layout defect by making the empty Yesterday card share the same real View allocation and compact bottom-band geometry as the three populated cards, while preserving the accepted Main Display composition and all neighboring capability ownership.",
+  "success_outcome": "Fresh deterministic mixed-state host RED/GREEN and fresh unlocked-TECNO physical RED/GREEN prove that Yesterday empty plus three populated cards share one equal-height, common-bottom 25-30% weather band beneath the 70-75% clock zone, with measured screenshots/receipts, all host gates passing, and no provider, timer, runtime, data-synthesis or historical-task-state change.",
+  "anti_goals": [
+    "Do not reopen, rewrite or change TASK-034 W31 or TASK-035 W32 identity, lifecycle, evidence, protocol, scheduler checkpoint or terminal history; W32 remains failed by its scheduler disposition.",
+    "Do not modify WeatherCapability, weather providers/adapters, normalization, cache/history, freshness, data availability, TimerCapability, audio, MainActivity, Android runtime policy, resources, assets, dependencies, public contracts or graph edges.",
+    "Do not fabricate Yesterday data, convert an empty card into a populated card, remove/reorder a slot, or let Yesterday retain a taller shell in the mixed state.",
+    "Do not use emulator/AVD/QEMU or treat host evidence, W31 physical evidence or the W32 physical smoke image as W33 physical RED/GREEN."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-034-T3-FT-001-W31.task.json",
+      ".memory-bank/tasks/TASK-035-T3-FT-001-W32.task.json",
+      ".protocols/TASK-034-T3-FT-001-W31/",
+      ".protocols/TASK-035-T3-FT-001-W32/",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, lifecycle/RTM status, promotion decisions and terminal state",
+      "emulator/AVD/QEMU, unauthorized adb/device action, network, credentials and secret-bearing artifacts",
+      "new module, dependency, resource pipeline, public contract, graph edge or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "The mixed state cannot use one shared real View allocation with equal card height/common bottom alignment while keeping the accepted 25-30% band and 70-75% clock zone; stop and route the unresolved product choice to /feature-doctor FT-001.",
+      "Allocation-level inspection would require a file, dependency, resource, runtime owner or public-boundary change outside the two exact files; record the feasibility limitation and stop scope growth.",
+      "The empty Yesterday shell can pass only by fabricating weather values, changing WeatherCapability/provider semantics, changing Timer & Alert/runtime ownership, or altering city/date/timer behavior; stop and route the ownership conflict.",
+      "Physical RED/GREEN cannot be captured on the unlocked TECNO LI6 serial 1156725456009666 after the authorized build/install, or an emulator is requested; stop without claiming physical PASS and report the exact blocker.",
+      "Any production/test write leaves the two exact boundary files, or any W31/W32 status, evidence, checkpoint or terminal state would change."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#ft-001-ac-002-main-display-composition",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/contracts/main-display-presentation.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/requirements.md#main-display-and-clock",
+    ".memory-bank/requirements.md#weather-context-and-forecast",
+    ".memory-bank/requirements.md#cross-cutting-constraints-and-resilience",
+    ".memory-bank/prd.md#functional-requirements",
+    ".memory-bank/contracts/main-display-presentation.md#normalized-composition-contract",
+    ".memory-bank/contracts/main-display-presentation.md#normative-must--must-not-rules",
+    ".memory-bank/contracts/main-display-presentation.md#measurement-and-tolerance-method",
+    ".memory-bank/contracts/main-display-presentation.md#visual-qa-rubric",
+    ".memory-bank/contracts/main-display-presentation.md#claim-linked-evidence",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/tasks/TASK-035-T3-FT-001-W32.task.json",
+    ".tasks/TASK-035-T3-FT-001-W32/physical-smoke.png",
+    ".tasks/TASK-035-T3-FT-001-W32/verifier-owned-evidence.md",
+    ".tasks/TASK-034-T3-FT-001-W31/physical-visual-receipt.md",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/contracts/main-display-presentation.md#normative-must--must-not-rules",
+    ".memory-bank/contracts/main-display-presentation.md#measurement-and-tolerance-method",
+    ".memory-bank/contracts/main-display-presentation.md#claim-linked-evidence",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display owns only shell composition/presentation; it consumes the existing Weather Context and Timer & Alert projections/commands and never writes neighbor state.",
+    "The task-owned feature claim is FT-001-AC-002. REQ-001 constrains the landscape/fullscreen context, REQ-002 constrains the 25-30% band, 70-75% clock zone and complete clock, REQ-005 constrains ordered equal-height bottom-aligned weather shells, and REQ-023 constrains target-device readability and lightweight visuals.",
+    "Use the accepted band/clock ratios as product gates and the declared raster_measurement_tolerance = max(2px, 0.005H) only for raster comparison; do not introduce a fixed dp/font/pixel target or synthesize data.",
+    "The empty Yesterday slot and the three populated slots must share one real View allocation path; city/date remains above Yesterday, the clock remains central/upper, and the existing timer rail remains separate.",
+    "Weather Context remains the sole owner of provider refresh, normalization, cache/history, freshness and weather-specific presentation; Timer & Alert remains the sole owner of timer lifecycle, countdown, cancellation, overdue and audio.",
+    "Physical installation and capture are execution-time actions under the existing operator authorization; planner performs no install/upload and no emulator route is permitted."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002 / REQ-005: at 2460x1080 and 1280x720, the mixed empty-Yesterday/three-populated fixture has band_ratio 0.25..0.30, clock_zone_ratio 0.70..0.75, four equal measured card heights and one common bottom alignment; report raw bounds and the declared raster tolerance.",
+    "FT-001-AC-002 / REQ-002 / REQ-005: the actual Main Display View allocation, or the closest project-native allocation receipt permitted by the two-file boundary, demonstrates that Yesterday is not a separate taller MATCH_PARENT/weighted shell and that all four ordered slots remain visible without fabricated data.",
+    "FT-001-AC-002 / REQ-001 / REQ-023: fresh unlocked-TECNO physical RED/GREEN after authorized build/install at serial 1156725456009666 provides screenshots and measured card bounds; emulator/AVD/QEMU evidence is invalid.",
+    "FT-001-AC-002 / REQ-002 / REQ-023: complete HH:mm remains contained in the clock zone and city/date, card order, timer controls and accepted visual hierarchy remain stable after the allocation correction.",
+    "T3 proof scope: honest pre-write host and physical RED, claim-equivalent host and physical GREEN, distinguishable mixed-state and allocation artifacts, safe disposable host rerun/cleanup, all five host gates, and explicit no-provider/no-timer/no-runtime/no-data-synthesis boundary proof."
+  ]
+}

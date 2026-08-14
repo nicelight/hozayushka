@@ -1,7 +1,7 @@
 ---
 description: Foundation queue plan for the accepted executable Android baseline.
 status: active
-last_updated: 2026-08-06
+last_updated: 2026-08-10
 ---
 # FT-000 Foundation Queue Plan
 
@@ -17,7 +17,8 @@ the final gate.
 - [Foundation decision](../../.memory-bank/foundation.md): `Foundation Required:
   true`, pressure map and exit criteria.
 - [Global SDD backbone](../../.memory-bank/spec-backbone.md): `complete`,
-  `Planning Revision: 1`.
+  `Planning Revision: 2`; the provider migration reuses the established
+  runtime, storage, adapter and fixture seams and adds no Foundation work.
 - [System Architecture](../../.memory-bank/architecture/system-architecture.md):
   one deployable modular monolith, one composition root and five capability
   slices.
@@ -81,8 +82,8 @@ it does not authorize scope growth.
 
 ## Handoff
 
-The Foundation queue is complete. The explicit owner closed the final gate on
-2026-08-06 using the existing host-only evidence and accepted the omitted fresh
-independent/adversarial checks plus deferred target-device compatibility as
-residual risk. Product task design may proceed through
-`/feature-to-tasks FT-<NNN>`.
+The Foundation queue remains complete after Revision `2` revalidation. The
+explicit owner closed the final gate on 2026-08-06 using the existing host-only
+evidence and accepted the omitted fresh independent/adversarial checks plus
+deferred target-device compatibility as residual risk. No probe or task is
+added; product task reconciliation proceeds through `/feature-to-tasks --all`.

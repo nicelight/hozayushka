@@ -1,0 +1,236 @@
+{
+  "id": "TASK-031-T3-FT-007-W28",
+  "title": "Present overdue state on a dedicated hierarchy-first visual surface",
+  "status": "done",
+  "wave": "W28",
+  "feature": "FT-007",
+  "reqs": [
+    "REQ-015",
+    "REQ-016",
+    "REQ-014",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-030-T3-FT-006-W27"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Focused overdue display projection and regression suite",
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "required": true
+    },
+    {
+      "name": "Full host regression suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before any production behavior write, obtain honest task-scoped RED for the overdue presentation at the current baseline. Distinguish the dedicated no-weather/no-city/no-date/no-standard-card surface, elapsed-digit hierarchy, transparent circular preset-color backdrop, blinking plus and stable numeric counter. If any claim is already claim-equivalent GREEN, preserve that pre-implementation result and do not force a production change.",
+    "Implement only the overdue composition refinement inside DisplayCapability.kt and its deterministic DisplayProjectionTest.kt proof. Main Display consumes the existing Timer & Alert projection; it does not calculate elapsed time, write timer state, dispatch audio, alter any-tap dismissal or introduce a second lifecycle owner.",
+    "Obtain claim-equivalent host GREEN at one fixed render size using idle, W27 active-countdown and overdue comparisons. Record hidden weather/card/city/date content, full elapsed value, idle/active/overdue text sizes, backdrop shape/fill/color identity, blinking-plus state, numeric stability and clipping/overlap results. Elapsed digits must exceed idle and exceed active countdown where the existing geometry permits without clipping or overlap; do not invent a fixed dp or product ratio.",
+    "Apply a named Reviewer/visual-QA rubric to the same host render for focal hierarchy, dedicated-surface content exclusion, activating-preset color identity, transparent circular treatment, blinking plus, stable numeric result, readability, no clipping/overlap and host/device evidence separation. The rubric is evidence, not a T3 checkpoint.",
+    "Run read-only regressions for existing any-tap overdue dismissal and Timer & Alert lifecycle/audio contracts. Prove through focused/full host results and boundary inspection that TimerCapability.kt, TimerAlertPolicy.kt and PlatformRuntimeAdapter.kt remain unchanged and that W23 audio request/start/repeat/stop ownership is not reopened or claimed by W28.",
+    "Record target, physical-device and audio runtime evidence as DEFERRED with the unavailable-target condition and residual readability/custom-ROM/audio risk. Host geometry or fake audio must never be promoted to physical audibility or runtime PASS; no emulator, device, adb, network, credentials or audio runtime is part of this planning handoff.",
+    "Run the required build, focused/full host and Memory Bank/diff gates with disposable synthetic timer state, safe rerun/reset and cleanup. Preserve all historical task cards, evidence, protocols, scheduler checkpoint, lifecycle/REQ state and terminal state.",
+    "Stop and route to /feature-doctor FT-007 if satisfying the active-countdown comparison requires a new fixed visual ratio, dp target or gradient stop. Stop and route to /spec-design or /feature-to-tasks FT-007 if the outcome needs a new module, graph edge, public contract, dependency, permission, event boundary, lifecycle/audio change or any write outside the exact two-file boundary.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-13",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/runtime/audio PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-031-T3-FT-007-W28/handoff.md",
+        ".protocols/TASK-031-T3-FT-007-W28/progress.md",
+        ".tasks/TASK-031-T3-FT-007-W28/red-baseline.md",
+        ".tasks/TASK-031-T3-FT-007-W28/geometry.json",
+        ".tasks/TASK-031-T3-FT-007-W28/red-green-contact-sheet.svg",
+        ".tasks/TASK-031-T3-FT-007-W28/visual-rubric.md",
+        ".tasks/TASK-031-T3-FT-007-W28/host-gates.md",
+        ".tasks/TASK-031-T3-FT-007-W28/lifecycle-regression.md",
+        ".tasks/TASK-031-T3-FT-007-W28/audio-regression.md",
+        ".tasks/TASK-031-T3-FT-007-W28/boundary-static-review.md",
+        ".tasks/TASK-031-T3-FT-007-W28/target-device.md",
+        ".protocols/TASK-031-T3-FT-007-W28/verification.md",
+        ".tasks/TASK-031-T3-FT-007-W28/TASK-031-T3-FT-007-W28-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-031-T3-FT-007-W28/red-verification.md",
+        ".tasks/TASK-031-T3-FT-007-W28/TASK-031-T3-FT-007-W28-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; W28 remains bounded to overdue Main Display presentation.",
+      "accepted_residual_risk": [
+        "Target 1280x720/custom-ROM fullscreen readability and physical audio audibility remain DEFERRED; host evidence is not device/runtime/audio PASS.",
+        "TimerCapability and PlatformRuntimeAdapter had pre-existing unrelated worktree dirt; W28 makes no bounded attribution outside its exact two-file scope."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-007-overdue-alert.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/foundation.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json",
+    ".memory-bank/tasks/TASK-030-T3-FT-006-W27.task.json",
+    ".protocols/TASK-026-T3-FT-007-W23/verification.md",
+    ".protocols/TASK-030-T3-FT-006-W27/verification.md",
+    ".protocols/FT-007/plan.md",
+    ".protocols/FT-007/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-007.md"
+  ],
+  "evidence_required": [
+    "[FT-007-AC-006 / REQ-015 / REQ-023] RED: Fresh same-size host baseline must compare idle, W27 active-countdown and overdue and record any missing dedicated surface, content exclusion, elapsed-digit hierarchy, transparent circular backdrop, activating preset color identity, blinking plus or no-clipping/overlap result; GREEN: Claim-equivalent same-size host comparison must show pass/fail for no weather cards/city/date/standard card shell, full stable elapsed digits, elapsed text larger than idle and active countdown where existing geometry permits, transparent circular backdrop, activating preset color identity, blinking plus and no clipping/overlap. Artifacts: .tasks/TASK-031-T3-FT-007-W28/red-baseline.md, geometry.json and red-green-contact-sheet.svg; include decisive values and the comparison result without inventing a fixed ratio.",
+    "[FT-007-AC-006 / REQ-023] Named visual-QA review by a Reviewer/visual-QA role must record PASS/FAIL, decisive observation and artifact locator for focal hierarchy, dedicated-surface content exclusion, activating-preset color identity, transparent circular treatment, blinking-plus/numeric stability, readability, clipping/overlap and host/device separation. Artifact: .tasks/TASK-031-T3-FT-007-W28/visual-rubric.md.",
+    "[REQ-015 read-only dismissal regression] RED_NOT_APPLICABLE: intentionally breaking existing any-tap overdue dismissal would falsify the accepted Timer & Alert/Main Display contract and exceed this visual-only delta; alternative proof: focused/full host regression plus boundary review shows any tap still dismisses overdue through the existing path while no timer owner is written. Artifact: .tasks/TASK-031-T3-FT-007-W28/lifecycle-regression.md and boundary-static-review.md.",
+    "[REQ-014 read-only lifecycle regression] RED_NOT_APPLICABLE: intentionally breaking countdown-to-overdue or temporary-interruption rehydration would falsify the accepted lifecycle contract and exceed this presentation delta; alternative proof: deterministic host lifecycle result and two-file static review show W28 consumes the existing projection without changing TimerCapability or lifecycle ownership. Artifact: .tasks/TASK-031-T3-FT-007-W28/lifecycle-regression.md and boundary-static-review.md.",
+    "[REQ-016 read-only audio regression] RED_NOT_APPLICABLE: audio request/start/repeat/stop and silent/DND/route policy are W23-owned behavior and intentionally changing them would reopen a completed audio repair; alternative proof: focused/full host regression and exact-boundary review show TimerCapability.kt, TimerAlertPolicy.kt and PlatformRuntimeAdapter.kt are untouched and W23 history remains unchanged. Artifact: .tasks/TASK-031-T3-FT-007-W28/audio-regression.md and boundary-static-review.md.",
+    "[Target/device/audio deferral] Accepted alternative proof: no authorized target/device/audio runtime is used in this task; record target/device/audio as DEFERRED with unavailable-target condition and residual readability/custom-ROM/audio risk. Host geometry and fake audio are not runtime PASS or physical-audibility evidence. Artifact: .tasks/TASK-031-T3-FT-007-W28/target-device.md.",
+    "T3 isolation and cleanup: every host visual/lifecycle case starts from disposable idle state with synthetic timestamps and safe reset, records decisive comparisons, leaves no persistent state, credential, network, device or audio artifact, and preserves historical task evidence and workflow state. Artifact: .tasks/TASK-031-T3-FT-007-W28/host-gates.md and boundary-static-review.md."
+  ],
+  "purpose": "Apply the operator-authorized overdue presentation refinement on the Main Display boundary: a dedicated no-weather/no-city/no-date/no-standard-card surface with a stable full elapsed counter, materially stronger hierarchy than idle and active countdown where existing geometry permits, and a transparent neon circular backdrop using the activating preset color, while keeping Timer & Alert lifecycle, any-tap dismissal and audio behavior read-only.",
+  "success_outcome": "Fresh claim-linked host RED/GREEN and named visual-QA evidence prove that overdue renders on the dedicated content-free surface, full elapsed digits stay stable and materially larger than idle and the active countdown where permitted, the transparent circular backdrop preserves activating-preset color identity, and the blinking plus remains legible; existing any-tap, lifecycle and audio contracts remain unchanged, while target/device/audio are explicitly DEFERRED with no physical-audibility or runtime PASS claim.",
+  "anti_goals": [
+    "Do not change TimerCapability.kt, TimerAlertPolicy.kt, PlatformRuntimeAdapter.kt, FoundationRuntime, MainActivity, Settings, resources or any other production/test path outside the exact two-file write boundary.",
+    "Do not repair, redesign or claim W23 audio emission/start/repeat/stop, built-in signal selection, volume, ramp, cap, silent/DND/route policy or physical audibility.",
+    "Do not change Timer & Alert elapsed arithmetic, idle/countdown/overdue transitions, one-active-timer behavior, temporary recovery, any-tap overdue dismissal or the existing public capability contract.",
+    "Do not add a lifecycle state, private-store access, event/message boundary, dependency, permission, resource pipeline, network path, composition-root orchestration or new audio framework.",
+    "Do not select a fixed dp, font ratio, surface ratio or gradient stop when the existing adaptive geometry cannot satisfy the visual comparison; stop and route the material product decision instead.",
+    "Do not run or claim emulator/device/adb/network/credential/audio runtime evidence, and do not modify historical task status, evidence, protocols, scheduler checkpoint, lifecycle/REQ state or terminal history."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/timer/TimerCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/timer/TimerAlertPolicy.kt",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-030-T3-FT-006-W27.task.json status, evidence and history",
+      ".protocols/TASK-026-T3-FT-007-W23/",
+      ".protocols/TASK-030-T3-FT-006-W27/",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, lifecycle/REQ state, promotion decisions and terminal state",
+      "emulator/AVD, physical device, adb, live network/provider calls, credentials and audio runtime",
+      "new module, dependency, public contract, graph edge, event/message path, permission, resource pipeline or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "The existing display geometry cannot make elapsed digits materially larger than the active countdown without clipping/overlap or a new fixed visual/product ratio; route to /feature-doctor FT-007.",
+      "The smallest correction requires any Timer & Alert, Android Runtime Adapter, Settings, lifecycle, audio, permission, resource, public-contract, module, dependency or composition-root change; stop and route to /feature-to-tasks FT-007 or /spec-design as applicable.",
+      "Target/device/audio runtime is unavailable; continue only with mandatory host proof, record target/device/audio as DEFERRED and never substitute host/fake evidence for runtime PASS or physical audibility.",
+      "Any production or test behavior write falls outside DisplayCapability.kt or DisplayProjectionTest.kt, or any workflow action would change historical status/evidence, checkpoint, lifecycle/REQ state or terminal history."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-006",
+    ".memory-bank/features/FT-007-overdue-alert.md",
+    ".memory-bank/requirements.md#timers-and-alert",
+    ".memory-bank/requirements.md#cross-cutting-constraints-and-resilience",
+    ".memory-bank/tasks/TASK-009-T3-FT-007-W8.task.json",
+    ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json",
+    ".memory-bank/tasks/TASK-030-T3-FT-006-W27.task.json",
+    ".tasks/TASK-030-T3-FT-006-W27/geometry.json",
+    ".tasks/TASK-030-T3-FT-006-W27/visual-rubric.md",
+    ".protocols/TASK-030-T3-FT-006-W27/handoff.md",
+    ".protocols/TASK-030-T3-FT-006-W27/verification.md",
+    ".protocols/TASK-026-T3-FT-007-W23/verification.md",
+    ".protocols/FT-007/plan.md",
+    ".protocols/FT-007/decision-log.md",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-004---no-event-or-message-boundary-in-v1",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/capability-interfaces.md#orchestration-ownership",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display owns user-facing overdue composition and may refine it only within DisplayCapability.kt; it consumes Timer & Alert projection data and does not calculate elapsed time or write timer state.",
+    "The overdue surface must contain no weather cards, city, date or standard card-shell content; full elapsed digits remain stable, materially exceed idle and exceed active countdown where the existing geometry permits without clipping/overlap.",
+    "The transparent neon circular backdrop reuses the activating preset's existing PresetPresentation color identity; the large plus blinks while the numeric result remains stable.",
+    "Existing any-tap overdue dismissal, Timer & Alert lifecycle/rehydration and audio policy remain unchanged read-only contracts owned by their existing capabilities and W23 history.",
+    "Host visual proof is claim-linked and isolated; target readability/fullscreen, physical audio and custom-ROM behavior are explicitly DEFERRED and never inferred from host or fake evidence.",
+    "No new fixed visual ratio, dp target, gradient stop, lifecycle state, public boundary, dependency, permission, event path, storage owner, network path or composition-root orchestration is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-007-AC-006 / REQ-015 / REQ-023: fresh same-size host RED/GREEN proves the overdue surface excludes weather cards, city, date and standard card shell; stable full elapsed digits are materially larger than idle and active countdown where existing geometry permits; the transparent circular backdrop uses activating-preset color identity; the plus blinks and the numeric result remains stable without clipping/overlap.",
+    "REQ-023 / FT-007-AC-006 material visual NFR: a named visual-QA rubric records PASS/FAIL for focal hierarchy, content exclusion, preset color identity, transparent static treatment, blinking-plus/numeric stability, readability, no clipping/overlap and honest host/device separation; target runtime is DEFERRED without an authorized target.",
+    "REQ-015 read-only integration: focused/full host evidence proves existing any-tap overdue dismissal remains available and returns to Main Display; W28 does not change the Timer & Alert command or claim FT-007-AC-003 ownership.",
+    "REQ-014 read-only lifecycle integration: deterministic host evidence proves W28 renders the existing countdown-to-overdue and temporary-resume projection without changing TimerCapability ownership, persisted arithmetic or lifecycle transitions; reboot recovery remains excluded.",
+    "REQ-016 read-only audio integration: focused/full host evidence and boundary inspection prove W28 does not modify TimerCapability, TimerAlertPolicy or PlatformRuntimeAdapter and does not reopen W23's request/start/repeat/stop or denial/error proof; physical audibility is DEFERRED.",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert and .memory-bank/contracts/platform-runtime.md#display-runtime-boundary: Main Display consumes registered projections without direct storage, lifecycle-owner, audio-owner or composition-root bypass.",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3: each owned visual claim has fresh RED or grounded RED_NOT_APPLICABLE, claim-equivalent GREEN, distinguishable artifact, isolated rerun/cleanup and honest target/device/audio DEFERRED separation."
+  ]
+}

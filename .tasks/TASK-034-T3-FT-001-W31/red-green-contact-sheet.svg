@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650">
+  <rect width="1400" height="650" fill="#10151b"/>
+  <text x="24" y="34" fill="#f4f7fa" font-family="sans-serif" font-size="24">TASK-034 W31 physical RED → GREEN — TECNO LI6 2460×1080</text>
+  <image href="physical-main-before.png" x="24" y="54" width="650" height="286" preserveAspectRatio="none"/>
+  <image href="physical-main-after.png" x="726" y="54" width="650" height="286" preserveAspectRatio="none"/>
+  <text x="24" y="375" fill="#a9b7c4" font-family="sans-serif" font-size="20">RED: clock 650×201; largest icon 71×70; cards begin y=374</text>
+  <text x="726" y="375" fill="#a9b7c4" font-family="sans-serif" font-size="20">GREEN: clock 725×218; largest icon 45×43; cards begin y=405</text>
+  <text x="24" y="420" fill="#f4f7fa" font-family="sans-serif" font-size="18">same serial · same landscape frame · fullscreen · city/date/four slots/timer separation preserved</text>
+  <text x="24" y="460" fill="#f4f7fa" font-family="sans-serif" font-size="18">Host comparison: 2460×1080 and 1280×720 geometry in DisplayProjectionTest XML</text>
+</svg>

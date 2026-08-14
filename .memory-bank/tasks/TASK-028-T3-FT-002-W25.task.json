@@ -1,0 +1,261 @@
+{
+  "id": "TASK-028-T3-FT-002-W25",
+  "title": "Tune Main Display weather bounds and render measured pressure arrows",
+  "status": "done",
+  "wave": "W25",
+  "feature": "FT-002",
+  "reqs": [
+    "REQ-005",
+    "REQ-006",
+    "REQ-007",
+    "REQ-008",
+    "REQ-022",
+    "REQ-023",
+    "REQ-025",
+    "REQ-026",
+    "REQ-029"
+  ],
+  "depends_on": [
+    "TASK-027-T3-FT-001-W24"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "purpose": "Apply the operator's bounded Main Display visual correction: reduce the painted bounds of the existing six-state weather illustrations while keeping them legible, moderately enlarge the CLEAR sun disk inside that reduced composition, and replace the main-card Unicode pressure glyphs with measured Canvas/Path arrows without changing WeatherCapability pressure semantics or any neighboring capability.",
+  "success_outcome": "After TASK-027, Main Display shows the existing CLEAR, CLOUD, NEUTRAL_CLOUD, RAIN, SNOW and MOON illustrations in smaller measured painted envelopes, with a moderately larger CLEAR sun disk, and renders visible UP/DOWN pressure arrows only when the existing projection supplies a non-zero count; fresh bounds/contact-sheet evidence proves non-overlap, preserved four-card/order/Today/content/day-night/stale semantics, explicit arrow stroke visibility and zero-arrow absence, while WeatherCapability.kt and all provider/network/audio/timer behavior remain unchanged.",
+  "anti_goals": [
+    "Do not add a partly-cloudy composite or any new WeatherIllustration state; preserve exactly CLEAR, CLOUD, NEUTRAL_CLOUD, RAIN, SNOW and MOON.",
+    "Do not change WeatherCapability.kt, pressureDirection calculation, pressureArrowCount thresholds/fallback, pressure history, provider selection/dispatch, cache/history, freshness, refresh cadence, day/night source or normalized WeatherIllustration/moonPhase inputs.",
+    "Do not change the four-card yesterday/today/tomorrow/day_after order, Today sizing, temperature/date/content layout, temperature palette, shared static pseudo-glass, stale/first-run empty cards or forecast-card composition.",
+    "Do not keep Unicode or TextView glyph rendering for Main Display pressure arrows; do not change the separate forecast illustration text path.",
+    "Do not add resources, assets, dependencies, modules, public contracts, graph edges, provider calls, network access, credentials, persistence, lifecycle, timer or audio behavior.",
+    "Do not modify TASK-004, TASK-018, TASK-020, TASK-023, TASK-024, TASK-025, TASK-026 or TASK-027 status, identity, evidence/history, scheduler checkpoint, lifecycle/RTM state, terminal state or promotion decisions."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json",
+      ".memory-bank/tasks/TASK-018-T3-FT-002-W15.task.json",
+      ".memory-bank/tasks/TASK-020-T3-FT-002-W17.task.json",
+      ".memory-bank/tasks/TASK-023-T3-FT-002-W20.task.json",
+      ".memory-bank/tasks/TASK-024-T3-FT-001-W21.task.json",
+      ".memory-bank/tasks/TASK-025-T3-FT-002-W22.task.json",
+      ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json",
+      ".memory-bank/tasks/TASK-027-T3-FT-001-W24.task.json status, evidence and history",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, terminal state, lifecycle/RTM status and promotion decisions",
+      "emulator/device launch, adb, live network/provider calls, credentials and secret-bearing artifacts",
+      "new module, dependency, public contract, graph edge, event/message path or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "TASK-027-T3-FT-001-W24 is not an approved completed prerequisite at execution preflight; do not write the overlapping Main Display surface concurrently.",
+      "A reduced icon composition cannot preserve recognizable six-state legibility within the existing Canvas/Path/Paint route; stop and route to /feature-doctor FT-002 rather than adding a partly-cloudy state or asset pipeline.",
+      "The result needs an absolute product geometry decision beyond the accepted reduce-bounds/moderate-sun adjustment, a new owner, public contract, graph edge, dependency or module; stop and route to /feature-doctor FT-002 or /spec-design as applicable.",
+      "A pressure arrow requires changing WeatherCapability pressureDirection/pressureArrowCount calculation or pressure-history ownership; stop and route to /feature-to-tasks FT-002 instead of crossing the hard boundary.",
+      "Fresh host/static/image evidence cannot distinguish the current oversized/Unicode baseline from claim-equivalent reduced/Path GREEN; preserve the task open and do not substitute target-device PASS.",
+      "Any production or test write falls outside DisplayCapability.kt or DisplayProjectionTest.kt, or any workflow action would change lifecycle, scheduler, checkpoint or terminal state."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-009",
+    ".memory-bank/tasks/TASK-025-T3-FT-002-W22.task.json",
+    ".memory-bank/tasks/TASK-027-T3-FT-001-W24.task.json",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md#W25-bounded-visual-adjustment",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#verification-target",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#iii-bounded-agent-autonomy-and-human-checkpoints",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#ad-001---one-deployable-capability-sliced-application",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-004---no-event-or-message-boundary-in-v1",
+    ".memory-bank/architecture/system-architecture.md#ad-005---keep-device-and-city-time-domains-separate",
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/foundation.md#gate-anchors",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display is the primary owner of the visual composition and consumes the existing Main Display → Weather Context read projection; no raw provider field, private Weather Context state or Settings secret is accessible from this task.",
+    "FT-002-AC-009 remains the sole feature-AC owner for this follow-up; no new feature AC is created. TASK-025 remains historical baseline evidence, while this W25 card owns only the accepted visual adjustment delta under the same AC locator.",
+    "For fresh 223×444 small-card and 279×444 Today measurements, each final six-state painted illustration envelope must be at most 90% of the corresponding fresh W25 pre-change baseline in both width and height, remain inside its illustration envelope, and retain a qualitative recognizability/contrast pass. The CLEAR central sun disk must be 1.15–1.30× its fresh baseline diameter while the complete CLEAR painted envelope still meets the reduced-bounds rule.",
+    "Pressure arrows must be drawn with Canvas/Path primitives in the existing pressure content bounds, with a measured stroke width of 4–8 px at the 223×444 row-card geometry, rounded cap/join, separate shaft/head path segments, visible non-background pixels for UP and DOWN, and no drawn arrow pixels when count is zero.",
+    "Render exactly the projection-provided pressureArrowCount clamped to the existing 0–2 display range and direction; WeatherCapability remains the sole owner of pressureDirection/pressureArrowCount calculation, threshold/fallback semantics and history ownership.",
+    "Preserve four-card order, Today larger sizing, equal non-Today sizing, date/temperature/pressure non-overlap, temperature palette, shared static pseudo-glass, city-timezone day/night and moon fallback, unknown-condition neutral cloud, stale/first-run no-illustration behavior and no visible day/weather labels.",
+    "Use only existing project-native Android primitives and gates. Do not add app resources, drawable assets, a dependency, network/provider action, credential path, persistence or lifecycle state. The separate forecast-card Unicode illustration path remains outside this task."
+  ],
+  "invariants": [
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary: Main Display owns visual composition; Weather Context owns normalized weather, cache/history, freshness and pressure trends.",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context: Main Display renders the display-ready projection and does not read raw provider fields or write Weather Context state.",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract: exactly four ordered cards, larger Today, equal smaller peers, and stale projections remove values, illustrations and arrows.",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules: pressure arrows share the accepted static pseudo-glass material and city-timezone day/night controls the weather phase.",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules: count/direction thresholds, zero-history suppression and exact-zero twelve-hour fallback remain provider-owned inputs to rendering.",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations: pressure is normalized before trend comparison and selected-provider city timezone controls weather day/night mapping; this task does not alter either.",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary: Main Display remains the presentation owner; host/image evidence does not become target-device runtime PASS.",
+    ".memory-bank/invariants.md#must: preserve accepted ownership, boundary, resource, state and lifecycle invariants.",
+    ".memory-bank/invariants.md#never: do not introduce a new edge, dependency, resource or lifecycle path.",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection: stale and first-run cards retain date geometry without weather values, illustrations or arrows.",
+    ".memory-bank/constitution.md#v-product-non-negotiables: readability on the accepted 1280×720 Android 11 target takes precedence over visual effects; unavailable target evidence is deferred under policy."
+  ],
+  "verification_targets": [
+    "FT-002-AC-009 / REQ-005, REQ-022, REQ-023, REQ-026: fresh RED captures the current W22-sized six-state composition at 223×444 and 279×444 plus the current Main Display Unicode pressure path; claim-equivalent GREEN provides a six-state contact sheet and measured icon/sun bounds proving reduced painted envelopes, moderate sun-disk enlargement, legibility, no partly-cloudy state, no text/emoji and no intersection with temperature/date/pressure content.",
+    "REQ-008 / Weather Card Presentation pressure-trend-and-fallback-rules: use projection fixtures with owner-supplied UP, DOWN and zero-arrow combinations; GREEN proves the renderer draws one/two measured Path arrows with the supplied direction and draws none for count zero. This is a presentation integration guard only; pressure calculation, thresholds, history and provider identity remain WeatherCapability-owned and are not reimplemented or re-accepted here.",
+    "REQ-006 / Weather Card Presentation temperature-and-glass-rules: the temperature palette and shared static pseudo-glass remain unchanged; pressure arrow paint uses the same accepted material and no realtime blur/refraction/dynamic effect.",
+    "REQ-005 / REQ-022 / REQ-026 regression: four-card order, Today sizing, date/temperature/non-overlap, selected-city day/night/moon fallback, neutral-cloud fallback and stale/first-run empty behavior remain unchanged; no provider or WeatherCapability mutation is used as proof.",
+    "REQ-007 / REQ-025 / REQ-029 regression: source/boundary review and the existing host suite prove no provider dispatch/cache/history/freshness, clock, timer, audio, network or lifecycle path was added; WeatherCapability.kt has no production diff.",
+    "T3 claim-linked proof: fresh RED/GREEN, measured JSON bounds, UP/DOWN/zero-arrow contact sheet, explicit stroke-width and pixel-visibility measurements, independent visual rubric, clean build, full host unit suite, static source/resource/diff inspection, safe rerun and no device/network/credential action.",
+    "Target-device route: Samsung GT-I9300I / Android 11 custom-ROM 1280×720 readability, fullscreen, keep-screen-on and runtime Canvas compatibility are recorded as DEFERRED with residual risk when no authorized target observation exists; host/image evidence is not promoted to runtime PASS."
+  ],
+  "evidence_required": [
+    "[FT-002-AC-009 / REQ-005, REQ-022, REQ-023, REQ-026] Expected RED: fresh pre-change measurement and baseline contact sheet show the current oversized six-state composition and existing card pressure path before W25 writes. GREEN: the same 223×444 and 279×444 cases show each final painted icon bound at ≤90% of its matching RED width and height, the CLEAR sun disk at 1.15–1.30× its RED diameter inside the reduced overall bound, recognizable six states, no partly-cloudy state/text/emoji, and no overlap with temperature/date/pressure bounds. Artifact: `.tasks/TASK-028-T3-FT-002-W25/illustration-red-green.md`, `illustration-contact-sheet.png` and `illustration-bounds.json`.",
+    "[REQ-008 / pressure-trend-and-fallback-rules] Expected RED: current Main Display pressure rendering is Unicode/TextView based and lacks measured Path/stroke visibility proof. GREEN: a fresh contact sheet covers UP×1, UP×2, DOWN×1, DOWN×2 and zero-arrow; bounds JSON records direction/count, shaft/head pixel coverage, non-zero painted bounds, stroke width 4–8 px at 223×444 and zero painted arrow pixels for count zero. Artifact: `.tasks/TASK-028-T3-FT-002-W25/pressure-arrow-contact-sheet.png` and `pressure-arrow-bounds.json`.",
+    "[REQ-023] Expected RED/GREEN: baseline lacks explicit pressure stroke/rubric evidence and current icons occupy the W22 envelope. GREEN: independent UI/semantic reviewer applies the named rubric for reduced icon bounds, sun disk enlargement, six-state recognizability, arrow direction/count visibility, contrast, clipping and content non-overlap at both card sizes. Artifact: `.tasks/TASK-028-T3-FT-002-W25/visual-rubric.md` plus both contact sheets and bounds artifacts.",
+    "[REQ-005, REQ-022, REQ-026 regression] RED_NOT_APPLICABLE: a meaningful pre-implementation RED would require intentionally breaking the accepted Weather Context projection/order/day-night/fallback or stale-card rules, which is outside and forbidden by this display-only task; alternative proof: focused host assertions and static inspection observe unchanged four-card order, Today sizing, city-timezone/moon input, neutral fallback and no-illustration empty states. Artifact: `.tasks/TASK-028-T3-FT-002-W25/host-gates.md` and `boundary-static-review.md`.",
+    "[REQ-006, REQ-007, REQ-025, REQ-029 regression] RED_NOT_APPLICABLE: a meaningful RED would require changing shared material, WeatherCapability/provider/cache/freshness state or clock/timer/audio/network/lifecycle behavior, all forbidden by the hard boundary; alternative proof: source diff, host suite and static boundary review show those owners and paths are unchanged. Artifact: `.tasks/TASK-028-T3-FT-002-W25/boundary-static-review.md` and `host-gates.md`.",
+    "[Resource/secret/network safety] RED_NOT_APPLICABLE: producing a meaningful RED would require adding the forbidden resource/dependency/network/credential path; alternative proof: static source/resource inspection, clean build, host suite and diff integrity show only the two authorized files changed and no provider/network/secret action occurred. Artifact: `.tasks/TASK-028-T3-FT-002-W25/boundary-static-review.md` and `host-gates.md`.",
+    "[Target-device / REQ-023] Accepted alternative proof: when no authorized Samsung GT-I9300I Android 11 custom-ROM 1280×720 observation exists, record readability/fullscreen/keep-screen-on/Canvas compatibility as DEFERRED with the unavailable-target condition and residual risk; do not claim runtime PASS from host/static/contact-sheet evidence. Artifact: `.tasks/TASK-028-T3-FT-002-W25/target-device.md`."
+  ],
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host display and weather regression suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "At executor preflight, require completed TASK-027-T3-FT-001-W24 and confirm this task is the sole writer of the two authorized Main Display files. Do not alter any prior task, lifecycle, scheduler, checkpoint or terminal artifact.",
+    "Before any production behavior change, obtain fresh task-scoped RED from the current W22 implementation: capture measured six-state painted icon bounds at 223×444 and 279×444, the current CLEAR disk/overall bounds, and the current Main Display Unicode pressure-arrow path. Do not reuse W22 evidence as W25 RED.",
+    "Implement the bounded visual delta only in DisplayCapability.kt and focused DisplayProjectionTest.kt. Keep the six existing WeatherIllustration states and moonPhase input; reduce each measured icon envelope against the fresh RED, enlarge only the CLEAR central sun disk moderately within its reduced envelope, and do not introduce partly-cloudy composition or new state.",
+    "Replace only the Main Display pressure TextView glyph renderer with a Canvas/Path arrow view. Consume projection.pressureArrowCount and projection.pressureDirection as-is, draw explicit UP/DOWN shaft and head paths with measured 4–8 px stroke at row-card geometry, and render no arrow when count is zero. WeatherCapability.kt must remain unchanged.",
+    "Obtain claim-equivalent GREEN with deterministic illustration and pressure contact sheets, bounds JSON, and focused tests. The illustration artifact must list each state, small/Today dimensions, painted bounds, sun disk bounds and content intersections; the pressure artifact must list UP/DOWN one/two counts, zero-arrow, arrow bounds, stroke width and decisive non-background shaft/head pixels.",
+    "Apply an independent visual rubric for legibility, reduced overall bounds, moderate sun enlargement, six-state recognizability, arrow direction/count visibility, contrast, clipping, no Unicode Main Display arrow, and non-overlap with temperature/date/pressure content. Keep the separate forecast-card text path outside the change.",
+    "Run the clean build, full host unit suite and git diff integrity gate. Record static inspection showing no WeatherCapability/provider/network/settings/timer/audio/forecast/resource/asset change, no credential or live request, preserved stale/first-run/provider/day-night semantics, and safe rerun with isolated disposable evidence.",
+    "Record target 1280×720 Samsung/custom-ROM readability, fullscreen, keep-screen-on and runtime Canvas compatibility as DEFERRED with residual risk when no authorized target observation exists. This task handoff does not authorize emulator, adb, device, live provider, network or credential action.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-028-T3-FT-002-W25/handoff.md",
+        ".protocols/TASK-028-T3-FT-002-W25/progress.md",
+        ".tasks/TASK-028-T3-FT-002-W25/TASK-028-T3-FT-002-W25-S-EXE-final-report-code-01.md",
+        ".tasks/TASK-028-T3-FT-002-W25/illustration-red-green.md",
+        ".tasks/TASK-028-T3-FT-002-W25/illustration-bounds.json",
+        ".tasks/TASK-028-T3-FT-002-W25/illustration-contact-sheet.svg",
+        ".tasks/TASK-028-T3-FT-002-W25/pressure-arrow-bounds.json",
+        ".tasks/TASK-028-T3-FT-002-W25/pressure-arrow-contact-sheet.svg",
+        ".tasks/TASK-028-T3-FT-002-W25/visual-rubric.md",
+        ".tasks/TASK-028-T3-FT-002-W25/host-gates.md",
+        ".tasks/TASK-028-T3-FT-002-W25/boundary-static-review.md",
+        ".tasks/TASK-028-T3-FT-002-W25/target-device.md",
+        ".protocols/TASK-028-T3-FT-002-W25/verification.md",
+        ".tasks/TASK-028-T3-FT-002-W25/TASK-028-T3-FT-002-W25-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-028-T3-FT-002-W25/red-verification.md",
+        ".tasks/TASK-028-T3-FT-002-W25/TASK-028-T3-FT-002-W25-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; W25 remains bounded to Main Display weather presentation and pressure-arrow rendering.",
+      "accepted_residual_risk": [
+        "Samsung/custom-ROM 1280x720 target readability, Canvas compatibility and runtime illustration sizing remain DEFERRED; host evidence is not device/runtime PASS."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/foundation.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".memory-bank/tasks/TASK-025-T3-FT-002-W22.task.json",
+    ".memory-bank/tasks/TASK-027-T3-FT-001-W24.task.json"
+  ]
+}

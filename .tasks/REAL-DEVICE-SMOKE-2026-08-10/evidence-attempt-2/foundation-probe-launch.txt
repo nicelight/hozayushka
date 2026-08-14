@@ -1,0 +1,15 @@
+Starting: Intent { cmp=com.hozayushka.app/.app.MainActivity (has extras) }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: ok
+LaunchState: UNKNOWN (0)
+Activity: com.hozayushka.app/.app.MainActivity
+TotalTime: 0
+WaitTime: 7
+Complete
+Starting: Intent { cmp=com.hozayushka.app/.app.MainActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: com.hozayushka.app/.app.MainActivity
+TotalTime: 3040
+WaitTime: 3050
+Complete

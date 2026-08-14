@@ -1,0 +1,61 @@
+{
+  "task_id": "TASK-023-T3-FT-002-W20",
+  "verification_cycle": "fresh-verifier-cycle-1",
+  "probe": "VerifierOwnedW20Probe.java",
+  "command_exit_code": 0,
+  "fixture": "resettable in-memory Settings/Weather/Timer with fixed clock ticks; no cross-run state",
+  "selected_provider": "open_weather",
+  "initial_missing_key": {
+    "error_present": true,
+    "open_weather_calls": 0,
+    "open_meteo_calls": 0
+  },
+  "character_input_before_commit": {
+    "validation_only": true,
+    "stored_key_observed": false,
+    "save_callbacks": 0,
+    "open_weather_calls": 0,
+    "open_meteo_calls": 0
+  },
+  "valid_commit": {
+    "save_callbacks": 1,
+    "open_weather_calls": 1,
+    "open_meteo_calls": 0,
+    "fresh_matching_projection": true,
+    "missing_key_cleared": true,
+    "provider_identity_preserved": true,
+    "location_identity_preserved": true,
+    "credential_observation": "synthetic presence only; request=[REDACTED]; raw_value_recorded=false"
+  },
+  "inert_paths": {
+    "invalid_blank_open_meteo": true,
+    "callbacks": 0,
+    "provider_calls": 0
+  },
+  "selected_failure": {
+    "open_weather_only": true,
+    "open_meteo_calls": 0,
+    "fallback": false,
+    "matching_state_preserved": true,
+    "provider_location_identity_preserved": true
+  },
+  "clock_ticks_millis": [0, 1000, 5000, 60000, 60001],
+  "control_timer_trace": [
+    ["COUNTDOWN", 0, 60000],
+    ["COUNTDOWN", 1000, 59000],
+    ["COUNTDOWN", 5000, 55000],
+    ["OVERDUE", 60000, 0],
+    ["OVERDUE", 60001, 0]
+  ],
+  "treatment_timer_trace": [
+    ["COUNTDOWN", 0, 60000],
+    ["COUNTDOWN", 1000, 59000],
+    ["COUNTDOWN", 5000, 55000],
+    ["OVERDUE", 60000, 0],
+    ["OVERDUE", 60001, 0]
+  ],
+  "timer_trace_matches": true,
+  "countdown_double_tap_cancel_matches": true,
+  "overdue_single_tap_dismissal_matches": true,
+  "cleanup": "owner-local in-memory state discarded; no raw credential, live network or device state"
+}

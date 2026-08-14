@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440">
+  <defs>
+    <linearGradient id="green-first" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF"/><stop stop-color="#FF7A00"/>
+    </linearGradient>
+    <linearGradient id="green-second" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF"/><stop stop-color="#FF4FA3"/>
+    </linearGradient>
+    <linearGradient id="green-third" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF"/><stop stop-color="#A855F7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="440" fill="#080D12"/>
+  <text x="20" y="24" fill="#F4F7FA" font-family="sans-serif" font-size="18">W26 same-size host visual model — RED</text>
+  <text x="660" y="24" fill="#F4F7FA" font-family="sans-serif" font-size="18">W26 same-size host visual model — GREEN</text>
+  <g transform="translate(20 40) scale(.46875)">
+    <rect width="1280" height="720" rx="4" fill="#10151B"/>
+    <rect x="32" y="24" width="223" height="228" fill="#17232D" stroke="#536473" stroke-width="2"/>
+    <rect x="271" y="24" width="757" height="228" fill="#0D1820" stroke="#536473" stroke-width="2"/>
+    <text x="649" y="174" text-anchor="middle" fill="#F4F7FA" font-family="sans-serif" font-size="176">12:34</text>
+    <rect x="32" y="252" width="223" height="444" fill="#23323D" stroke="#A9BAC6" stroke-width="2"/>
+    <rect x="271" y="252" width="279" height="444" fill="#2A3F4D" stroke="#A9BAC6" stroke-width="2"/>
+    <rect x="566" y="252" width="223" height="444" fill="#23323D" stroke="#A9BAC6" stroke-width="2"/>
+    <rect x="805" y="252" width="223" height="444" fill="#23323D" stroke="#A9BAC6" stroke-width="2"/>
+    <g fill="#10151B" stroke-width="4">
+      <circle cx="1138" cy="136" r="110" fill="#314A5A" stroke="#FF7A00"/>
+      <circle cx="1138" cy="360" r="110" fill="#314A5A" stroke="#FF4FA3"/>
+      <circle cx="1138" cy="584" r="110" fill="#314A5A" stroke="#A855F7"/>
+    </g>
+    <g fill="#F4F7FA" font-family="sans-serif" font-size="30" text-anchor="middle">
+      <text x="1138" y="146">3 м</text><text x="1138" y="370">10 м</text><text x="1138" y="594">30 м</text>
+    </g>
+  </g>
+  <g transform="translate(660 40) scale(.46875)">
+    <rect width="1280" height="720" rx="4" fill="#10151B"/>
+    <rect x="32" y="24" width="217" height="228" fill="#17232D" stroke="#536473" stroke-width="2"/>
+    <rect x="273" y="24" width="755" height="228" fill="#0D1820" stroke="#536473" stroke-width="2"/>
+    <text x="650" y="174" text-anchor="middle" fill="#F4F7FA" font-family="sans-serif" font-size="196">12:34</text>
+    <rect x="32" y="252" width="217" height="444" fill="#23323D" stroke="#A9BAC6" stroke-width="2"/>
+    <rect x="273" y="252" width="273" height="444" fill="#2A3F4D" stroke="#A9BAC6" stroke-width="2"/>
+    <rect x="570" y="252" width="217" height="444" fill="#23323D" stroke="#A9BAC6" stroke-width="2"/>
+    <rect x="811" y="252" width="217" height="444" fill="#23323D" stroke="#A9BAC6" stroke-width="2"/>
+    <g fill="none" stroke-width="8">
+      <circle cx="1138" cy="136" r="100" stroke="url(#green-first)"/>
+      <circle cx="1138" cy="360" r="100" stroke="url(#green-second)"/>
+      <circle cx="1138" cy="584" r="100" stroke="url(#green-third)"/>
+    </g>
+    <g fill="#F4F7FA" font-family="sans-serif" font-size="30" text-anchor="middle">
+      <text x="1138" y="146">3 м</text><text x="1138" y="370">10 м</text><text x="1138" y="594">30 м</text>
+    </g>
+  </g>
+</svg>

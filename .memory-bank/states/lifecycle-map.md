@@ -1,8 +1,8 @@
 ---
 description: Canonical V1 lifecycle states for timer, weather freshness and forecast sessions.
 status: active
-last_updated: 2026-08-04
-source_of_truth: .memory-bank/prd.md, .memory-bank/invariants.md, operator confirmation 2026-08-04
+last_updated: 2026-08-10
+source_of_truth: .memory-bank/prd.md, .memory-bank/invariants.md, operator confirmation 2026-08-04 and 2026-08-10
 ---
 # Lifecycle Map
 
@@ -38,17 +38,27 @@ library that implements them.
 
 ## Weather Data Lifecycle
 
+Every weather state below is evaluated for the current provider/location
+identity. A cache belonging to another identity is equivalent to no usable
+cache and is never a transition source for the current selection.
+
 | From | Trigger | To | Product rule |
 |---|---|---|---|
-| No usable cache | Successful fetch | `fresh` | Populate current/future cards and begin local history from installation onward. |
-| `fresh` | No successful update for more than 24 hours | `stale_empty` | Keep card positions/dates but remove weather values and illustrations. |
-| `fresh` or `stale_empty` | Successful fetch | `fresh` | Replace the visible cache and preserve the offline freshness rule. |
-| Any cache state | App restart/offline period | Same freshness-derived state | Clock and timers remain usable independently of network availability. |
+| No matching usable cache | Successful selected-provider fetch | `fresh` | Populate current/future cards and begin identity-matching local history from installation onward. |
+| `fresh` | No successful matching update for more than 24 hours | `stale_empty` | Keep card positions/dates but remove weather values and illustrations. |
+| `fresh` or `stale_empty` | Successful selected-provider fetch | `fresh` | Atomically replace only successfully normalized matching subsets and preserve the offline freshness rule. |
+| Any matching cache state | Launch, valid city/provider change or 30-minute cadence | Same state until success | Invoke exactly the selected adapter; failure does not select/request the other provider. |
+| Any matching cache state | Selected-provider failure or incomplete subset | Same matching freshness state or subset unavailable | Preserve matching last valid data; never substitute or mix another provider's data. |
+| Any cache state | App restart/offline period | Same matching freshness-derived state | Clock and timers remain usable independently of network availability. |
 
 ### Weather Freshness Contract
 
 - The freshness decision is derived from the last successful normalized update,
   not from a failed request or current network availability alone.
+- Eligibility requires exact selected-provider and location identity before age
+  is evaluated. Provider change may reveal only an already matching partition;
+  otherwise it yields no usable cache until a successful selected-provider
+  refresh.
 - `fresh` remains visible offline through 24 hours; `stale_empty` keeps the four
   card positions/dates but removes weather values, illustrations and arrows.
 - Weather Context owns cache/history writes and the transition to the
@@ -58,8 +68,9 @@ library that implements them.
 
 - Before the first successful history sample, `yesterday` remains a dated empty
   contour in its fixed position and has no temperature, illustration or arrow.
-- A failed refresh leaves the last successful normalized cache and its derived
-  freshness state unchanged; it never creates a partial fresh state.
+- A failed refresh leaves the matching last successful normalized cache/history
+  and its derived freshness state unchanged; it never creates a partial fresh
+  state, changes selection, calls the other provider or reuses its data.
 - A successful refresh replaces the normalized projection atomically from the
   feature's point of view, then records the current pressure sample for the
   installation-relative history window.
@@ -69,13 +80,15 @@ library that implements them.
 | Entry condition | Session behavior | Exit |
 |---|---|---|
 | Required hourly data exists | Open eight-slot hourly view; use the shared forecast exit flow | Auto-close after 3 seconds, double tap, or release after hold. |
-| Required 10-day data exists | Open the shared ten-card long-term view; use the shared forecast exit flow | Auto-close after 3 seconds, double tap, or release after hold. |
+| Complete provider-supported daily data exists (10 Open-Meteo or 8 OpenWeather records) | Open the shared ten-position long-term view; OpenWeather positions 9–10 are explicit empty; use the shared forecast exit flow | Auto-close after 3 seconds, double tap, or release after hold. |
 | Required data is absent | Stay on the main display | Show the accepted short availability message; no forecast session is created. |
 
 ### Shared Forecast Session Contract
 
-- A valid session is either hourly (exactly eight accepted slots) or long-term
-  (exactly ten ordered days). Partial data does not create a session.
+- A valid session is either hourly (exactly eight available accepted slots) or
+  long-term (10 Open-Meteo records, or 8 OpenWeather records projected into 10
+  positions with the final two explicitly unavailable). A partial
+  provider-supported set does not create a session.
 - Both session types begin with a three-second auto-close timer. Single tap
   cancels auto-close and shows the accepted hint; double tap closes; hold keeps
   the session open and release closes it.
@@ -97,14 +110,18 @@ library that implements them.
 
 ### FT-004 Long-Term Session Contract
 
-- The long-term entry is valid only when the selected-city projection contains
-  exactly ten ordered daily records from today through the next nine city-local
-  calendar days.
+- The long-term entry is valid only when the selected provider supplies its
+  complete ordered daily set from city-local today: 10 Open-Meteo records or 8
+  OpenWeather records.
 - A valid session renders two rows of five cards, uses `dd` and the shared
-  temperature/glass/illustration rules, omits pressure arrows, and applies
-  day/night selection from the selected-city API timezone.
+  temperature/glass/illustration rules for available positions, omits pressure
+  arrows, and applies day/night selection from the selected-city API timezone.
+  OpenWeather positions nine and ten remain dated unavailable/empty positions
+  and do not make its complete 8-record set invalid.
 - Missing or incomplete required daily data remains on Main Display with
   `Долгосрочный прогноз еще не подгрузился`; it does not create a session.
+- No empty position or missing record is synthesized or filled from the other
+  provider.
 - Session timing uses the platform timing source for the three-second
   auto-close and shared gestures; daily dates and boundaries remain provider-
   timezone data.
@@ -114,8 +131,8 @@ library that implements them.
 - Timer persistence/recovery and alert dismissal form one lifecycle concern.
 - Weather fetching, freshness, local history and forecast availability are
   separate data concerns that feed the main display and forecast views.
-- Settings/location changes are a capability boundary that can request weather
-  refresh without changing the timer lifecycle.
+- Settings location/provider changes are a capability boundary that can request
+  selected-provider weather refresh without changing the timer lifecycle.
 - Exact storage schema, platform mechanism and serialization remain
   Foundation/feature implementation details bounded by this contract.
 

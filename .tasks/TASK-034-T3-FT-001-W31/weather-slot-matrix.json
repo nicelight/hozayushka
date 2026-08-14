@@ -1,0 +1,11 @@
+{
+  "task_id": "TASK-034-T3-FT-001-W31",
+  "fixtures": {
+    "NO_DATA": {"slots": ["yesterday", "today", "tomorrow", "day_after"], "all_shells_present": true, "invented_values": false},
+    "partial": {"slots": ["yesterday", "today", "tomorrow", "day_after"], "all_shells_present": true, "missing_projection_keeps_shell": true, "invented_values": false},
+    "populated": {"slots": ["yesterday", "today", "tomorrow", "day_after"], "all_shells_present": true, "order_stable": true, "invented_values": false}
+  },
+  "source": "DisplayProjectionTest.w29WeatherSlotsStayOrderedAndShellsSurviveNoDataAsyncAndPopulatedInputs",
+  "result": "PASS",
+  "note": "Host fixture evidence only; it does not replace physical visual evidence."
+}

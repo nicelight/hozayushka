@@ -2,7 +2,10 @@ package com.hozayushka.app
 
 import com.hozayushka.app.adapters.weather.RedactedFixtureParser
 import com.hozayushka.app.adapters.weather.RedactedProviderPayload
-import com.hozayushka.app.adapters.weather.RedactedWeatherFixtureAdapter
+import com.hozayushka.app.adapters.weather.RedactedWeatherFixture
+import com.hozayushka.app.adapters.weather.WeatherProvider
+import com.hozayushka.app.adapters.weather.WeatherProviderRequest
+import com.hozayushka.app.adapters.weather.WeatherProviderResult
 import com.hozayushka.app.settings.InMemorySettingsStateStore
 import com.hozayushka.app.settings.LocationContext
 import com.hozayushka.app.settings.SettingsCapability
@@ -12,6 +15,7 @@ import com.hozayushka.app.timer.TimerLifecycleState
 import com.hozayushka.app.weather.InMemoryWeatherCacheStore
 import com.hozayushka.app.weather.WeatherCapability
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -101,17 +105,21 @@ class FoundationProbesTest {
         settings.saveFoundationLocation(
             LocationContext("Fixture city", 40.0, 69.0, "Asia/Dushanbe"),
         )
+        val fixture = RedactedWeatherFixture(payload)
+        val provider = FixtureBackedProvider(fixture)
         val weather = WeatherCapability(
             locationReader = settings,
             cacheStore = InMemoryWeatherCacheStore(),
-            provider = RedactedWeatherFixtureAdapter(payload),
+            openMeteoProvider = provider,
+            openWeatherProvider = provider,
+            fixtureProvider = fixture,
         )
 
         val result = weather.refreshFoundationFixture()
 
         assertNotNull(result)
-        assertTrue(result!!.credentialWasReceived)
-        assertEquals("[REDACTED]", result.redactedCredential)
+        assertFalse(result!!.credentialWasReceived)
+        assertNull(result.redactedCredential)
         assertEquals(21, result.snapshot.temperatureCelsius)
         assertEquals("cloud", result.snapshot.condition)
         assertTrue(fixtureText.contains("[REDACTED]"))
@@ -124,12 +132,16 @@ class FoundationProbesTest {
     ) {
         fun capabilities(): ProbeCapabilities {
             val settingsCapability = SettingsCapability(settings)
+            val fixture = RedactedWeatherFixture()
+            val provider = FixtureBackedProvider(fixture)
             return ProbeCapabilities(
                 settings = settingsCapability,
                 weather = WeatherCapability(
                     locationReader = settingsCapability,
                     cacheStore = weather,
-                    provider = RedactedWeatherFixtureAdapter(),
+                    openMeteoProvider = provider,
+                    openWeatherProvider = provider,
+                    fixtureProvider = fixture,
                 ),
                 timer = TimerCapability(timer),
             )
@@ -141,4 +153,10 @@ class FoundationProbesTest {
         val weather: WeatherCapability,
         val timer: TimerCapability,
     )
+
+    private class FixtureBackedProvider(
+        private val fixture: RedactedWeatherFixture,
+    ) : WeatherProvider {
+        override fun fetch(request: WeatherProviderRequest): WeatherProviderResult = fixture.fetch(request)
+    }
 }

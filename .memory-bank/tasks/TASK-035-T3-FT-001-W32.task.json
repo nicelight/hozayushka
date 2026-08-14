@@ -1,0 +1,240 @@
+{
+  "id": "TASK-035-T3-FT-001-W32",
+  "title": "Recompose Main Display into a compact weather band and dominant clock zone",
+  "status": "failed",
+  "wave": "W32",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-005",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-034-T3-FT-001-W31"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Focused display projection suite",
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "required": true
+    },
+    {
+      "name": "Full host unit suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Android debug lint",
+      "command": "./gradlew lintDebug",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before any production write, capture fresh task-scoped RED at exactly 2460x1080 and 1280x720 from deterministic Main Display host render. Record raw screen/card/clock/icon/temperature/control bounds, band_ratio, clock_zone_ratio, card-height spread, bottom-alignment spread, horizontal regions and current state matrix. Do not promote W31 physical evidence to W32 RED.",
+    "Implement only the bounded Main Display composition correction in DisplayCapability.kt with focused DisplayProjectionTest.kt support: weather-card band 25-30% of total frame height, remaining clock zone 70-75%, equal-height/bottom-aligned four-card shell, city/date above Yesterday, complete maximum-fit HH:mm in the central/upper region, secondary weather illustrations, and separate right timer rail.",
+    "Obtain claim-equivalent GREEN at both sizes using the same deterministic host path. Record raw complete-HH:mm bounds against the available central/upper region and require the clock to be maximum-fit there, with no clipping, overlap or missing digit; do not apply an unaccepted clock-size ratio as a gate.",
+    "Prove the four ordered yesterday/today/tomorrow/day_after shells remain visible and macro-stable in NO_DATA, partial/async and populated redacted-fixture states. Preserve Weather Context read-only consumption and do not synthesize weather values.",
+    "Prove the three existing timer controls remain separate circular transparent controls with one-color preset radial neon rim/glow, existing order/labels/colors/selection/touch behavior and visible spacing; record raw bounds/gaps without imposing an unaccepted gap value. Timer & Alert semantics remain read-only.",
+    "Apply the named visual-QA rubric in main-display-presentation.md to both sizes, recording raw geometry plus qualitative/relational PASS/FAIL claims, any declared raster measurement tolerance and artifact locator for every macro claim. Run all five project-native gates and record host/device separation.",
+    "Build may complete for handoff, but the route MUST stop immediately before adb install/upload. Do not run adb, install an APK, launch a device/emulator, use network/credentials, or claim physical/runtime PASS until the operator separately releases the upload pause.",
+    {
+      "stage": "scheduler_failure_disposition",
+      "mode": "scheduler",
+      "decision": "failed",
+      "decided_at": "2026-08-14",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "post_handoff_physical_smoke": "FAIL: mixed empty-Yesterday state violates equal-height/common-bottom allocation"
+      },
+      "failure_reason": "Authorized unlocked TECNO smoke revealed a task-local violation of the accepted Main Display contract that host pure-geometry evidence did not cover: the empty Yesterday shell remains a tall MATCH_PARENT/weighted left-column view while populated cards occupy the bottom band.",
+      "accepted_evidence": [
+        ".tasks/TASK-035-T3-FT-001-W32/physical-smoke.png",
+        ".tasks/TASK-035-T3-FT-001-W32/physical-visual-receipt.md",
+        ".protocols/TASK-035-T3-FT-001-W32/handoff.md",
+        ".protocols/TASK-035-T3-FT-001-W32/verification.md",
+        ".tasks/TASK-035-T3-FT-001-W32/TASK-035-T3-FT-001-W32-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-035-T3-FT-001-W32/red-verification.md",
+        ".tasks/TASK-035-T3-FT-001-W32/TASK-035-T3-FT-001-W32-S-RED-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-035-T3-FT-001-W32/host-gates.md",
+        ".tasks/TASK-035-T3-FT-001-W32/geometry.json",
+        ".tasks/TASK-035-T3-FT-001-W32/boundary-static-review.md",
+        ".memory-bank/features/FT-001-main-clock-display.md:478"
+      ],
+      "semantic_findings": [
+        "Host proof remains valid for the abstract fixture and is not rewritten; it did not prove actual Android View allocation for the mixed empty/populated state.",
+        "The confirmed repair is separately planned as TASK-036-T3-FT-001-W33; no automatic W32 retry is consumed by this disposition."
+      ],
+      "lifecycle_note": "Scheduler disposition: in_progress -> failed after post-handoff physical evidence exposed a task-local acceptance violation. W33 is the indexed recovery route and must not bypass the failed dependency without reconciliation.",
+      "failure_budget_note": "This is the first W32 task-local failure disposition; prior host PASS/semantic-pass are preserved, and no second W32 execution attempt is auto-authorized.",
+      "next_action": "Reconcile TASK-036-T3-FT-001-W33 through the normal feature-to-tasks recovery route with a successful baseline dependency before promotion."
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/main-display-presentation.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-034-T3-FT-001-W31.task.json",
+    ".tasks/TASK-034-T3-FT-001-W31/physical-main-verify.png",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002 / REQ-002 / REQ-023] Fresh RED/GREEN at 2460x1080 and 1280x720 must report band_ratio, clock_zone_ratio, raw band bounds and comparison to hard 25-30% / 70-75% targets. Artifacts: .tasks/TASK-035-T3-FT-001-W32/geometry.json and red-green-contact-sheet.svg.",
+    "[FT-001-AC-002 / REQ-002 / REQ-005] Fresh RED/GREEN must report all four card heights and bottoms. PASS requires equal heights and common bottom alignment within the declared raster_measurement_tolerance = max(2px, 0.005H), no Yesterday outlier, fixed order, and visible shells in NO_DATA/partial/async/populated redacted states. This tolerance is raster measurement only, not a product target. Artifact: .tasks/TASK-035-T3-FT-001-W32/weather-slot-matrix.json.",
+    "[FT-001-AC-002 / REQ-002 / REQ-023] Fresh RED/GREEN must report complete HH:mm bounds, available central/upper clock region, containment and overlap at both sizes. PASS requires a maximum-fit complete clock with no clipping/overlap or missing digit; raw geometry supports the qualitative/relational verdict and no unaccepted clock-size ratio is a gate. Artifact: .tasks/TASK-035-T3-FT-001-W32/clock-fit.json.",
+    "[FT-001-AC-002 / REQ-023] Each populated weather illustration must report painted bounds/area against its card, temperature and clock bounds. PASS is qualitative: each illustration is materially secondary to the card's temperature/content and to the clock; raw measurements are review evidence, not fixed footprint/area gates. Artifact: .tasks/TASK-035-T3-FT-001-W32/visual-rubric.md.",
+    "[FT-001-AC-002 / REQ-002] The visual rubric must PASS the relational left/central/bottom/right composition, city/date above Yesterday, maximum-fit complete clock without clipping/overlap, materially secondary weather illustrations, and separate circular transparent timer rail with one-color radial neon rim/glow and visible spacing. Record raw geometry and the declared raster measurement tolerance where used, with contact-sheet locators. Artifact: .tasks/TASK-035-T3-FT-001-W32/visual-rubric.md.",
+    "[Weather Context read-only regression] RED_NOT_APPLICABLE: intentionally changing provider selection, refresh, freshness, cache/history, normalized data or card semantics would falsify the exact Main Display boundary; alternative proof: fixture matrix and static boundary review show read-only projection consumption. Artifact: .tasks/TASK-035-T3-FT-001-W32/weather-boundary-regression.md.",
+    "[Timer & Alert read-only regression] RED_NOT_APPLICABLE: intentionally changing preset execution, countdown, cancellation, overdue, audio or lifecycle would cross the exact Main Display boundary; alternative proof: focused/full host regressions and static review show unchanged timer ownership and touch routing. Artifact: .tasks/TASK-035-T3-FT-001-W32/timer-boundary-regression.md.",
+    "[Physical/device deferral] Accepted alternative proof: operator requested a pause immediately before adb install/upload; no device install, adb, emulator or runtime action is authorized. Record physical rendering, fullscreen, keep-screen-on and custom-device visual behavior as DEFERRED; host evidence is not runtime PASS. Artifact: .tasks/TASK-035-T3-FT-001-W32/target-device.md.",
+    "T3 isolation and cleanup: host fixtures use deterministic disposable state and redacted data; no network, credential, device or emulator state is created; W29/W30/W31 identity/status/evidence/history and scheduler state remain unchanged. Artifact: .tasks/TASK-035-T3-FT-001-W32/boundary-static-review.md and host-gates.md."
+  ],
+  "purpose": "Correct the proven macro Main Display regression by making weather cards a compact 25-30% bottom band and reserving 70-75% for the dominant maximum-fit HH:mm clock, while preserving side columns, timer presentation and all Weather Context/Timer & Alert ownership.",
+  "success_outcome": "Fresh host RED/GREEN at 2460x1080 and 1280x720 proves the compact equal-height bottom weather band, 70-75% clock zone, contained maximum-fit HH:mm, secondary illustrations, left city/date placement, separate right timer rail and stable four-slot states; all five host gates pass, physical install/runtime evidence is DEFERRED at the upload pause, and no neighbor behavior or historical task state changes.",
+  "anti_goals": [
+    "Do not reopen, rewrite or change TASK-032 W29, TASK-033 W30 or TASK-034 W31 identity, lifecycle, evidence, protocols, scheduler checkpoint or terminal history.",
+    "Do not modify Weather Context, provider/adapters, cache/history/freshness/normalized data, weather semantics, Timer & Alert lifecycle/countdown/cancellation/overdue/audio, Android runtime ownership, MainActivity, resources, assets, dependencies, public contracts or graph edges.",
+    "Do not preserve a taller Yesterday card; do not allow any card to exceed the equal-height band tolerance; do not let weather illustrations dominate a card or the clock.",
+    "Do not introduce fixed device dp, font, asset, gradient-stop or single-resolution targets. If accepted ratios cannot be met without a new product choice, stop and route to /feature-doctor FT-001.",
+    "Do not run adb, adb install, emulator/AVD/QEMU, device launch, network, credentials or APK upload in the paused route."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-032-T3-FT-001-W29.task.json",
+      ".memory-bank/tasks/TASK-033-T3-FT-001-W30.task.json",
+      ".memory-bank/tasks/TASK-034-T3-FT-001-W31.task.json",
+      ".protocols/TASK-032-T3-FT-001-W29/",
+      ".protocols/TASK-033-T3-FT-001-W30/",
+      ".protocols/TASK-034-T3-FT-001-W31/",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, lifecycle/RTM status, promotion decisions and terminal state",
+      "adb, APK install/upload, emulator/AVD/QEMU, device launch, network, credentials and secret-bearing artifacts",
+      "new module, dependency, resource pipeline, public contract, graph edge, event/message path or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "The weather band cannot remain within 25-30% of total frame height and clock zone cannot remain within 70-75% at both required host sizes without a new fixed product choice; stop and route to /feature-doctor FT-001.",
+      "The maximum-fit complete HH:mm cannot be contained without overlap, or equal-height/bottom-aligned card shell cannot be measured unambiguously; stop and route the unresolved product choice to /feature-doctor FT-001.",
+      "The correction requires Weather Context, Timer & Alert, Android Runtime, resources, MainActivity, a new module/edge/public contract or another owner; stop and route to /spec-design or owning feature.",
+      "After host build/gates and planning handoff are complete, stop immediately before adb install/upload. No adb, APK install, emulator/device launch, lifecycle change or runtime evidence is allowed until separately authorized.",
+      "Any production/test write leaves the two exact boundary files, or any historical task, scheduler checkpoint, lifecycle/status or terminal state would change."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#ft-001-ac-002-main-display-composition",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/requirements.md#main-display-and-clock",
+    ".memory-bank/requirements.md#weather-context-and-forecast",
+    ".memory-bank/requirements.md#cross-cutting-constraints-and-resilience",
+    ".memory-bank/prd.md#functional-requirements",
+    ".memory-bank/contracts/main-display-presentation.md",
+    ".memory-bank/contracts/main-display-presentation.md#normalized-composition-contract",
+    ".memory-bank/contracts/main-display-presentation.md#measurement-and-tolerance-method",
+    ".memory-bank/contracts/main-display-presentation.md#visual-qa-rubric",
+    ".memory-bank/contracts/main-display-presentation.md#claim-linked-evidence",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/tasks/TASK-034-T3-FT-001-W31.task.json",
+    ".tasks/TASK-034-T3-FT-001-W31/physical-main-verify.png",
+    ".tasks/TASK-034-T3-FT-001-W31/physical-visual-receipt.md",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md#spec-registry",
+    ".memory-bank/contracts/main-display-presentation.md#normative-must--must-not-rules",
+    ".memory-bank/contracts/main-display-presentation.md#measurement-and-tolerance-method",
+    ".memory-bank/contracts/main-display-presentation.md#claim-linked-evidence",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display owns only shell composition/presentation; it consumes Weather Context and Timer & Alert projections/commands and never writes neighbor state.",
+    "The task-owned feature claim is FT-001-AC-002. REQ-001 constrains landscape/fullscreen policy, REQ-002 constrains the 25-30% band, 70-75% clock zone and complete clock, REQ-005 constrains ordered weather cards/equal shell height, and REQ-023 constrains readability/lightweight visuals.",
+    "Use only the accepted band/clock ratios as product gates and record raw geometry for the relational rules; the declared raster measurement tolerance is not a product target. Do not introduce fixed dp/font targets or a single-device pixel solution.",
+    "The left info column, central clock hero, bottom four-card row and right timer rail must remain distinct; city/date stays above Yesterday; timer controls remain circular, transparent, spaced and one-color radial.",
+    "Weather Context remains the sole owner of provider refresh, normalization, cache/history, freshness and weather-specific presentation; Timer & Alert remains the sole owner of timer lifecycle, countdown, cancellation, overdue and audio.",
+    "The operator upload pause is a hard stop immediately before adb install; physical/device/runtime evidence is DEFERRED in this task route."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002 / REQ-023: at 2460x1080 and 1280x720, raw band_ratio is 0.25..0.30 and clock_zone_ratio is 0.70..0.75; report the declared raster_measurement_tolerance = max(2px, 0.005H) without using it to excuse out-of-target design.",
+    "FT-001-AC-002 / REQ-002 / REQ-005: four card heights are equal and bottoms share one alignment, using only the declared raster_measurement_tolerance = max(2px, 0.005H) when explicitly reported; this is raster measurement only, not a product target. Fixed order and state matrix remain stable, Yesterday is not taller, and city/date is above Yesterday.",
+    "FT-001-AC-002 / REQ-002 / REQ-023: complete HH:mm is maximum-fit in the central/upper region, with no clipping/overlap or missing digit; raw bounds support the qualitative/relational verdict and no unaccepted clock-size ratio is a gate.",
+    "FT-001-AC-002 / REQ-023: populated illustrations are materially secondary to card temperature/content and the clock; raw bounds/area are recorded for review without fixed footprint or area-ratio gates.",
+    "FT-001-AC-002 / REQ-002: three timer controls remain separate circular transparent controls with one-color radial neon rim/glow, existing labels/order/colors/touch and visible spacing; raw bounds/gaps are recorded without an unaccepted pairwise-gap gate.",
+    "T3 proof scope: fresh task-owned RED/GREEN, distinguishable artifacts, safe host rerun/cleanup, all five gates, explicit physical/device DEFERRED status and no adb/install/emulator/runtime action."
+  ]
+}

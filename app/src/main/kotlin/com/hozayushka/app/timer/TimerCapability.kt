@@ -269,10 +269,36 @@ class TimerCapability(
         }
 
         val request = TimerAlertPolicy.requestAt(snapshot.overdueElapsedMillis, settings)
-            ?: return TimerAlertDecision(
-                visualOverdue = true,
-                overdueElapsedMillis = snapshot.overdueElapsedMillis,
-            )
+            ?: if (settings.volumePercent == 0) {
+                if (platform == null) {
+                    return TimerAlertDecision(
+                        visualOverdue = true,
+                        overdueElapsedMillis = snapshot.overdueElapsedMillis,
+                    )
+                }
+                val suppressedRequest = TimerAlertPolicy.requestAt(
+                    snapshot.overdueElapsedMillis,
+                    settings.copy(volumePercent = 1),
+                )
+                return TimerAlertDecision(
+                    visualOverdue = true,
+                    overdueElapsedMillis = snapshot.overdueElapsedMillis,
+                    audioResult = AudioProbeResult(
+                        requested = false,
+                        permitted = false,
+                        reason = "app_volume_suppressed",
+                        signalId = suppressedRequest?.signalId ?: settings.signal.id,
+                        volumePercent = settings.volumePercent,
+                        rampPercent = suppressedRequest?.rampPercent,
+                        overdueElapsedMillis = snapshot.overdueElapsedMillis,
+                    ),
+                )
+            } else {
+                return TimerAlertDecision(
+                    visualOverdue = true,
+                    overdueElapsedMillis = snapshot.overdueElapsedMillis,
+                )
+            }
         val result = platform?.requestAlertAudio(request) ?: AudioProbeResult(
             requested = false,
             permitted = false,

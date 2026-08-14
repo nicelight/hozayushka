@@ -1,0 +1,168 @@
+{
+  "id": "TASK-021-T2-FT-003-W18",
+  "title": "Enforce selected-provider completeness for eight fixed hourly slots",
+  "status": "done",
+  "wave": "W18",
+  "feature": "FT-003",
+  "reqs": [
+    "REQ-009",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-023-T3-FT-002-W20"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/forecast/ForecastSessionCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/ForecastSessionTest.kt",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T2",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host hourly completeness and session probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Establish claim-linked RED against the current state: there is no selected-provider matrix proving that each of the eight fixed city-local slots is present for both target providers, especially elapsed current-day OpenWeather slots.",
+    "Use deterministic selected-city dates/timezones to project the exact six current-day slots plus next-day 00:00 and 03:00. A session may open only when all eight values come from the selected provider response.",
+    "For Open-Meteo and OpenWeather separately, remove each of the eight positions one at a time and prove entry remains on Main Display with `Почасовой прогноз еще не подгрузился`. Include OpenWeather fixtures where an elapsed current-day slot is absent.",
+    "Prove no slot is synthesized, copied from a neighboring time, read from cache/history of another provider, or borrowed from Open-Meteo for OpenWeather. The accepted W4/W5 2x4 presentation and exit flow are regression checks, not reimplemented outcomes.",
+    "Use deterministic fixtures and resettable forecast-session state; no live provider, secret, emulator/device evidence or runtime PASS claim is permitted.",
+    "Closure later requires fresh /verify PASS and /red-verify semantic-pass for FT-003-AC-001 and AC-005 Revision-2 claims; scheduler promotion remains external.",
+    {
+      "stage": "scheduler_dependency_block",
+      "mode": "scheduler",
+      "decision": "blocked",
+      "decided_at": "2026-08-11",
+      "blocked_by": "TASK-020-T3-FT-002-W17",
+      "reason": "Direct dependency failed after exhausting 3/3 attempts with final semantic-fail; no TASK-021 execution or acceptance gate is eligible.",
+      "resume_owner": "/feature-to-tasks FT-002 creates and closes an indexed upstream repair, followed by scheduler dependency recovery."
+    },
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/live-provider runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-021-T2-FT-003-W18/handoff.md",
+        ".tasks/TASK-021-T2-FT-003-W18/TASK-021-T2-FT-003-W18-S-EXE-final-report-code-01.md",
+        ".protocols/TASK-021-T2-FT-003-W18/verification.md",
+        ".tasks/TASK-021-T2-FT-003-W18/TASK-021-T2-FT-003-W18-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-021-T2-FT-003-W18/verifier-owned-evidence.md",
+        ".tasks/TASK-021-T2-FT-003-W18/hourly-completeness-matrix.json",
+        ".protocols/TASK-021-T2-FT-003-W18/red-verification.md",
+        ".tasks/TASK-021-T2-FT-003-W18/TASK-021-T2-FT-003-W18-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after executor PASS_FOR_HANDOFF, fresh functional PASS and final independent semantic-pass; W20 remains done, TASK-020 remains failed after exhausted 3/3 attempts, and TASK-022/W19 blocked history remains unchanged.",
+      "accepted_residual_risk": [
+        "Target device/emulator rendering, live provider/subscription behavior and runtime network compatibility remain DEFERRED by the explicit boundary; no runtime PASS is claimed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-003-hourly-forecast.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-020-T3-FT-002-W17.task.json",
+    ".memory-bank/tasks/TASK-023-T3-FT-002-W20.task.json",
+    ".protocols/FT-003/plan.md",
+    ".protocols/FT-003/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-003.md"
+  ],
+  "evidence_required": [
+    "[FT-003-AC-001; REQ-009] Expected RED: current production behavior does not prove complete selected-provider entry for both target adapters, including elapsed OpenWeather slots. GREEN: Today opens hourly only when all eight fixed city-local positions exist in the selected provider data. Artifact: complete Open-Meteo/OpenWeather entry matrix with provider identity.",
+    "[FT-003-AC-005; REQ-009, REQ-026] Expected RED: no all-position two-provider missing-slot matrix proves unavailable behavior without synthesis. GREEN: deleting any one of eight positions for either provider keeps Main Display, shows the accepted message and never borrows/synthesizes a value. Artifact: sixteen deterministic one-missing-slot results plus elapsed-slot OpenWeather case.",
+    "T2 repeatability: fixtures fix selected-city date/timezone and provider identity, session state starts closed, each case records the decisive entry result/message and cleanup leaves no cross-run state."
+  ],
+  "purpose": "Apply the accepted strict eight-slot rule to the selected provider output after the two-adapter migration without reopening hourly layout or gesture behavior.",
+  "success_outcome": "Deterministic host evidence proves that Today opens exactly one eight-slot hourly session only when the selected provider supplies every fixed city-local position; any missing Open-Meteo or OpenWeather slot yields the accepted unavailable result with no synthesis or cross-provider borrowing.",
+  "anti_goals": [
+    "Do not implement or modify provider HTTP adapters, selection persistence, credentials, cache/history ownership or fallback policy from TASK-019/TASK-020.",
+    "Do not redesign the accepted 2x4 hourly layout, card presentation, auto-close or gesture exit flow already owned by terminal W4/W5 records.",
+    "Do not add alternate slot schedules, partial hourly sessions, interpolation, nearest-hour matching, cross-provider reads or speculative abstraction."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "weather HTTP transport, adapter parsing and Settings provider/key UI",
+      "long-term forecast capability projection",
+      "hourly layout/presentation/gesture redesign beyond regression preservation",
+      "slot interpolation, nearest-time substitution, cross-provider fallback or mixed-provider session",
+      "new modules, dependencies, plugin/DI/event infrastructure and live external calls"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before changing the fixed eight slot identities, all-or-unavailable rule or accepted message.",
+      "Stop and route to /spec-design if a new module, graph edge, public contract or state owner is required.",
+      "Stop and route to /feature-to-tasks FT-003 if task identity, tier, dependency, AC ownership or material scope must change.",
+      "Stop and return upstream to TASK-020 if provider data cannot preserve the required raw city-local timestamps without adapter changes."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-001",
+    ".memory-bank/features/FT-003-hourly-forecast.md#FT-003-AC-005"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-hourly-forecast-session-surface",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#ft-003-forecast-data-contract",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-provider.md#provider-capability-matrix",
+    ".memory-bank/contracts/weather-provider.md#provider-neutral-response-contract",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Forecast Sessions owns entry/session lifecycle; Weather Context owns normalized selected-provider forecast data. Neither may call the other provider or adapter directly.",
+    "The hourly projection is exactly eight fixed selected-city-local slots or unavailable; every slot must come from the selected provider response.",
+    "OpenWeather elapsed-slot absence is an ordinary incomplete result, not permission to synthesize, borrow Open-Meteo data or open a partial screen.",
+    "Existing 2x4 presentation and shared exit behavior remain unchanged and are checked only for regression.",
+    "No hard write_boundary is declared; advisory files plus forbidden scope and stop conditions define the task boundary."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/domains/local-data.md#ft-003-hourly-forecast-records"
+  ],
+  "verification_targets": [
+    "FT-003-AC-001 / REQ-009: complete selected-provider entry for Open-Meteo and OpenWeather, including required elapsed current-day positions.",
+    "FT-003-AC-005 / REQ-009, REQ-026: each missing position for each provider yields the exact unavailable message and no session.",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations: slot identity uses selected-city timezone rather than device timezone.",
+    ".memory-bank/contracts/weather-provider.md#failure-rules: no synthesis, partial projection, fallback or cross-provider borrowing occurs."
+  ]
+}

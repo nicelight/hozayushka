@@ -1,0 +1,15 @@
+{
+  "attempt": 1,
+  "text_contract": "complete HH:mm; no seconds",
+  "fit_method": "MainClockGeometry.measure with complete five-character HH:mm model; actual DensitySafeClockView uses Paint metrics and the same maximum-fit method",
+  "red": {
+    "2460x1080": {"available_clock_zone": "1657x381", "clock_bounds": "551,24..2208,405", "band_ratio": 0.6027778},
+    "1280x720": {"available_clock_zone": "755x248", "clock_bounds": "273,24..1028,272", "band_ratio": 0.5888889}
+  },
+  "green": {
+    "2460x1080": {"available_clock_zone": "1657x730", "measured_hhmm": "1657.0x662.8", "clock_bounds": "551,24..2208,754", "contained": true, "overlap": false},
+    "1280x720": {"available_clock_zone": "755x471", "measured_hhmm": "755.0x302.00003", "clock_bounds": "273,24..1028,495", "contained": true, "overlap": false}
+  },
+  "result": "pass",
+  "source": "app/build/test-results/testDebugUnitTest/TEST-com.hozayushka.app.DisplayProjectionTest.xml"
+}

@@ -5,8 +5,11 @@ import android.content.SharedPreferences
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -41,6 +44,57 @@ class LocalWeatherApiKey private constructor(
     companion object {
         internal fun fromUserInput(value: String): LocalWeatherApiKey = LocalWeatherApiKey(value)
     }
+}
+
+enum class WeatherProviderSelection(
+    val storageId: String,
+    val displayName: String,
+) {
+    OPEN_METEO("open_meteo", "Open-Meteo"),
+    OPEN_WEATHER("open_weather", "OpenWeather"),
+    ;
+
+    companion object {
+        fun fromStorage(value: String?): WeatherProviderSelection =
+            entries.firstOrNull { it.storageId == value } ?: OPEN_METEO
+    }
+}
+
+data class WeatherAccessSettingsProjection(
+    val selectedProvider: WeatherProviderSelection,
+    val hasApplicableOpenWeatherKey: Boolean,
+)
+
+data class WeatherRefreshAccessProjection(
+    val selectedProvider: WeatherProviderSelection,
+    val location: LocationContext,
+)
+
+interface WeatherRefreshAccessSnapshot {
+    val projection: WeatherRefreshAccessProjection
+
+    /** Keeps the raw value inside this Settings-owned ephemeral callback. */
+    fun <T> withSelectedOpenWeatherApiKey(block: (String) -> T): T?
+}
+
+interface CoherentWeatherAccessReader {
+    /** Loads Settings once and keeps provider, location and key authority in one immutable attempt. */
+    fun <T> withWeatherRefreshAccessSnapshot(block: (WeatherRefreshAccessSnapshot) -> T): T?
+
+    /** Loads provider and location together for post-fetch stale-response comparison. */
+    fun currentWeatherRefreshAccessProjection(): WeatherRefreshAccessProjection?
+}
+
+enum class SettingsContentSection {
+    WEATHER_PROVIDER,
+    OPEN_WEATHER_KEY,
+    LOCATION,
+    OPEN_METEO_ATTRIBUTION,
+    GEONAMES_ATTRIBUTION,
+    ALERT,
+    PERSONALIZATION,
+    TIMER_PRESETS,
+    BACK,
 }
 
 enum class ApiKeyValidationError(val message: String) {
@@ -162,6 +216,7 @@ data class TimerPresetUpdateResult(
 
 data class SettingsState(
     val location: LocationContext? = null,
+    val weatherProvider: WeatherProviderSelection = WeatherProviderSelection.OPEN_METEO,
     val apiKey: LocalWeatherApiKey? = null,
     val timerPresets: TimerPresetProjection = TimerPresetDefaults.projection(),
     val timerAlert: TimerAlertSettingsProjection = TimerAlertSettingsDefaults.projection(),
@@ -177,8 +232,10 @@ interface LocationReader {
 }
 
 interface WeatherAccessReader : LocationReader {
-    /** The raw value exists only for the duration of the authorized request. */
-    fun <T> withWeatherApiKey(block: (String) -> T): T?
+    fun selectedWeatherProvider(): WeatherProviderSelection
+
+    /** Authorizes one ephemeral read only while OpenWeather is the current explicit selection. */
+    fun <T> withSelectedOpenWeatherApiKey(block: (String) -> T): T?
 
     fun hasWeatherApiKey(): Boolean
 }
@@ -222,7 +279,10 @@ class SharedPreferencesSettingsStateStore(
                 longitude = preferences.getString(KEY_LONGITUDE, null)?.toDoubleOrNull() ?: 0.0,
                 apiTimeZone = preferences.getString(KEY_TIME_ZONE, null).orEmpty(),
             ) else null,
-            apiKey = preferences.getString(KEY_API_KEY, null)
+            weatherProvider = WeatherProviderSelection.fromStorage(
+                preferences.getString(KEY_WEATHER_PROVIDER, null),
+            ),
+            apiKey = preferences.getString(KEY_OPEN_WEATHER_API_KEY, null)
                 ?.takeIf(String::isNotBlank)
                 ?.let(LocalWeatherApiKey::fromUserInput),
             timerPresets = TimerPresetProjection(
@@ -275,7 +335,10 @@ class SharedPreferencesSettingsStateStore(
                 putString(KEY_LONGITUDE, location.longitude.toString())
                 putString(KEY_TIME_ZONE, location.apiTimeZone)
             }
-            state.apiKey?.use { putString(KEY_API_KEY, it) } ?: remove(KEY_API_KEY)
+            putString(KEY_WEATHER_PROVIDER, state.weatherProvider.storageId)
+            state.apiKey?.use { putString(KEY_OPEN_WEATHER_API_KEY, it) }
+                ?: remove(KEY_OPEN_WEATHER_API_KEY)
+            remove(KEY_LEGACY_WEATHER_API_KEY)
             state.timerPresets.presets.forEach { preset ->
                 putInt(key(preset.slot, "hours"), preset.duration.hours)
                 putInt(key(preset.slot, "minutes"), preset.duration.minutes)
@@ -298,7 +361,9 @@ class SharedPreferencesSettingsStateStore(
             .remove(KEY_LATITUDE)
             .remove(KEY_LONGITUDE)
             .remove(KEY_TIME_ZONE)
-            .remove(KEY_API_KEY)
+            .remove(KEY_WEATHER_PROVIDER)
+            .remove(KEY_OPEN_WEATHER_API_KEY)
+            .remove(KEY_LEGACY_WEATHER_API_KEY)
             .also { editor ->
                 TimerPresetSlot.entries.forEach { slot ->
                     editor.remove(key(slot, "hours"))
@@ -322,7 +387,9 @@ class SharedPreferencesSettingsStateStore(
         const val KEY_LATITUDE = "foundation.latitude"
         const val KEY_LONGITUDE = "foundation.longitude"
         const val KEY_TIME_ZONE = "foundation.time_zone"
-        const val KEY_API_KEY = "settings.weather.api_key"
+        const val KEY_WEATHER_PROVIDER = "settings.weather.provider"
+        const val KEY_OPEN_WEATHER_API_KEY = "settings.weather.open_weather.api_key"
+        const val KEY_LEGACY_WEATHER_API_KEY = "settings.weather.api_key"
         const val KEY_ALERT_SIGNAL = "settings.alert.signal"
         const val KEY_ALERT_VOLUME = "settings.alert.volume"
         const val KEY_GLASS_INTENSITY = "settings.display.glass_intensity"
@@ -336,28 +403,109 @@ class SettingsCapability(
     private val stateStore: SettingsStateStore,
     private val onValidLocationChanged: () -> Unit = {},
     private val catalog: BundledLocationCatalog? = null,
-) : WeatherAccessReader, TimerPresetReader, TimerAlertSettingsReader {
+    private val onValidProviderChanged: () -> Unit = onValidLocationChanged,
+    private val onValidOpenWeatherApiKeySaved: () -> Unit = {},
+) : WeatherAccessReader, CoherentWeatherAccessReader, TimerPresetReader, TimerAlertSettingsReader {
     fun snapshot(): SettingsState = stateStore.load()
 
     override fun currentLocation(): LocationContext? = snapshot().location
 
-    override fun <T> withWeatherApiKey(block: (String) -> T): T? =
-        snapshot().apiKey?.use(block)
+    override fun selectedWeatherProvider(): WeatherProviderSelection = snapshot().weatherProvider
 
-    fun hasStoredApiKey(): Boolean = snapshot().apiKey != null
+    override fun <T> withSelectedOpenWeatherApiKey(block: (String) -> T): T? {
+        val state = snapshot()
+        if (state.weatherProvider != WeatherProviderSelection.OPEN_WEATHER) return null
+        return state.apiKey?.use(block)
+    }
 
-    override fun hasWeatherApiKey(): Boolean = hasStoredApiKey()
+    override fun <T> withWeatherRefreshAccessSnapshot(
+        block: (WeatherRefreshAccessSnapshot) -> T,
+    ): T? {
+        val state = snapshot()
+        val location = state.location ?: return null
+        val projection = WeatherRefreshAccessProjection(
+            selectedProvider = state.weatherProvider,
+            location = location,
+        )
+        return block(object : WeatherRefreshAccessSnapshot {
+            override val projection: WeatherRefreshAccessProjection = projection
 
-    fun updateApiKey(input: String): ApiKeyUpdateResult {
-        val error = when {
-            input.isBlank() -> ApiKeyValidationError.MISSING
-            input != input.trim() || input.any(Char::isWhitespace) || input.any(Char::isISOControl) ->
-                ApiKeyValidationError.INVALID
-            else -> null
+            override fun <R> withSelectedOpenWeatherApiKey(block: (String) -> R): R? {
+                if (state.weatherProvider != WeatherProviderSelection.OPEN_WEATHER) return null
+                return state.apiKey?.use(block)
+            }
+        })
+    }
+
+    override fun currentWeatherRefreshAccessProjection(): WeatherRefreshAccessProjection? {
+        val state = snapshot()
+        val location = state.location ?: return null
+        return WeatherRefreshAccessProjection(
+            selectedProvider = state.weatherProvider,
+            location = location,
+        )
+    }
+
+    fun hasStoredOpenWeatherApiKey(): Boolean = snapshot().apiKey != null
+
+    override fun hasWeatherApiKey(): Boolean = weatherAccessSettingsProjection().hasApplicableOpenWeatherKey
+
+    fun weatherAccessSettingsProjection(): WeatherAccessSettingsProjection {
+        val state = snapshot()
+        return WeatherAccessSettingsProjection(
+            selectedProvider = state.weatherProvider,
+            hasApplicableOpenWeatherKey =
+                state.weatherProvider == WeatherProviderSelection.OPEN_WEATHER && state.apiKey != null,
+        )
+    }
+
+    fun updateWeatherProvider(provider: WeatherProviderSelection): Boolean {
+        val state = snapshot()
+        if (state.weatherProvider == provider) return false
+        stateStore.save(state.copy(weatherProvider = provider))
+        onValidProviderChanged()
+        return true
+    }
+
+    private fun validateOpenWeatherApiKey(input: String): ApiKeyValidationError? = when {
+        input.isBlank() -> ApiKeyValidationError.MISSING
+        input != input.trim() || input.any(Char::isWhitespace) || input.any(Char::isISOControl) ->
+            ApiKeyValidationError.INVALID
+        else -> null
+    }
+
+    fun updateOpenWeatherApiKey(input: String): ApiKeyUpdateResult {
+        if (selectedWeatherProvider() != WeatherProviderSelection.OPEN_WEATHER) {
+            return ApiKeyUpdateResult(accepted = false)
         }
+        val error = validateOpenWeatherApiKey(input)
         if (error != null) return ApiKeyUpdateResult(accepted = false, error = error)
         stateStore.save(snapshot().copy(apiKey = LocalWeatherApiKey.fromUserInput(input)))
+        onValidOpenWeatherApiKeySaved()
         return ApiKeyUpdateResult(accepted = true)
+    }
+
+    fun contextualizeWeatherError(message: String?): String? {
+        val normalized = message?.takeIf(String::isNotBlank) ?: return null
+        // Local key validation is rendered by Settings; this input has no trustworthy provider tag.
+        if (ApiKeyValidationError.entries.any { it.message == normalized }) {
+            return null
+        }
+        return normalized
+    }
+
+    fun settingsContentOrder(): List<SettingsContentSection> = buildList {
+        add(SettingsContentSection.WEATHER_PROVIDER)
+        if (selectedWeatherProvider() == WeatherProviderSelection.OPEN_WEATHER) {
+            add(SettingsContentSection.OPEN_WEATHER_KEY)
+        }
+        add(SettingsContentSection.LOCATION)
+        add(SettingsContentSection.OPEN_METEO_ATTRIBUTION)
+        add(SettingsContentSection.GEONAMES_ATTRIBUTION)
+        add(SettingsContentSection.ALERT)
+        add(SettingsContentSection.PERSONALIZATION)
+        add(SettingsContentSection.TIMER_PRESETS)
+        add(SettingsContentSection.BACK)
     }
 
     fun ensureDefaultLocation() {
@@ -477,25 +625,97 @@ class SettingsCapability(
             setTextColor(context.getColor(R.color.display_primary))
         })
 
-        val keyError = inlineError(context)
-        keyError.text = if (hasStoredApiKey()) "" else ApiKeyValidationError.MISSING.message
+        val providerGroup = RadioGroup(context).apply {
+            orientation = RadioGroup.HORIZONTAL
+            contentDescription = context.getString(R.string.settings_weather_provider_description)
+            tag = "settings-weather-provider"
+        }
+        WeatherProviderSelection.entries.forEach { provider ->
+            providerGroup.addView(RadioButton(context).apply {
+                id = View.generateViewId()
+                text = provider.displayName
+                tag = provider
+                isChecked = provider == selectedWeatherProvider()
+                contentDescription = context.getString(
+                    R.string.settings_weather_provider_option_description,
+                    provider.displayName,
+                )
+            })
+        }
+        val keyLabel = fieldLabel(context, context.getString(R.string.settings_open_weather_key))
+        val keyError = inlineError(context).apply { tag = "settings-open-weather-key-error" }
         val keyInput = EditText(context).apply {
-            hint = if (hasStoredApiKey()) "Локальный API-ключ сохранён" else "API-ключ Yandex Weather"
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            contentDescription = "Личный API-ключ погоды"
-            tag = "settings-weather-api-key"
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            contentDescription = context.getString(R.string.settings_open_weather_key_description)
+            tag = "settings-open-weather-api-key"
+        }
+        fun renderKeyValidation(input: String) {
+            val error = validateOpenWeatherApiKey(input)
+            keyError.text = error?.let {
+                "${WeatherProviderSelection.OPEN_WEATHER.displayName}: ${it.message}"
+            }.orEmpty()
+        }
+        fun commitOpenWeatherApiKey() {
+            val result = updateOpenWeatherApiKey(keyInput.text?.toString().orEmpty())
+            keyError.text = result.error?.let {
+                "${WeatherProviderSelection.OPEN_WEATHER.displayName}: ${it.message}"
+            }.orEmpty()
         }
         keyInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val result = updateApiKey(s?.toString().orEmpty())
-                keyError.text = result.error?.message.orEmpty()
+                renderKeyValidation(s?.toString().orEmpty())
             }
             override fun afterTextChanged(s: Editable?) = Unit
         })
-        content.addView(fieldLabel(context, "Погода"))
+        fun renderProviderContext() {
+            val openWeatherSelected = selectedWeatherProvider() == WeatherProviderSelection.OPEN_WEATHER
+            val visibility = if (openWeatherSelected) View.VISIBLE else View.GONE
+            keyLabel.visibility = visibility
+            keyInput.visibility = visibility
+            keyError.visibility = visibility
+            if (openWeatherSelected) {
+                keyInput.hint = context.getString(
+                    if (hasStoredOpenWeatherApiKey()) {
+                        R.string.settings_open_weather_key_saved
+                    } else {
+                        R.string.settings_open_weather_key_hint
+                    },
+                )
+                keyError.text = if (hasStoredOpenWeatherApiKey()) {
+                    ""
+                } else {
+                    "${WeatherProviderSelection.OPEN_WEATHER.displayName}: ${ApiKeyValidationError.MISSING.message}"
+                }
+            } else {
+                keyInput.text.clear()
+                keyError.text = ""
+            }
+        }
+        keyInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId != EditorInfo.IME_ACTION_DONE) {
+                false
+            } else {
+                keyInput.clearFocus()
+                true
+            }
+        }
+        keyInput.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) commitOpenWeatherApiKey()
+        }
+        providerGroup.setOnCheckedChangeListener { group, checkedId ->
+            (group.findViewById<RadioButton>(checkedId)?.tag as? WeatherProviderSelection)?.let { provider ->
+                updateWeatherProvider(provider)
+                renderProviderContext()
+            }
+        }
+        content.addView(fieldLabel(context, context.getString(R.string.settings_weather_provider)))
+        content.addView(providerGroup, fieldParams())
+        content.addView(keyLabel)
         content.addView(keyInput, fieldParams())
         content.addView(keyError, fieldParams())
+        renderProviderContext()
 
         val selectedLocation = TextView(context).apply {
             textSize = 24f
@@ -555,7 +775,7 @@ class SettingsCapability(
                         setOnClickListener {
                             saveCatalogLocation(city)
                             selectedLocation.text = city.cityDisplayName
-                            locationError.text = weatherErrorProvider().orEmpty()
+                            locationError.text = contextualizeWeatherError(weatherErrorProvider()).orEmpty()
                         }
                     })
                 }
@@ -575,12 +795,26 @@ class SettingsCapability(
         showCities()
 
         content.addView(TextView(context).apply {
+            autoLinkMask = Linkify.WEB_URLS
+            text = context.getString(R.string.settings_open_meteo_attribution)
+            textSize = 14f
+            gravity = Gravity.CENTER
+            setPadding(0, 24, 0, 8)
+            setTextColor(context.getColor(R.color.display_secondary))
+            contentDescription = "Open-Meteo attribution"
+            linksClickable = true
+            movementMethod = LinkMovementMethod.getInstance()
+            tag = "settings-open-meteo-attribution"
+        }, fieldParams())
+
+        content.addView(TextView(context).apply {
             text = context.getString(R.string.settings_geonames_attribution)
             textSize = 14f
             gravity = Gravity.CENTER
-            setPadding(0, 24, 0, 16)
+            setPadding(0, 8, 0, 16)
             setTextColor(context.getColor(R.color.display_secondary))
             contentDescription = "GeoNames attribution"
+            tag = "settings-geonames-attribution"
         }, fieldParams())
 
         content.addView(TextView(context).apply {
@@ -715,7 +949,10 @@ class SettingsCapability(
         content.addView(Button(context).apply {
             text = context.getString(R.string.settings_back_icon)
             contentDescription = context.getString(R.string.settings_back)
-            setOnClickListener { onBack() }
+            setOnClickListener {
+                keyInput.clearFocus()
+                onBack()
+            }
         }, fieldParams())
         return scroll
     }

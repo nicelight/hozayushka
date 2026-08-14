@@ -1,7 +1,7 @@
 ---
 description: Planning surface for FT-006 countdown lifecycle and cancellation.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-12
 ---
 # FT-006 — Feature plan
 
@@ -18,25 +18,24 @@ its projection and submits gestures through the accepted capability contract.
 - Feature: [.memory-bank/features/FT-006-countdown-lifecycle.md](../../.memory-bank/features/FT-006-countdown-lifecycle.md)
 - Epic: [.memory-bank/epics/EP-003-timers-alert.md](../../.memory-bank/epics/EP-003-timers-alert.md)
 - Direct feature requirements: `REQ-011`, `REQ-012`, `REQ-013`, `REQ-014`, `REQ-025`
-- Global Backbone: `complete`, Planning Revision `1`
+- Global Backbone: `complete`, Planning Revision `2`
 - Foundation Gate: `TASK-002-T3-FT-000-W1`, status `done`
-- Approved predecessor: `TASK-007-T3-FT-005-W6`, status `planned`
+- Approved predecessor: `TASK-007-T3-FT-005-W6`, status `done`
 - Clarified PRD: `clarification_status: complete`
 
 ## Queue
 
 | Order | Task | Tier | Wave | Status | Depends on | Primary owner |
 |---|---|---|---|---|---|---|
-| 1 | `TASK-008-T3-FT-006-W7` | T3 | W7 | planned | `TASK-007-T3-FT-005-W6` | Timer & Alert |
+| 1 | `TASK-008-T3-FT-006-W7` | T3 | W7 | done | `TASK-007-T3-FT-005-W6` | Timer & Alert |
+| 2 | `TASK-030-T3-FT-006-W27` | T3 | W27 | planned | `TASK-029-T3-FT-001-W26` | Main Display |
 
-One task is sufficient. Starting, active-state cardinality, protected gesture
-handling, persisted-time rehydration and network independence are one
-Timer & Alert lifecycle outcome with one user-visible proof path. The task
-crosses only the registered Main Display → Timer & Alert, Main Display →
-Android Runtime Adapter, Timer & Alert → Settings & Location and Timer & Alert
-→ Android Runtime Adapter boundaries.
-It is not split by file, layer, provider, persistence primitive or test
-artifact.
+W7 remains the completed Timer & Alert lifecycle outcome. W27 is one cohesive
+Main Display presentation follow-up after the terminal W26 visual history: it
+dedicates the active countdown surface, preserves the selected preset identity
+and accepted interactions, and proves the display/lifecycle integration without
+reopening timer/audio ownership. It is not split by file, layer, state,
+provider, persistence primitive or test artifact.
 
 ## RTM-facing ownership map
 
@@ -69,7 +68,7 @@ new canonical specification or behavior-spec file is required.
 
 FT-006 frontmatter remains `spec_design_status: complete` with its existing
 subject links. No `needed_before_tasks` Backbone row remains and Planning
-Revision remains positive and unchanged at `1`.
+Revision is reconciled to positive Planning Revision `2`.
 
 ## Scope boundary
 
@@ -86,6 +85,31 @@ configuration (FT-005), fullscreen overdue rendering and alert audio behavior
 (FT-007), alert personalization (FT-009), reboot auto-start/recovery, direct
 private-store access, a new event/message boundary, a new dependency/provider,
 backend/cloud/accounts/Google Services and unaccepted UI controls.
+
+## W27 visual follow-up boundary
+
+W27 owns only the active countdown presentation delta under `FT-006-AC-001`:
+the active state uses a dedicated Main Display surface with no weather, city,
+date or card content; countdown digits are materially larger than the final
+idle clock in the same host comparison; and a transparent neon circular
+backdrop uses the activating preset's existing color identity. The surface
+continues to render the Timer & Alert projection, selected preset, accepted
+one-tap hint and existing gestures without calculating remaining time or
+writing timer state.
+
+The same task carries focused host regression proof for `FT-006-AC-002`,
+`FT-006-AC-003`, `FT-006-AC-004` and `FT-006-AC-005`: one active timer,
+single-tap protection/double-tap cancel, temporary interruption recovery and
+network independence remain intact. These remain Timer & Alert-owned
+semantics; W27 does not change their contract or claim overdue/audio behavior.
+`TASK-026-T3-FT-007-W23` is
+read-only context for the forbidden audio repair surface, and its status and
+evidence remain unchanged.
+
+No fixed dp, ratio or gradient stop is an accepted target. An execution-time
+numeric product decision routes to `/feature-doctor FT-006`; an owner,
+boundary, lifecycle or public-contract change routes to `/spec-design` or a
+fresh `/feature-to-tasks FT-006` reconciliation as applicable.
 
 ## Primary owner, boundaries and execution path
 
@@ -125,8 +149,10 @@ backend/cloud/accounts/Google Services and unaccepted UI controls.
   `app/src/test/resources/fixtures/` — deterministic timer, gesture,
   persistence/rehydration and network-independent checks.
 
-These paths are advisory and non-exhaustive. No hard `write_boundary` is set;
-the semantic scope, forbidden scope and stop conditions remain binding.
+For W7 the paths remain advisory and non-exhaustive. W27 deliberately narrows
+its hard production/test boundary to the existing
+`DisplayCapability.kt`/`DisplayProjectionTest.kt` pair; no Timer & Alert,
+audio, lifecycle-wiring or resource write is authorized for that follow-up.
 
 ## Applicable gates and claim-linked proof
 
@@ -136,6 +162,16 @@ the semantic scope, forbidden scope and stop conditions remain binding.
 - The target-device route applies only to lifecycle/screen-off/readability
   behavior that host checks cannot establish. This planning run creates no
   runtime evidence.
+
+W27's claim-linked host proof compares a fresh current active-countdown
+surface with claim-equivalent GREEN in the same rendered-size case, including
+surface-content exclusion, countdown-versus-idle hierarchy, transparent
+preset-color backdrop and selected-preset state. A named visual-QA rubric
+records PASS/FAIL for focal hierarchy, no weather/city/date/card leakage,
+color identity, lightweight static treatment, no clipping/overlap and the
+accepted interaction/lifecycle regression observations. Target/device and
+audio runtime are explicitly `DEFERRED`; no emulator/device/adb/network/audio
+run is part of planning or the task's host proof.
 
 | Claim | Decisive result | Artifact |
 |---|---|---|
@@ -177,6 +213,7 @@ the semantic scope, forbidden scope and stop conditions remain binding.
 
 ## Handoff
 
-After this planning surface is accepted, the immediate route is
-`/review-tasks-plan FT-006`; execution, `/mb-doctor`, `/verify`,
-`/red-verify` and `/mb-sync` are not part of this planning run.
+Queue action is `created`; `TASK-030-T3-FT-006-W27` remains `planned` behind
+done W26. Exact next owner is fresh `/review-tasks-plan FT-006`; execution,
+`/mb-doctor`, `/verify`, `/red-verify` and `/mb-sync` are not part of this
+planning run.

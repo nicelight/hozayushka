@@ -1,0 +1,256 @@
+{
+  "anti_goals": [
+    "Do not change TimerCapability.kt, TimerAlertPolicy.kt or PlatformRuntimeAdapter.kt; Timer & Alert and Android Runtime Adapter remain read-only/regression owners.",
+    "Do not repair overdue audio, audio policy, audible behavior, ramp/repeat/cap, permissions or any FT-007 outcome; W23 remains historical context only.",
+    "Do not change idle Main Display geometry, weather projection/content/freshness/palette/day-night/pressure, Settings, provider/network behavior or card ownership except hiding those elements on the dedicated active-countdown surface.",
+    "Do not add a lifecycle state, change timer arithmetic/persistence/one-active-timer semantics, alter selected-preset or gesture contracts, add reboot recovery, a new module/edge/public contract/dependency/event path or composition-root orchestration.",
+    "Do not choose fixed dp values, font ratios, product ratios or neon gradient stops; route any material numeric product decision to /feature-doctor FT-006.",
+    "Do not run or claim emulator/device/adb/network/audio runtime evidence, and do not modify historical task status, evidence, protocols, scheduler checkpoint, RTM/lifecycle state or terminal history."
+  ],
+  "constraints": [
+    "Main Display owns the user-facing composition and may add the bounded active-countdown surface only inside DisplayCapability.kt; it consumes Timer & Alert projections and does not calculate remaining time or write timer state.",
+    "The active countdown surface must contain no weather card, city, date or standard card-shell content; the countdown digits must be materially larger than the final idle-clock result in the same host comparison, without a new fixed numeric target.",
+    "The transparent neon circular backdrop uses the activating preset's existing PresetPresentation color identity; selected preset and active styling remain consistent with the existing projection and touch route.",
+    "Existing single-tap hint, double-tap cancellation, temporary interruption rehydration, one-active-timer invariant and network independence remain unchanged and are regression-checked through existing capability contracts.",
+    "Host visual/lifecycle proof is claim-linked and isolated; target readability/lifecycle/audio runtime is DEFERRED and never inferred from host evidence."
+  ],
+  "depends_on": [
+    "TASK-029-T3-FT-001-W26"
+  ],
+  "docs": [
+    ".memory-bank/features/FT-006-countdown-lifecycle.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/foundation.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json",
+    ".memory-bank/tasks/TASK-029-T3-FT-001-W26.task.json",
+    ".protocols/TASK-026-T3-FT-007-W23/verification.md",
+    ".protocols/TASK-026-T3-FT-007-W23/handoff.md",
+    ".protocols/TASK-029-T3-FT-001-W26/verification.md",
+    ".protocols/TASK-029-T3-FT-001-W26/handoff.md",
+    ".protocols/FT-006/plan.md",
+    ".protocols/FT-006/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-006.md"
+  ],
+  "evidence_required": [
+    "[FT-006-AC-001 / REQ-012] RED: the current host case shows active countdown sharing the standard surface or lacking the required hierarchy. GREEN: the claim-equivalent same rendered-size case shows a dedicated active-countdown surface with no weather cards, city, date or standard card-shell content, countdown digits materially larger than the final idle-clock result, the activating preset's existing color identity in a transparent neon circular backdrop, and the selected preset still identifiable. Compare every condition explicitly. Artifact: task-local geometry/visual receipt plus same-size RED/GREEN contact sheet.",
+    "[FT-006-AC-001 / REQ-012; REQ-023] Named visual-QA review: a Reviewer/visual-QA role applies a rubric to the same host render for countdown focal hierarchy, content exclusion, transparent circular treatment, activating preset color identity, selected-preset indication, readability, no clipping/overlap and lightweight static treatment. Each criterion records PASS/FAIL, decisive observation and artifact locator; target runtime is not substituted. Artifact: task-local visual-rubric.md.",
+    "[FT-006-AC-002 / REQ-011] RED_NOT_APPLICABLE: intentionally creating or accepting a second active timer would falsify the existing Timer & Alert cardinality contract and exceed this display-only follow-up; alternative proof: isolated host timer regression confirms the dedicated surface consumes one active validated preset projection while the exact two-file scope contains no TimerCapability write or second state owner. Artifact: task-local lifecycle-regression.md and boundary-static-review.md.",
+    "[FT-006-AC-003 / REQ-013] RED_NOT_APPLICABLE: intentionally breaking single-tap protection or double-tap cancellation would falsify the accepted Timer & Alert contract and expand a display-only follow-up; alternative proof: focused/full host regression and scoped two-file review show single tap preserves countdown and the accepted hint while double tap cancels, with no TimerCapability write. Artifact: task-local host-gates.md and boundary-static-review.md.",
+    "[FT-006-AC-004 / REQ-014] RED_NOT_APPLICABLE: intentionally breaking temporary-interruption recovery would falsify the accepted Timer & Alert lifecycle and exceed the display presentation delta; alternative proof: isolated host lifecycle fixture/read-only TimerCapability observation confirms rehydrated countdown/overdue state remains the source of the dedicated surface, while no lifecycle owner is modified. Target/custom-ROM observation is DEFERRED. Artifact: task-local lifecycle-regression.md and target-device.md.",
+    "[FT-006-AC-005 / REQ-025] RED_NOT_APPLICABLE: intentionally breaking network independence would falsify the accepted resilience contract and exceed this display-only task; alternative proof: offline fake-platform/host case plus scoped source review show the dedicated surface and protected timer gestures do not require provider/network input, while overdue dismissal remains behind the existing Timer & Alert contract. Artifact: task-local offline-regression.md and boundary-static-review.md.",
+    "[REQ-016 audio regression] RED_NOT_APPLICABLE: audio behavior is not an outcome of this display-only task and intentionally changing it would reopen the completed W23 repair; alternative proof: exact hard-boundary review confirms TimerCapability.kt, TimerAlertPolicy.kt and PlatformRuntimeAdapter.kt are untouched and W23 history remains unchanged. Physical/audio runtime is DEFERRED and no audio PASS is claimed. Artifact: task-local boundary-static-review.md and target-device.md.",
+    "[Target device / REQ-023] Accepted alternative proof: without an authorized Samsung GT-I9300I Android 11 custom-ROM observation, record target readability, fullscreen, interruption and active-surface rendering as DEFERRED with unavailable-target condition and residual risk; no host/contact-sheet result becomes runtime PASS. No emulator, device, adb, network or audio run is authorized. Artifact: task-local target-device.md.",
+    "T3 isolation and cleanup: deterministic host geometry/render and synthetic timer/lifecycle fixtures start from disposable idle state, use safe rerun/reset, distinguish each claim's result, leave no persistent state/credentials/network/device/audio artifacts and preserve all historical task evidence. Artifact: task-local host-gates.md and boundary-static-review.md."
+  ],
+  "feature": "FT-006",
+  "gates": [
+    {
+      "command": "./gradlew clean assembleDebug",
+      "name": "Clean Android debug build",
+      "required": true
+    },
+    {
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "name": "Focused display and lifecycle regression suite",
+      "required": true
+    },
+    {
+      "command": "./gradlew testDebugUnitTest",
+      "name": "Full host regression suite",
+      "required": true
+    },
+    {
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "name": "Memory Bank and diff integrity",
+      "required": true
+    }
+  ],
+  "id": "TASK-030-T3-FT-006-W27",
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/constitution.md#iii-bounded-agent-autonomy-and-human-checkpoints",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-004---no-event-or-message-boundary-in-v1",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/capability-interfaces.md#timer-and-alert-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#orchestration-ownership",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/strategy.md#evidence-and-ownership",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "purpose": "Refine the active FT-006 countdown presentation into a dedicated Main Display surface with no weather/city/date/card content, materially larger countdown digits than the final idle clock and a transparent neon circular backdrop using the activating preset's existing color identity, while preserving all accepted Timer & Alert semantics and network-independent operation.",
+  "reqs": [
+    "REQ-011",
+    "REQ-012",
+    "REQ-013",
+    "REQ-014",
+    "REQ-023",
+    "REQ-025"
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/timer/TimerCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/timer/TimerAlertPolicy.kt",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-008-T3-FT-006-W7.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-029-T3-FT-001-W26.task.json status, evidence and history",
+      ".protocols/TASK-026-T3-FT-007-W23/",
+      ".protocols/TASK-029-T3-FT-001-W26/",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, terminal state, lifecycle/RTM status and promotion decisions",
+      "emulator/AVD, physical device, adb, live network/provider calls, credentials and audio runtime",
+      "new module, dependency, public contract, graph edge, event/message path, permission, resource pipeline or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "Stop and route to /feature-doctor FT-006 if unambiguous visual acceptance requires a new fixed dp value, font-size ratio, surface ratio or neon gradient stop; do not choose it in execution.",
+      "Stop and route to /spec-design if the dedicated surface requires a new module, graph edge, public contract, ownership rule, resource boundary or composition-root business orchestration.",
+      "Stop and route to /feature-to-tasks FT-006 if execution exposes a required lifecycle, timer-state, gesture, dependency, tier, acceptance or material-scope change; do not hide it behind repair.",
+      "Stop and route to /feature-to-tasks FT-007 if the requested correction expands into overdue rendering, alert audio, silent/DND, ramp/repeat/cap or physical audibility behavior.",
+      "Stop if fresh host visual/lifecycle evidence cannot distinguish current RED from claim-equivalent GREEN for every owned presentation claim, or if proving it requires emulator/device/adb/network/audio runtime.",
+      "Stop if any production or test write falls outside DisplayCapability.kt or DisplayProjectionTest.kt, or if any workflow action would change historical task status/evidence, scheduler state, checkpoint, lifecycle/RTM state or terminal history."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-001",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-002",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-003",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-004",
+    ".memory-bank/features/FT-006-countdown-lifecycle.md#FT-006-AC-005",
+    ".memory-bank/requirements.md#timers-and-alert",
+    ".memory-bank/requirements.md#cross-cutting-constraints-and-resilience",
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json",
+    ".memory-bank/tasks/TASK-029-T3-FT-001-W26.task.json",
+    ".protocols/TASK-026-T3-FT-007-W23/verification.md",
+    ".protocols/TASK-026-T3-FT-007-W23/handoff.md",
+    ".protocols/TASK-029-T3-FT-001-W26/verification.md",
+    ".protocols/TASK-029-T3-FT-001-W26/handoff.md",
+    ".protocols/FT-006/plan.md",
+    ".protocols/FT-006/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-006.md",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "status": "done",
+  "success_outcome": "Fresh claim-linked host visual/lifecycle RED/GREEN evidence proves that an active validated countdown is presented on a dedicated no-weather/no-city/no-date/no-card surface, its digits are materially larger than the final idle clock in the same comparison, the activating preset's existing color identity appears in a transparent neon circular backdrop, and selected-preset indication, one-tap hint, double-tap cancellation, temporary recovery, one-active-timer and network independence remain intact; target/device/audio runtime stays DEFERRED without emulator/device/adb/network/audio evidence.",
+  "tier": "T3",
+  "title": "Present active countdown on a dedicated preset-colored visual surface",
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "verify": [
+    "Before any write, capture fresh current active-countdown RED from the host projection/render path; do not reuse W26 or W23 evidence as current RED.",
+    "Obtain claim-equivalent GREEN with the same host geometry/render case, proving the dedicated no-weather/no-city/no-date/no-card surface, countdown-versus-idle hierarchy, activating preset color identity, transparent circular treatment and selected-preset presentation without fixed dp/ratio/gradient-stop targets.",
+    "Run focused/full host and clean-build gates plus static boundary review; record lifecycle, gesture, one-active-timer and offline/network-independent regressions as host evidence only, keep TimerCapability/TimerAlertPolicy/PlatformRuntimeAdapter read-only, and record target/device/audio runtime as DEFERRED.",
+    "Apply the required independent /verify and T3 /red-verify routes after execution; this planned task does not claim PASS or change lifecycle.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/runtime/audio PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-030-T3-FT-006-W27/handoff.md",
+        ".protocols/TASK-030-T3-FT-006-W27/progress.md",
+        ".tasks/TASK-030-T3-FT-006-W27/red-baseline.md",
+        ".tasks/TASK-030-T3-FT-006-W27/geometry.json",
+        ".tasks/TASK-030-T3-FT-006-W27/red-green-contact-sheet.svg",
+        ".tasks/TASK-030-T3-FT-006-W27/visual-rubric.md",
+        ".tasks/TASK-030-T3-FT-006-W27/host-gates.md",
+        ".tasks/TASK-030-T3-FT-006-W27/lifecycle-regression.md",
+        ".tasks/TASK-030-T3-FT-006-W27/offline-regression.md",
+        ".tasks/TASK-030-T3-FT-006-W27/boundary-static-review.md",
+        ".tasks/TASK-030-T3-FT-006-W27/target-device.md",
+        ".protocols/TASK-030-T3-FT-006-W27/verification.md",
+        ".tasks/TASK-030-T3-FT-006-W27/TASK-030-T3-FT-006-W27-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-030-T3-FT-006-W27/red-verification.md",
+        ".tasks/TASK-030-T3-FT-006-W27/TASK-030-T3-FT-006-W27-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; W27 remains bounded to active countdown presentation.",
+      "accepted_residual_risk": [
+        "Target-device readability/lifecycle and physical audio audibility remain DEFERRED; host evidence is not device/runtime/audio PASS."
+      ]
+    }
+  ],
+  "verification_targets": [
+    "FT-006-AC-001 / REQ-012: fresh host RED/GREEN and same-size render evidence prove the active countdown surface excludes weather cards, city, date and standard card-shell content; countdown digits are materially larger than the final idle clock; the activating preset's existing color identity is used by a transparent neon circular backdrop; and the selected preset remains identifiable.",
+    "REQ-023 / FT-006-AC-001 material visual NFR: a named visual-QA rubric records PASS/FAIL for focal hierarchy, dedicated-surface content exclusion, color identity, transparent static treatment, readability, no clipping/overlap and host/device evidence separation; target runtime is DEFERRED without an authorized target.",
+    "FT-006-AC-002 / REQ-011 regression: isolated host timer proof confirms the Main Display surface consumes one active validated preset projection and does not introduce a second active timer or state owner.",
+    "FT-006-AC-003 / REQ-013 regression: focused/full host evidence proves single tap preserves the countdown and accepted hint while double tap cancels through the existing contract; W27 does not modify Timer & Alert ownership.",
+    "FT-006-AC-004 / REQ-014 regression: isolated host lifecycle evidence proves the surface re-renders the state recalculated from persisted start/duration after temporary interruption; reboot recovery remains excluded and target/custom-ROM lifecycle observation is DEFERRED.",
+    "FT-006-AC-005 / REQ-025 regression: offline fake-platform/host evidence proves the countdown surface and protected gestures remain usable without provider/network input and existing overdue dismissal remains available; no FT-007 rendering/audio claim is adopted.",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert and .memory-bank/contracts/platform-runtime.md#display-runtime-boundary: Main Display consumes timer/platform projections without direct storage, lifecycle-owner, audio-owner or composition-root bypass.",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3: every owned presentation claim has fresh RED or grounded RED_NOT_APPLICABLE, claim-equivalent GREEN, distinguishable artifact, isolated rerun/cleanup and honest target/audio DEFERRED separation."
+  ],
+  "wave": "W27"
+}

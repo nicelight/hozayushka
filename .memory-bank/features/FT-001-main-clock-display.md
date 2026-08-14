@@ -9,20 +9,22 @@ spec_design_links:
   - .memory-bank/architecture/system-architecture.md
   - .memory-bank/contracts/boundary-map.md
   - .memory-bank/contracts/capability-interfaces.md
+  - .memory-bank/contracts/main-display-presentation.md
   - .memory-bank/contracts/platform-runtime.md
   - .memory-bank/testing/runtime-verification.md
-last_updated: 2026-08-10
+last_updated: 2026-08-14
 ---
 # FT-001 — Main clock and display shell
 
 ## Product outcome
 
 Владелец открывает приложение и сразу получает читаемый fullscreen clock display
-с датой, городом, четырьмя weather cards в нижней левой зоне и preset buttons.
+с city/date слева над Yesterday, крупными часами над тремя дневными cards,
+фиксированным порядком четырёх weather cards и preset buttons справа.
 
 ## Requirements
 
-- REQ-001, REQ-002, REQ-003, REQ-004, REQ-022, REQ-023.
+- REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-022, REQ-023.
 
 ## Use cases
 
@@ -45,10 +47,27 @@ App runs only in landscape fullscreen, hides system panels and keeps the
 
 - REQ: REQ-002, REQ-023
 `HH:mm` has no seconds and remains the dominant visual element; city/date are
-  on the left, exactly four weather cards occupy the stable lower-left area and
-  three preset buttons are on the right. FT-001 owns only this card count,
+  on the left, exactly four weather cards occupy the 25–30% bottom band and
+  three separate preset buttons are on the right. FT-001 owns shell count,
   composition and placement; FT-002 owns card data, content, freshness and
   weather-specific presentation.
+
+The operator-requested composition delta keeps this ownership and makes the
+placement explicit: city and date occupy the left column directly above the
+`yesterday` (`Вчера`) card; the large `HH:mm` clock occupies the available
+central/upper area directly above the three day-forecast slots
+`today`/`tomorrow`/`day_after` (`Сегодня`/`Завтра`/`Послезавтра`); and the three
+existing circular preset buttons remain on the right. The four slots stay in
+`yesterday`/`today`/`tomorrow`/`day_after` order. The weather-card band MUST
+occupy 25–30% of total landscape height and the clock zone MUST occupy the
+remaining 70–75%. All four cards MUST have equal height and common bottom
+alignment; Yesterday MUST never be taller. Today may remain wider or denser
+without becoming taller. The complete `HH:mm` MUST use the maximum
+available size in the clock zone without clipping or overlap. The accepted
+band/clock ratios and relational presentation rules in the Main Display
+Presentation spec are normative. Any pixel tolerance is only a raster
+measurement tolerance, not a product target. Timer behavior, fullscreen policy
+and weather-card data/content semantics remain unchanged.
 
 ### FT-001-AC-003 — Device-time clock and date
 
@@ -72,8 +91,7 @@ Empty city renders `Выбрать город`; its short tap opens Settings, a 
 ## Edge / failure behavior
 
 - Missing weather data does not remove the stable main-display shell or shift
-  the clock/date zones; the four lower-left weather-card positions remain
-  stable.
+  the clock/date zones; the four weather-card positions remain stable.
 - Network absence changes only the accepted colon state and weather availability;
   it does not block clock display.
 - Timer-specific replacement of the clock is composed by FT-006; this feature
@@ -81,8 +99,8 @@ Empty city renders `Выбрать город`; its short tap opens Settings, a 
 
 ## Boundary ownership
 
-- Main Display owns the shell composition, the four-card lower-left placement
-  and city gesture intent.
+- Main Display owns the shell composition, the four-card placement and city
+  gesture intent.
 - The existing Main Display → Settings & Location contract owns the destination
   request and return path. Settings & Location owns the destination surface and
   settings state; FT-001 does not add catalog, API-key, validation or
@@ -97,9 +115,14 @@ Empty city renders `Выбрать город`; its short tap opens Settings, a 
   `PRD-NFR-001`–`PRD-NFR-003`, `PRD-AC-001`, `PRD-AC-009`.
 - [.memory-bank/invariants.md](../invariants.md): clock dominance and local-only
   product constraints.
+ [.memory-bank/contracts/main-display-presentation.md](../contracts/main-display-presentation.md):
+   normalized composition, equal-height card band, clock maximum-size method,
+   icon/timer hierarchy and visual-QA proof.
 - [.memory-bank/user-scenarios.md](../user-scenarios.md): core glance scenario.
 
 ## Verification targets
+ `REQ-002`, `REQ-005`, `REQ-023`: band/clock ratios, equal card height and
+ normalized visual-QA proof from Main Display Presentation.
 
 - `PRD-AC-001`, `PRD-AC-009`, `PRD-FR-003`–`PRD-FR-006`.
 
@@ -188,7 +211,8 @@ public boundary. See the [executor handoff](../../.protocols/TASK-016-T3-FT-001-
 [durable semantic verification](../../.protocols/TASK-016-T3-FT-001-W13/red-verification.md)
 and [semantic report](../../.tasks/TASK-016-T3-FT-001-W13/TASK-016-T3-FT-001-W13-S-RED-VERIFY-final-report-docs-01.md).
 
-W13 is host-proof-only by operator scope. Yandex provider work, timer/audio
+W13 is host-proof-only by operator scope. The then-current Yandex provider work
+(now superseded by the provider-migration PRD), timer/audio
 ownership, cross-surface gesture semantics, Forecast-wide optimization and
 target-device evidence remain excluded and require separate evidence/decision.
 Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED` with no
@@ -226,18 +250,299 @@ Direct FT-001 RTM values remain implemented; `REQ-007` and `REQ-025` remain
 the existing Weather Context/Timer & Alert requirements and regression guards,
 not new W14 lifecycle claims. W14 is host/static proof only. Samsung/custom-ROM/
 1280x720 physical evidence remains `DEFERRED` with no promoted target-device
-`PASS`. Forecast, Yandex provider, Timer/audio, gestures and target-device
+`PASS`. Forecast, the then-current Yandex provider (now historical and
+superseded), Timer/audio, gestures and target-device
 behavior remain excluded; no public boundary, module, dependency, event,
 provider implementation or Planning Revision changes. W2 `done`, W11
 `failed`, W12 `done` and W13 `done` task records and their protocol history
 remain unchanged. No feature closure, promotion or scheduler-state transition
 is inferred by this boundary sync.
 
+## W21 operator-requested Main Display composition delta
+
+The operator requested a bounded visual/layout change on 2026-08-12. It is a
+new detail under `FT-001-AC-002`, not a new requirement, lifecycle transition,
+weather semantic or architecture decision. One indexed T3 task owns the
+composition delta: left-column city/date above Yesterday, central/upper large
+clock above Today/Tomorrow/Day-after, right-side three preset controls, fixed
+four-slot order, Today larger than the three equal smaller non-today cards, and
+uniformly increased card gaps. Existing timer dispatch/countdown/overdue,
+fullscreen policy, card projection content/freshness/palette and city/settings
+semantics are regression constraints only.
+
+The exact task-owned geometry is relational rather than an invented pixel
+specification: the three non-today cards must have equal measured allocation;
+Today must have a strictly larger measured allocation; every weather-card gap
+must use one common value greater than the current 8dp baseline; city/date and
+the idle clock must be in the stated regions; and the four slot identities must
+remain ordered. If execution requires an absolute dp/ratio product choice to
+resolve “slightly”, stop and route to `/feature-doctor FT-001` before changing
+the task boundary. A boundary/owner change instead routes to `/spec-design`.
+
+`TASK-024-T3-FT-001-W21` was planned behind the terminal
+`TASK-023-T3-FT-002-W20`. Its hard write boundary is the existing Main Display
+implementation and `DisplayProjectionTest.kt`; host geometry/static proof is
+mandatory, while Samsung GT-I9300I Android 11 custom-ROM/1280×720 target
+evidence remains `DEFERRED` with residual risk and no runtime `PASS` claim.
+
+W21 is now `done` after fresh executor `PASS_FOR_HANDOFF`, functional `PASS`
+and independent T3 semantic `semantic-pass`. The accepted geometry is proved
+by host assertions and a rendered contact sheet: city/date is above Yesterday
+in the left column, idle `HH:mm` occupies the central/upper region, the three
+preset controls remain on the right, Today measures `279 > 223`, the other
+three cards are equal, and gaps are `16/16/16`. Timer, weather projection,
+gesture and public contracts remain unchanged. See the [executor handoff](../../.protocols/TASK-024-T3-FT-001-W21/handoff.md),
+[functional verification](../../.tasks/TASK-024-T3-FT-001-W21/TASK-024-T3-FT-001-W21-S-VERIFY-final-report-docs-01.md),
+[semantic verification](../../.tasks/TASK-024-T3-FT-001-W21/TASK-024-T3-FT-001-W21-S-RED-VERIFY-final-report-docs-01.md)
+and [contact sheet](../../.tasks/TASK-024-T3-FT-001-W21/red-green-contact-sheet.svg).
+
+## W24 reference-driven clock/control follow-up
+
+Operator visual feedback after the terminal W21, W22 and W23 history identifies
+one bounded continuation of `FT-001-AC-002`: the current idle `HH:mm` must gain
+clear visual dominance, while the three existing right-side timer preset
+controls must become genuinely circular. This is not a new AC, timer/audio
+change, weather semantic, lifecycle transition or architecture decision.
+
+`TASK-027-T3-FT-001-W24` owns the Main Display-only visual delta. It preserves
+the existing right-side control order, labels, colors, selected/active styling,
+touch routing and Timer & Alert semantics. Its proof is qualitative reference
+matching backed by host-measured clock bounds, equal square control bounds,
+common half-diameter radius evidence, a same-size RED/GREEN contact sheet and a
+named visual rubric. No absolute product dp/ratio is introduced; a material
+numeric choice routes to `/feature-doctor FT-001`.
+
+The hard write boundary is exactly `DisplayCapability.kt` and
+`DisplayProjectionTest.kt`. `TimerCapability.kt`, audio/Platform Runtime,
+Weather Context and all W23 paths remain forbidden. W21, W22 and W23 terminal
+statuses/evidence, Planning Revision `2`, Foundation dependency, scheduler
+checkpoint and terminal state remain unchanged. Samsung/custom-ROM 1280x720
+runtime readability and circular rendering remain `DEFERRED` without target
+evidence.
+
+W24 is now `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+and independent T3 `semantic-pass` on Attempt 2. The reachable idle ticker
+keeps the reference-aligned `176f` clock size while countdown remains `32f`;
+the three existing right-side controls are measured `220x220` circles with
+radius `110`. Host suite, contact sheet, bounds and regression gates pass.
+Samsung/custom-ROM target readability and runtime circle rendering remain
+`DEFERRED`, with no device/runtime `PASS` claim. See the [W24 sync report](../../.tasks/TASK-027-T3-FT-001-W24/TASK-027-T3-FT-001-W24-S-MB-SYNC-final-report-docs-01.md),
+[functional verification](../../.tasks/TASK-027-T3-FT-001-W24/TASK-027-T3-FT-001-W24-S-VERIFY-final-report-docs-01.md)
+and [semantic verification](../../.tasks/TASK-027-T3-FT-001-W24/TASK-027-T3-FT-001-W24-S-RED-VERIFY-final-report-docs-01.md).
+
+## W26 post-terminal idle Main Display visual follow-up
+
+Operator visual feedback after terminal W24 and W25 requests one bounded
+continuation of `FT-001-AC-002`: more spacious transparent preset circles with
+one distinct neon gradient border per preset while preserving each existing
+color identity; a substantially larger/adaptive idle `HH:mm` using the
+available central space; Yesterday equal to Tomorrow and Day-after; all three
+smaller cards about 20% smaller than Today; and larger uniform inter-card gaps.
+Active countdown and overdue behavior are explicitly excluded and remain later
+FT-006/FT-007 scope.
+
+The new indexed [`TASK-029-T3-FT-001-W26`](../tasks/TASK-029-T3-FT-001-W26.task.json)
+is the single Main Display-owned planned T3 task after terminal
+[`TASK-028-T3-FT-002-W25`](../tasks/TASK-028-T3-FT-002-W25.task.json). Its hard
+write boundary is exactly `DisplayCapability.kt` and `DisplayProjectionTest.kt`.
+It preserves preset order, labels, existing color identity, selected/active
+styling, touch routing, four-card projection ownership and Timer & Alert
+semantics. Fresh claim-linked host RED/GREEN evidence, a same-size contact sheet
+and a named visual rubric are required; Samsung/custom-ROM 1280x720 runtime
+evidence remains `DEFERRED`, with no emulator/device/adb/network action.
+
+No fixed dp, ratio or gradient stops are selected. If execution cannot produce
+an unambiguous visual verdict without turning one of those into a new product
+decision, route to `/feature-doctor FT-001`; a boundary or owner change routes
+to `/spec-design`. W24/W25 task identities, statuses, evidence and terminal
+history remain unchanged, as do the feature lifecycle, RTM values, Planning
+Revision `2`, scheduler checkpoint and terminal state.
+
+W26 is now `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+and independent T3 `semantic-pass`. Host evidence proves clock sizes `188.75`
+and alternate `139.75`, preset bounds `200x200` with `24` spacing, transparent
+per-color neon treatment, and card geometry `217/273/217/217` with common gap
+`24`; focused/full host, build, diff and visual gates pass. Active countdown and
+overdue surfaces remain excluded for FT-006/FT-007. Samsung/custom-ROM target
+readability and runtime rendering remain `DEFERRED`, with no device/runtime
+`PASS` claim. See the [W26 sync report](../../.tasks/TASK-029-T3-FT-001-W26/TASK-029-T3-FT-001-W26-S-MB-SYNC-final-report-docs-01.md),
+[functional verification](../../.tasks/TASK-029-T3-FT-001-W26/TASK-029-T3-FT-001-W26-S-VERIFY-final-report-docs-01.md)
+and [semantic verification](../../.tasks/TASK-029-T3-FT-001-W26/TASK-029-T3-FT-001-W26-S-RED-VERIFY-final-report-docs-01.md).
+
+## W29 post-W28 density-safe Main Display visual follow-up
+
+The authoritative Explorer diagnosis and operator physical-device observation
+for the next bounded follow-up identify a Main Display landscape defect after
+terminal W28: the complete `HH:mm` must remain density-safe and unclipped at
+`2460×1080` and `1280×720`; all four `Yesterday`/today/tomorrow/day-after
+slots must remain visible during honest `NO_DATA`/async refresh and with a
+populated redacted fixture; and each existing circular preset must use one
+preset-color radial shade gradient, a materially wider rim than the current
+baseline and a static outward-fading neon glow.
+
+The indexed
+[`TASK-032-T3-FT-001-W29`](../tasks/TASK-032-T3-FT-001-W29.task.json) was one
+historical T3 attempt after terminal cross-feature
+[`TASK-031-T3-FT-007-W28`](../tasks/TASK-031-T3-FT-007-W28.task.json). It reuses
+`FT-001-AC-002` with applicable `REQ-001`, `REQ-002`, `REQ-005` and `REQ-023`
+constraints. The hard write boundary remains exactly `DisplayCapability.kt`
+and `DisplayProjectionTest.kt`; WeatherCapability, FoundationRuntime, adapters,
+Settings, Timer, resources and MainActivity are read-only. Preset order,
+labels, colors, selected/active/touch contracts and Timer & Alert semantics
+remain unchanged, as do Weather Context/provider ownership and W26/W28
+terminal history. Its later provenance disposition is recorded below; this
+section does not promote its supporting receipts to product evidence.
+
+Fresh host RED/GREEN at both sizes must cover clock no-clipping/overflow, all
+four slots in NO_DATA/async/populated redacted-fixture states, and radial/rim/
+glow visual receipts with a named rubric. Focused/full/build/lint/diff gates
+were required. Target/device/runtime evidence is explicitly `DEFERRED` under
+the current authorization and cannot be promoted from host evidence. No new
+specification or behavior-spec was created; the planning route was replaced by
+the fresh W30 execution and verification recorded below.
+
+## W29 provenance disposition and W30 recovery
+
+The fresh W29 planning review was `APPROVE`, but independent functional and
+semantic review later returned `NEEDS-CLARIFICATION` and
+`semantic-concern`; bounded executor evidence recovery returned
+`HANDOFF_BLOCKED_FOR_PROVENANCE`. This is a missing pre-write RED/executor
+summary and authority gap, not evidence of a product semantic failure.
+
+The indexed [`TASK-032-T3-FT-001-W29`](../tasks/TASK-032-T3-FT-001-W29.task.json)
+is therefore terminal `failed` under the recorded scheduler failure
+disposition. The failure is a provenance/authority gap: no honest W29
+pre-write RED or prior executor summary exists. It is not a product semantic
+failure. Its current two-file code diff, all W29 reports, protocols and
+task-local artifacts remain preserved; W26/W28 evidence is not promoted to W29
+RED and no fourth W29 attempt is inferred. See the [W29 executor
+handoff](../../.tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-EXE-final-report-code-01.md),
+[functional verification](../../.tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-VERIFY-final-report-docs-01.md)
+and [semantic verification](../../.tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-RED-VERIFY-final-report-docs-01.md).
+
+Exactly one replacement,
+[`TASK-033-T3-FT-001-W30`](../tasks/TASK-033-T3-FT-001-W30.task.json), was
+planned directly after terminal W28 rather than depending on failed W29.
+W30 started from the current worktree baseline and its fresh task-specific
+probe at `2460×1080` and `1280×720` accepted `RED_NOT_APPLICABLE`: the current
+baseline was already claim-equivalent GREEN, so no production/test behavior
+write was made. Fresh verifier-owned evidence proves the full unclipped
+`HH:mm`, four ordered slots under `NO_DATA`/partial/populated redacted
+fixtures, and the three existing circular presets' one-color radial shading,
+materially wider rim and three static fading glow layers. The exact two-file
+boundary remained unchanged, ownership/touch/provider/lifecycle boundaries
+remain preserved, and all five required host gates passed. See the [W30
+executor handoff](../../.tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-EXE-final-report-code-01.md),
+[functional verification](../../.tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-VERIFY-final-report-docs-01.md),
+[semantic verification](../../.tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-RED-VERIFY-final-report-docs-01.md)
+and [W30 sync report](../../.tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-MB-SYNC-final-report-docs-01.md).
+Target/device/runtime evidence remains `DEFERRED`; host evidence is not a
+runtime `PASS`.
+
+## W31 physical clock/icon geometry follow-up
+
+W30's fresh host proof was sufficient for its bounded host claims but did not
+measure the physical weather-icon footprint or establish physical focal
+hierarchy. Its target separation record kept physical rendering `DEFERRED`;
+the later unlocked TECNO smoke established launch/health and landscape
+visibility only. The operator's physical observation therefore remains an
+unresolved visual defect, not a W30 lifecycle contradiction or a reason to
+rewrite W30 evidence.
+
+The indexed
+[`TASK-034-T3-FT-001-W31`](../tasks/TASK-034-T3-FT-001-W31.task.json) is now
+`done` after executor `PASS_FOR_HANDOFF`, independent `/verify` `PASS` and
+`/red-verify` `semantic-pass`. Fresh physical RED/GREEN on the unlocked TECNO
+LI6 serial `1156725456009666` at the recorded `2460×1080` landscape frame
+proves the complete `HH:mm` contained and dominant (`725×218`) and materially
+reduced secondary weather illustrations (largest `45×43`, versus `71×70` RED).
+City/date remains above Yesterday, all four ordered slots remain present, and
+the three timer controls remain separate on the right. Supporting host geometry
+covers `2460×1080` and `1280×720`; it is kept distinct from the physical visual
+PASS. All five required host gates passed, and the exact behavior boundary
+remains `DisplayCapability.kt` plus `DisplayProjectionTest.kt`.
+
+W31 preserves Main Display's read-only Weather Context and Timer & Alert
+presentation boundaries; no provider/refresh/freshness/cache/history, timer
+lifecycle/control dispatch/audio, fullscreen/runtime owner or public contract
+change is attributed to it. Emulator/AVD/QEMU remains forbidden. Other
+resolutions/devices, custom-ROM rendering, physical audio audibility and live
+provider refresh remain residual risks outside W31 and are not claimed as W31
+PASS. See the [W31 sync report](../../.tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-MB-SYNC-final-report-docs-01.md),
+[executor handoff](../../.tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-EXE-final-report-code-01.md),
+[functional verification](../../.tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-VERIFY-final-report-docs-01.md)
+and [semantic verification](../../.tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-RED-VERIFY-final-report-docs-01.md).
+
+## W33 confirmed mixed-state allocation follow-up
+
+The W32 physical screenshot confirms a separate real-View allocation defect that
+host pure geometry did not expose: when Yesterday is empty while 14/15/16 are
+populated, the empty Yesterday shell spans most of the height and the populated
+cards collapse into the bottom band. The source path is Main Display-owned:
+`leftHeader` remains `WRAP_CONTENT`, `yesterdayCard` remains `MATCH_PARENT` with
+`weight=1` in a separate left container, and `bindWeatherCards` keeps Yesterday
+apart from the other three cards. WeatherCapability/provider behavior is not
+part of the defect; the empty day remains a legitimate empty shell with no
+fabricated values.
+
+W32 is now scheduler-`failed` after the authorized physical smoke exposed the
+real View-tree mixed-state defect; its prior host PASS/semantic-pass and failure
+evidence remain preserved. The blocked
+[`TASK-036-T3-FT-001-W33`](../tasks/TASK-036-T3-FT-001-W33.task.json) record
+remains blocked on W32 with its identity, dependency, evidence and history
+unchanged; only its direct SDD/single-card handoff structure is repaired.
+
+The planning route created exactly one recovery successor,
+[`TASK-037-T3-FT-001-W34`](../tasks/TASK-037-T3-FT-001-W34.task.json), with the
+same shared real View allocation outcome, deterministic empty-Yesterday/
+three-populated host regression and fresh physical RED/GREEN on unlocked TECNO
+LI6 serial `1156725456009666` after authorized build/install. W34 depends only
+on successful [`TASK-034-T3-FT-001-W31`](../tasks/TASK-034-T3-FT-001-W31.task.json),
+the last successful Main Display baseline; it does not bypass failed W32 or
+blocked W33. Its exact hard write boundary remains `DisplayCapability.kt` plus
+`DisplayProjectionTest.kt`. The physical receipt must include screenshots and
+measured bounds proving the four equal-height/common-bottom cards in the
+25–30% band beneath the 70–75% clock zone. Emulator/AVD/QEMU is forbidden;
+WeatherCapability/provider/data synthesis, timer/runtime drift and FT-007
+timer-digit sizing remain out of scope.
+
+## W34 mixed-state allocation recovery
+
+The indexed [`TASK-037-T3-FT-001-W34`](../tasks/TASK-037-T3-FT-001-W34.task.json)
+is now `done` under its already-recorded scheduler closure after executor
+`PASS_FOR_HANDOFF`, independent `/verify` `PASS`, T3 `/red-verify`
+`semantic-pass` and fresh physical PASS on unlocked TECNO LI6 serial
+`1156725456009666` at `2460×1080` landscape. Host GREEN proves the accepted
+mixed empty-Yesterday/three-populated fixture at `2460×1080` and `1280×720`:
+band ratios `0.27962962`/`0.27916667`, clock-zone ratios
+`0.7203704`/`0.7208333`, equal card heights and common bottoms. The physical
+View receipt confirms four `302px` cards ending at `1056`, while empty
+Yesterday, complete `HH:mm`, city/date and the separate timer rail remain
+intact without clipping or overlap.
+
+W34 remains bounded to
+`DisplayCapability.kt` plus `DisplayProjectionTest.kt`; Weather Context,
+Timer & Alert, provider/data, lifecycle, fullscreen/runtime and public
+contracts remain read-only. W31 stays `done`, W32 stays `failed`, and W33
+stays `blocked`, including its superseded policy-invalid `blocked -> failed`
+transition history. The accepted timer-digit sizing observation is a separate
+future FT-007 presentation residual and is not part of W34. See the [W34 sync
+report](../../.tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-MB-SYNC-final-report-docs-01.md),
+[functional verification](../../.tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-VERIFY-final-report-docs-01.md)
+and [semantic verification](../../.tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-RED-VERIFY-final-report-docs-01.md).
+
+FT-001 lifecycle remains `implemented`; this boundary does not infer feature
+closure, promotion, dependent-state transition or a new Planning Revision.
+
 ## SDD Design Gate
 
-Global backbone is complete at Planning Revision `1`, the Foundation Gate is
-closed, and the registered Boundary Map contains the accepted module inventory
-and dependency graph. Feature-level design is complete for task planning.
+Global backbone is complete at Planning Revision `2`, the Foundation Gate
+anchors remain closed, and the registered Boundary Map contains the accepted
+module inventory and dependency graph. Feature-level design remains complete;
+its indexed task-plan review, W21/W24/W26 closure, W29 failure disposition,
+W30 host-only closure, W31 physical closure, W32 physical failure, W33 blocked
+history and W34 completed recovery closure are current at Planning Revision `2`; no
+additional product or architecture decision is introduced by this boundary.
 
 Applicable global specs: [System Architecture](../architecture/system-architecture.md),
 [Boundary Map](../contracts/boundary-map.md), [Capability Interfaces](../contracts/capability-interfaces.md),

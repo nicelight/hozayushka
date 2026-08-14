@@ -1,0 +1,67 @@
+{
+  "task_id": "TASK-021-T2-FT-003-W18",
+  "attempt": 1,
+  "basis": "ForecastSessionTest.selectedProvidersRequireAllEightSlotsAndNeverBorrowMissingValues",
+  "fixture": {
+    "city": "Test city",
+    "api_timezone": "Asia/Dushanbe",
+    "local_today": "2024-01-02",
+    "now_utc": "2024-01-02T12:00:00Z",
+    "slots": [
+      "2024-01-02T06:00",
+      "2024-01-02T09:00",
+      "2024-01-02T12:00",
+      "2024-01-02T15:00",
+      "2024-01-02T18:00",
+      "2024-01-02T21:00",
+      "2024-01-03T00:00",
+      "2024-01-03T03:00"
+    ],
+    "credentials": "none for Open-Meteo; synthetic/redacted probe request only for OpenWeather"
+  },
+  "complete_cases": [
+    {
+      "selected_provider": "open_meteo",
+      "hourly_projection": "complete",
+      "session": "OPEN",
+      "cards": 8,
+      "rows": [4, 4],
+      "selected_provider_calls": 1,
+      "other_provider_calls": 0
+    },
+    {
+      "selected_provider": "open_weather",
+      "hourly_projection": "complete",
+      "session": "OPEN",
+      "cards": 8,
+      "rows": [4, 4],
+      "selected_provider_calls": 1,
+      "other_provider_calls": 0
+    }
+  ],
+  "missing_cases": [
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-02T06:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-02T09:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-02T12:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-02T15:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-02T18:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-02T21:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-03T00:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_meteo", "missing_slot": "2024-01-03T03:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-02T06:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0, "elapsed_current_day_slot": true},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-02T09:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0, "elapsed_current_day_slot": true},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-02T12:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0, "elapsed_current_day_slot": true},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-02T15:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0, "elapsed_current_day_slot": true},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-02T18:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-02T21:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-03T00:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0},
+    {"selected_provider": "open_weather", "missing_slot": "2024-01-03T03:00", "session": "CLOSED", "message": "Почасовой прогноз еще не подгрузился", "selected_provider_calls": 1, "other_provider_calls": 0}
+  ],
+  "cache_isolation_case": {
+    "seeded_provider": "open_meteo",
+    "selected_provider_after_switch": "open_weather",
+    "session": "CLOSED",
+    "message": "Почасовой прогноз еще не подгрузился",
+    "open_weather_calls_after_switch": 0
+  }
+}

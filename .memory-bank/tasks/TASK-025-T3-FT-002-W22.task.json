@@ -1,0 +1,242 @@
+{
+  "id": "TASK-025-T3-FT-002-W22",
+  "title": "Render designed condition illustrations over Main Display weather cards",
+  "status": "done",
+  "wave": "W22",
+  "feature": "FT-002",
+  "reqs": [
+    "REQ-005",
+    "REQ-007",
+    "REQ-008",
+    "REQ-022",
+    "REQ-023",
+    "REQ-025",
+    "REQ-026",
+    "REQ-029"
+  ],
+  "depends_on": [
+    "TASK-024-T3-FT-001-W21"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host display and weather regression suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before changing production behavior, obtain fresh task-scoped RED from the current Main Display card composition: the four main cards carry no rendered condition illustration even though Weather Context supplies WeatherIllustration and moonPhase inputs; the current forecast-only Unicode helper is not evidence of a Main Display illustration. Capture the current source/geometry result and a deterministic baseline image or equivalent host render; do not reuse W3/W17/W20 evidence as this task's RED.",
+    "Implement only the Main Display card visual delta inside DisplayCapability.kt and its focused DisplayProjectionTest.kt support. Use only the existing Android Canvas/Path/Paint primitives for non-text silhouettes; do not introduce drawable/image assets, a resource pipeline, dependency, new module, public contract or direct Weather Context/provider access.",
+    "Obtain claim-equivalent GREEN for deterministic fresh projections at the four-card landscape row geometry: CLEAR shows a recognizable sun with separate rays; CLOUD and NEUTRAL_CLOUD show a recognizable cloud silhouette; RAIN shows a cloud with at least three distinct rain marks; SNOW shows distinct snow marks; MOON shows the selected-city night moon state and respects the existing optional moonPhase input with the regular-moon fallback when it is absent. No condition name, day label or Unicode weather glyph is visible.",
+    "The rendered illustration layer must be inside each card, unclipped and visibly legible against the existing temperature background/pseudo-glass. Its measured painted bounds must not intersect the measured temperature, calendar-date or pressure-arrow content bounds. Preserve four-card yesterday/today/tomorrow/day_after order, Today sizing, equal non-Today sizing, temperature palette, pseudo-glass, pressure semantics and stale/first-run cards without illustrations.",
+    "Run the clean build, complete host unit suite and static diff gate. Retain focused regressions showing the existing projection is consumed through Main Display's Weather Context read boundary, selected-provider/cache/history/day-night semantics are not read or rewritten by this task, clock/timer behavior is unchanged, and forecast-card composition remains outside scope. Record source/resource inspection proving no new app resource or asset pipeline was added and no credential/network/provider action occurred.",
+    "Record target 1280x720 landscape readability, fullscreen/keep-screen-on and target custom-ROM visual compatibility as DEFERRED with residual risk when no authorized target observation is available; generic-host or other-device output must never be promoted to Samsung GT-I9300I Android 11 custom-ROM PASS. This planning run does not launch an emulator/device, use adb, network, live providers or credentials.",
+    "Stop and route to /feature-to-tasks FT-002 if existing platform drawing primitives cannot meet the accepted visual result without a new asset/resource pipeline or if the task needs a material scope, tier, dependency or AC ownership change. Stop and route to /feature-doctor FT-002 for a new product-level visual decision, or /spec-design for a new module, owner, graph edge, public contract or composition-root orchestration. Stop before any write outside the hard boundary or any scheduler/terminal-state change.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-025-T3-FT-002-W22/handoff.md",
+        ".tasks/TASK-025-T3-FT-002-W22/TASK-025-T3-FT-002-W22-S-EXE-final-report-code-01.md",
+        ".tasks/TASK-025-T3-FT-002-W22/illustration-red-green.md",
+        ".tasks/TASK-025-T3-FT-002-W22/illustration-contact-sheet.png",
+        ".tasks/TASK-025-T3-FT-002-W22/illustration-bounds.json",
+        ".protocols/TASK-025-T3-FT-002-W22/verification.md",
+        ".tasks/TASK-025-T3-FT-002-W22/TASK-025-T3-FT-002-W22-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-025-T3-FT-002-W22/verifier-owned-evidence.md",
+        ".protocols/TASK-025-T3-FT-002-W22/red-verification.md",
+        ".tasks/TASK-025-T3-FT-002-W22/TASK-025-T3-FT-002-W22-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; W22 remains display-owned and does not alter Weather Context/provider ownership.",
+      "accepted_residual_risk": [
+        "Samsung/custom-ROM 1280x720 readability, fullscreen, keep-screen-on and runtime Canvas compatibility remain DEFERRED; no runtime PASS is claimed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md",
+    ".memory-bank/tasks/TASK-024-T3-FT-001-W21.task.json"
+  ],
+  "evidence_required": [
+    "[FT-002-AC-009 / REQ-005, REQ-022, REQ-023, REQ-026] Expected RED: the current Main Display four-card composition omits the normalized illustration input and has no bounded sun/cloud/rain/day-night visual layer. GREEN: a fresh deterministic rendered image/contact sheet and geometry artifact shows recognizable CLEAR, CLOUD, NEUTRAL_CLOUD, RAIN, SNOW and MOON states, no visible weather/day text or Unicode glyph, selected-city day/night input preserved, and illustration bounds disjoint from temperature/date/pressure bounds. Artifact: .tasks/TASK-025-T3-FT-002-W22/illustration-red-green.md, illustration-contact-sheet.png and illustration-bounds.json.",
+    "[REQ-023] Expected RED/GREEN: the baseline lacks a deliberate, legible Main Display condition illustration; GREEN passes an independent visual rubric review by a UI/semantic reviewer for silhouette recognizability, distinct sun rays/cloud lobes/rain or snow marks/moon state, contrast against the existing card backgrounds, no clipping, and no content occlusion at the four-card row geometry. Artifact: .tasks/TASK-025-T3-FT-002-W22/illustration-contact-sheet.png plus reviewer rubric in illustration-review.md.",
+    "[REQ-005 regression] RED_NOT_APPLICABLE: a meaningful RED would require intentionally breaking the existing Weather Context ordered projection or relative-size contract, which is outside and forbidden by this display-only illustration task. Alternative proof: the focused host/static result observes yesterday/today/tomorrow/day_after order, Today larger and the three other cards equal while only the visual layer changes. Artifact: .tasks/TASK-025-T3-FT-002-W22/host-gates.md and illustration-bounds.json.",
+    "[REQ-007, REQ-008, REQ-029 regression] RED_NOT_APPLICABLE: W22 does not own provider selection, adapter dispatch, cache/history, refresh or pressure-history state, so a meaningful provider-isolation RED would require introducing a forbidden Weather Context mutation. Alternative proof: source/boundary inspection plus the existing host regression suite show Main Display reads only the existing projection and makes no provider/network/state write. Artifact: .tasks/TASK-025-T3-FT-002-W22/boundary-resource-review.md and host-gates.md.",
+    "[REQ-025 regression] RED_NOT_APPLICABLE: W22 is stateless card composition and introduces no clock, timer, lifecycle, network or persistence behavior; a meaningful RED would falsify the hard scope. Alternative proof: focused host regression, source boundary review and clean build show unchanged clock/timer path and no external-state access. Artifact: .tasks/TASK-025-T3-FT-002-W22/host-gates.md and boundary-resource-review.md.",
+    "[Resource/secret/network safety] RED_NOT_APPLICABLE: the accepted route deliberately uses platform drawing primitives and no new resource, asset, dependency, provider request or credential. Alternative proof: static diff/resource inspection, clean build, host suite and diff integrity prove the hard boundary and absence of network/credential activity. Artifact: .tasks/TASK-025-T3-FT-002-W22/boundary-resource-review.md and host-gates.md.",
+    "[Target-device risk / REQ-023] Accepted alternative proof: when no authorized Samsung GT-I9300I Android 11 custom-ROM 1280x720 observation exists, record target readability/fullscreen/keep-screen-on as DEFERRED with the unavailable-target condition and residual risk; do not claim runtime PASS from host/static/image evidence. Artifact: .tasks/TASK-025-T3-FT-002-W22/target-device.md."
+  ],
+  "purpose": "Add the operator-requested deliberate, legible condition illustration layer to the existing Main Display weather cards while preserving Weather Context semantics, card content geometry and all prior provider, time, pressure, timer and resource boundaries.",
+  "success_outcome": "After W21, the Main Display renders recognizable non-text sun, cloud, rain, snow, neutral-cloud and selected-city night-moon illustrations in the four existing weather cards, with measured painted bounds separate from temperature/date/pressure content; all provider, day/night, order, sizing, freshness, palette, pressure, timer and no-network/no-credential behavior remains unchanged.",
+  "anti_goals": [
+    "Do not change Weather Context normalization, WeatherIllustration semantics, selected-provider dispatch, provider/location cache/history, freshness, pressure trends, refresh cadence or network behavior.",
+    "Do not change the existing four-card order, Today sizing, temperature palette, pseudo-glass, stale/first-run empty state, selected-city timezone/day-night mapping or no textual day/weather-label rule.",
+    "Do not redesign hourly or long-term forecast cards, forecast entry/exit, Settings preview, clock/date, timer/countdown/overdue behavior or any neighboring capability owner.",
+    "Do not use Unicode/emoji or visible condition/day text as the Main Display illustration and do not add animation, realtime blur, refraction or heavy visual effects.",
+    "Do not add drawable/image assets, app resources, an asset pipeline, dependency, module, public contract, graph edge, provider, credential, network call or composition-root business orchestration.",
+    "Do not modify W3/W15/W17/W20 terminal records, W21 planning history, scheduler checkpoint, lifecycle/RTM status, terminal SUCCESS history or target-device state."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-004-T3-FT-002-W3.task.json",
+      ".memory-bank/tasks/TASK-018-T3-FT-002-W15.task.json",
+      ".memory-bank/tasks/TASK-020-T3-FT-002-W17.task.json",
+      ".memory-bank/tasks/TASK-023-T3-FT-002-W20.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-024-T3-FT-001-W21.task.json status, evidence and history",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, terminal state, lifecycle/RTM status and promotion decisions",
+      "emulator/device launch, adb, live network/provider calls, credentials and secret-bearing artifacts",
+      "new module, dependency, public contract, graph edge, event/message path or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "TASK-024-T3-FT-001-W21 is not an approved completed prerequisite at execution preflight; do not run W22 concurrently with the overlapping Main Display write surface.",
+      "Existing Canvas/Path/Paint primitives cannot produce the accepted visual result without a new drawable/resource/asset pipeline; stop and route to /feature-to-tasks FT-002 for controlled task rebuild or scope decision.",
+      "The visual result requires a new product aesthetic, absolute geometry target or other material UX decision not settled by the operator request; stop and route to /feature-doctor FT-002.",
+      "Implementation needs a new owner, module, graph edge, public contract, dependency or composition-root orchestration; stop and route to /spec-design.",
+      "A host/static/image proof cannot distinguish the current no-illustration RED from claim-equivalent GREEN, or target observation would be required to claim PASS; preserve DEFERRED rather than substituting unsupported evidence.",
+      "Any production/test write falls outside DisplayCapability.kt or DisplayProjectionTest.kt, or any workflow action would change scheduler/terminal state."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-009",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#verification-target",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/tasks/TASK-024-T3-FT-001-W21.task.json",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherPresentation.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/constitution.md#iii-bounded-agent-autonomy-and-human-checkpoints",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#ad-001---one-deployable-capability-sliced-application",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-005---keep-device-and-city-time-domains-separate",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#temperature-and-glass-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/states/lifecycle-map.md#weather-data-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display owns visual composition and consumes Weather Context only through the existing display-ready projection; it must not access provider adapters, Weather Context state or Settings secrets directly.",
+    "Use the existing WeatherIllustration and moonPhase inputs. The visual mapping is CLEAR=sun, CLOUD/NEUTRAL_CLOUD=cloud, RAIN=cloud plus rain marks, SNOW=cloud plus snow marks and MOON=selected-city night moon with the existing regular fallback.",
+    "The illustration is a non-text Canvas primitive layer inside each card, visually legible at the four-card row geometry, clipped to the card and measured not to intersect temperature, date or pressure-arrow content.",
+    "Preserve yesterday/today/tomorrow/day_after order, Today larger than the three equal smaller cards, temperature-dependent background, static pseudo-glass, pressure arrows, stale/first-run empty contours, no visible day/weather labels and existing forecast entry points.",
+    "Use only the existing Android scaffold and project-native build/test gates. No new resource, asset, dependency, network request, credential access, provider call, persistence or lifecycle state is authorized.",
+    "The primary owner is Main Display at app/src/main/kotlin/com/hozayushka/app/display; the existing Main Display -> Weather Context edge is reused and no cross-slice business orchestration is added."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#common-contract-rules",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/weather-card-presentation.md#pressure-trend-and-fallback-rules",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules"
+  ],
+  "verification_targets": [
+    "FT-002-AC-009 / REQ-005, REQ-022, REQ-023, REQ-026: fresh pre-change RED and claim-equivalent GREEN for recognizable sun, cloud, rain, snow, neutral-cloud and selected-city day/night moon illustrations, with no visible condition/day text or Unicode glyph and no illustration intersection with temperature/date/pressure bounds.",
+    "REQ-005 regression and Weather Card Presentation display-ready contract: four slots remain yesterday/today/tomorrow/day_after, Today remains larger and the other three equal smaller, and stale/first-run empty cards keep no illustration.",
+    "REQ-022 / Weather Provider mapping and timezone obligations: the renderer consumes the existing city-timezone day/night projection and does not substitute device-time or alter provider mapping; supplied moonPhase is optional and null uses the accepted regular moon fallback.",
+    "REQ-026 / Weather Card Presentation pressure and fallback rules: unknown or missing optional condition input remains neutral-cloud/available-data behavior without crash or invented text; pressure-arrow and temperature content remain visible and unchanged.",
+    "REQ-007, REQ-008, REQ-029 regression: no new provider/cache/history/refresh/selection access or write is introduced; existing Main Display -> Weather Context boundary remains the only weather input path.",
+    "REQ-025 regression: clock, timer/countdown/overdue, network-failure independence and lifecycle behavior remain unchanged because the task is a stateless visual composition delta.",
+    "REQ-023 material visual review: a reviewer using the named rubric can recognize each silhouette at four-card row geometry, see adequate contrast/no clipping/no occlusion, and distinguish the card content from the illustration.",
+    "T3 claim-linked proof path: fresh RED, claim-equivalent GREEN, clean build, full host unit suite, static resource/diff inspection, deterministic rendered image/contact sheet, measured bounds artifact, safe rerun and redacted evidence with no device/network/credential action."
+  ]
+}

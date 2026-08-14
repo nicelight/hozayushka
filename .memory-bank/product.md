@@ -1,7 +1,7 @@
 ---
 description: Product brief (C4 L1): что это, для кого, core value, ограничения.
 status: draft
-last_updated: 2026-08-03
+last_updated: 2026-08-10
 ---
 # Product: кухонные часы с погодой и таймерами
 
@@ -23,8 +23,9 @@ display. Время остаётся главным визуальным эле�
 - Единственный владелец приложения.
 - Контекст: стационарный кухонный смартфон, landscape 1280×720, частые короткие
   взгляды и управление коротким тапом, double tap и hold.
-- Внешние actors: Yandex Weather API как источник погодных данных и Android OS
-  как источник platform lifecycle, времени, сети и разрешённого звука.
+- Внешние actors: default Open-Meteo без пользовательского API key, optional
+  OpenWeather с локальным key владельца и Android OS как источник platform
+  lifecycle, времени, сети и разрешённого звука.
 
 ## Primary user flow
 
@@ -35,28 +36,37 @@ display. Время остаётся главным визуальным эле�
    foreground.
 3. После нуля приложение показывает overdue state и разрешённый системными
    правилами повторяющийся звук; касание возвращает main display.
-4. Долгое удержание города открывает Settings. Владелец offline выбирает
-   страну и город, вводит личный API key, настраивает timer/alert preferences и
-   glass intensity; корректные значения auto-save.
-5. Тапы по погодным карточкам открывают hourly или общий 10-дневный forecast
-   screen только при наличии соответствующих данных.
+4. Долгое удержание города открывает Settings. Владелец оставляет default
+   Open-Meteo без key либо явно выбирает OpenWeather и вводит личный локальный
+   API key, offline выбирает страну и город, настраивает timer/alert preferences
+   и glass intensity; корректные значения auto-save.
+5. Тапы по погодным карточкам открывают hourly или общий 10-позиционный
+   long-term forecast screen только при наличии полного provider-supported
+   набора выбранного provider.
 
 ## Constraints
 - Tech stack: Kotlin Android для Samsung GT-I9300I (`s3ve3gds`) с совместимой
   Android 11 custom ROM; основной язык UI — русский.
 - Product/runtime: только landscape fullscreen, системные панели скрыты, экран
   удерживается включённым, часы доминируют на 1280×720, основной UI неподвижен.
-- Data/integration: Yandex Weather API с личным локально хранимым key; свежий
-  cache доступен offline до 24 часов; location selection использует bundled
-  GeoNames `cities15000` без Google Services.
+- Data/integration: Open-Meteo — default/no-key для принятого персонального
+  non-commercial use; OpenWeather выбирается явно и использует личный локальный
+  key. Refresh остаётся 30-минутным; cache/history идентифицируются provider и
+  доступны offline до 24 часов только для совпадающего selection. Автоматический
+  failover и смешивание provider data запрещены. Open-Meteo даёт 10 daily
+  positions, OpenWeather — 8 records и две честные unavailable positions;
+  hourly view требует все восемь фиксированных slots. Location selection
+  использует bundled GeoNames `cities15000` без Google Services, а Settings
+  показывают требуемые Open-Meteo и GeoNames attribution.
 - Visual: 78 явных температурных HEX values от −30 до +47 °C с clamp и
   статичный pseudo-glass без тяжёлых realtime effects.
 - Delivery: V1 не публикуется и не распространяется как APK; detailed
   architecture, storage, API contracts and testing gates остаются за
   `/spec-design` и последующими design/task workflows.
-- Non-goals: backend/cloud sync/accounts/multi-user, общий API key, Google
-  Services, reboot recovery/autostart, pre-install weather history, Telegram/
-  TTS V2 и не согласованные функции/settings.
+- Non-goals: backend/cloud sync/accounts/multi-user, общий API key,
+  cross-provider fallback или синтез недоступных forecast data, Google Services,
+  reboot recovery/autostart, pre-install weather history, Telegram/TTS V2 и не
+  согласованные функции/settings.
 
 ## Sources
 

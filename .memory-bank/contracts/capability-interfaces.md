@@ -1,8 +1,8 @@
 ---
 description: Accepted public in-process contracts between the V1 capability slices.
 status: active
-last_updated: 2026-08-07
-source_of_truth: .memory-bank/architecture/system-architecture.md, .memory-bank/prd.md, operator confirmation 2026-08-04 and 2026-08-06
+last_updated: 2026-08-10
+source_of_truth: .memory-bank/architecture/system-architecture.md, .memory-bank/prd.md, operator confirmation 2026-08-04, 2026-08-06 and 2026-08-10
 ---
 # Capability Interfaces
 
@@ -20,8 +20,9 @@ contract.
   commands and never write a provider's storage directly.
 - Commands return an accepted result or an owning failure state. Invalid
   Settings values do not replace the last valid value.
-- Network failure preserves clock, timer, cancellation and overdue dismissal;
-  weather consumers receive the accepted cache/freshness state.
+- Network/provider failure preserves clock, timer, cancellation and overdue
+  dismissal; weather consumers receive only the selected provider/location's
+  accepted matching cache/freshness state.
 - Contracts carry no API-key value into logs, screenshots or verification
   evidence. Secret handling is owned by [Local Secret Handling](local-secret-handling.md).
 - No internal event/message envelope is introduced. Interactions are direct
@@ -36,8 +37,10 @@ contract.
 - Allowed interaction: Main Display may render the projection and request a
   forecast entry through Forecast Sessions; it may not request raw provider
   fields or write weather data.
-- Failure/compatibility: no city, missing key, provider failure or stale cache
-  keeps the stable shell and returns the accepted empty/inline state.
+- Failure/compatibility: no city, missing selected-OpenWeather key, selected
+  provider failure or stale/mismatched cache keeps the stable shell and returns
+  the accepted empty/inline state. Open-Meteo has no key prerequisite, and no
+  failure invokes or exposes data from the other provider.
 - Verification: deterministic freshness/palette/trend checks and redacted
   provider fixtures from [Runtime Verification](../testing/runtime-verification.md).
 
@@ -146,17 +149,43 @@ contract.
   shared weather-card presentation probe, with target-device readability only
   where host checks cannot establish the static pseudo-glass result.
 
+### Weather Access Settings Surface
+
+- Public surface: select `Open-Meteo|OpenWeather`, inspect the current
+  selection, enter/change the local OpenWeather key in OpenWeather context, and
+  view the required Open-Meteo and GeoNames attribution before the final back
+  action.
+- Provider authority: Settings & Location owns persisted selection and the
+  local OpenWeather secret. Open-Meteo is the first-run/default selection and
+  has no key field, validation or request prerequisite.
+- Allowed interaction: a valid selection auto-saves and requests Weather
+  Context refresh through the existing Settings & Location → Weather Context
+  edge. Selecting OpenWeather does not authorize a request until its key input
+  is valid; selecting Open-Meteo never reads or transports the OpenWeather key.
+- Failure/compatibility: missing/invalid-key messages belong only to selected
+  OpenWeather. Provider/access/network failure keeps selection and the previous
+  valid Settings value, identifies the selected provider, and never reports a
+  fallback.
+- Attribution: Settings displays linked Open-Meteo credit and `CC BY 4.0`
+  licence reference alongside the existing GeoNames credit.
+- Verification: first-run/default, explicit switch/reopen, contextual key
+  visibility/validation, selected-provider failure and attribution
+  content/order checks.
+
 ### Forecast Sessions to Weather Context
 
-- Public surface: request normalized complete hourly slots or ordered daily
-  forecast data for the selected city and its API timezone.
+- Public surface: request selected-provider normalized hourly slots or the
+  ten-position daily projection for the selected city and its API timezone.
 - Ownership split: Weather Context owns forecast acquisition, normalization,
   storage and the availability/completeness predicate in the read model;
   Forecast Sessions owns only the user-facing session creation/rejection,
   transient display session and gestures.
 - Allowed interaction: Forecast Sessions consumes the predicate and may reject
-  an unavailable or incomplete read model and render only the accepted eight or
-  ten cards. It may not invent missing slots or mutate the forecast cache.
+  an unavailable or incomplete read model. A valid hourly model has exactly
+  eight available cards. A valid long-term model has ten positions: all
+  available for Open-Meteo, or eight available plus two explicit unavailable
+  positions for OpenWeather. Forecast Sessions may not invent missing values,
+  alter availability or mutate the forecast cache.
 - Failure/compatibility: missing hourly/long-term data returns the accepted
   message and no session is created.
 - Verification: deterministic timezone, field-completeness and sequence checks.
@@ -175,15 +204,19 @@ contract.
 ### FT-004 Long-Term Forecast Session Surface
 
 - Entry command: Main Display requests the long-term session from Tomorrow or
-  Day-after; Forecast Sessions accepts it only when Weather Context exposes a
-  complete ordered ten-day projection.
+  Day-after; Forecast Sessions accepts it only when Weather Context exposes the
+  selected provider's complete supported input: 10 Open-Meteo daily records or
+  8 OpenWeather daily records.
 - Returned projection: exactly ten cards in two rows of five, beginning with
   today in the selected-city API timezone and continuing through the next nine
-  calendar days. Cards use the shared temperature/glass/illustration rules,
-  show `dd`, and omit pressure arrows.
+  calendar positions. Open-Meteo fills all ten. OpenWeather fills the first
+  eight and returns positions nine and ten as explicit unavailable/empty cards
+  without temperature or illustration. Available cards use the shared
+  temperature/glass/illustration rules, show `dd`, and omit pressure arrows.
 - Failure/compatibility: unavailable or incomplete daily data leaves Main
-  Display visible and returns `Долгосрочный прогноз еще не подгрузился`; no
-  empty, partial or fabricated session is returned.
+  Display visible and returns `Долгосрочный прогноз еще не подгрузился`. The
+  two expected OpenWeather empty positions are not incompleteness. No provider
+  data is synthesized or borrowed from the other adapter.
 - Ownership: Weather Context owns normalized daily forecast data and its
   availability/completeness predicate. Forecast Sessions owns user-facing
   creation/rejection, transient state and the shared exit flow. Main Display
@@ -208,33 +241,38 @@ contract.
 
 ### Weather Context to Settings and Location
 
-- Public surface: read the validated selected location, provider coordinates,
-  selected-city API timezone and an ephemeral request credential when a refresh
-  is authorized.
+- Public surface: read a validated access projection containing
+  `open_meteo|open_weather`, selected location/coordinates and the local
+  OpenWeather key only when an explicit selected-OpenWeather refresh is
+  authorized.
 - Provider authority: Settings & Location owns the stored value and its
   validation; Weather Context owns the refresh and normalized weather state.
-- Allowed interaction: the credential may travel only to the provider request
-  path and must be redacted before any diagnostic/evidence boundary.
-- Failure/compatibility: missing/invalid key or location preserves the clock,
-  timer path and last valid settings; weather becomes unavailable by the
-  accepted freshness rules.
-- Verification: redacted request fixtures and local-secret checks.
+- Allowed interaction: Weather Context resolves selection once per refresh and
+  calls exactly its matching adapter. The key may travel only to transient
+  outbound OpenWeather HTTPS `appid` query construction and must be redacted
+  before any diagnostic/evidence boundary. Open-Meteo receives no credential.
+- Failure/compatibility: missing/invalid OpenWeather key or location preserves
+  the clock, timer path and last valid settings; provider selection does not
+  change, no other adapter is called, and weather follows matching
+  cache/freshness rules. Missing key is never an Open-Meteo failure.
+- Verification: provider-selection/default/reopen probes, Open-Meteo no-key and
+  redacted OpenWeather request fixtures, and one-adapter failure checks.
 
 ### Location Refresh Orchestration
 
-- Public surface: after a valid location change, request a Weather Context
-  refresh using the newly validated location and the authorized ephemeral
-  provider context.
+- Public surface: after a valid location or provider change, request a Weather
+  Context refresh using the newly validated selected-provider access context.
 - Provider authority: Weather Context owns refresh cadence, provider mapping,
   cache/history writes and the resulting freshness projection; Settings &
   Location owns the location write and validation.
 - Allowed interaction: the request is made only after the new Settings value is
-  valid and persisted. No caller may write Weather Context storage directly.
+  valid and persisted. Provider change never invokes the previous adapter; no
+  caller may write Weather Context storage directly.
 - Failure/compatibility: failed refresh preserves the valid location and
   applies the accepted cache/freshness/error behavior; clock and timer paths
   remain available.
-- Verification: city-change refresh and cache-preservation probe with a
-  redacted provider fixture.
+- Verification: city/provider-change refresh, exact selected-adapter dispatch
+  and provider/location matching-cache preservation probes.
 
 ### Settings and Location to Bundled Location Catalog
 
@@ -253,8 +291,9 @@ contract.
 
 - Main Display owns the user-facing composition of the glanceable screen and
   delegates timer/forecast commands; it does not own timer or weather state.
-- Weather Context owns weather refresh after a validated location change and
-  the refresh cadence; Settings & Location owns the location write itself.
+- Weather Context owns selected-adapter dispatch and weather refresh after a
+  validated location/provider change and on the refresh cadence; Settings &
+  Location owns provider/location writes themselves.
 - Timer & Alert owns the timer start/cancel/complete workflow and the permitted
   audio request; Main Display only supplies gestures and renders state.
 - Forecast Sessions owns forecast-screen entry/exit and its data-completeness

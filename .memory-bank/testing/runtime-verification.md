@@ -1,7 +1,7 @@
 ---
 description: Concrete foundation, integration and target-device evidence routes for V1 runtime risks.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-10
 source_of_truth: .memory-bank/prd.md, .memory-bank/constitution.md, .memory-bank/testing/strategy.md
 ---
 # Runtime Verification
@@ -46,18 +46,40 @@ Use the cheapest check that proves the requirement:
 - timer state transitions, elapsed/remaining arithmetic, one-active-timer rule,
   labels and accepted gesture semantics;
 - weather freshness, seven-day history window, pressure thresholds, unknown
-  condition fallback and all 78 temperature colors with endpoint clamp;
+  condition fallback, provider/location cache-history identity and all 78
+  temperature colors with endpoint clamp;
 - device-time versus selected-city-timezone formatting;
-- forecast completeness, eight-slot/ten-day ordering and missing-data gating;
+- selected-provider dispatch with no second adapter call; Open-Meteo 10 versus
+  OpenWeather 8+2 daily projection; exact eight-slot completeness and
+  missing-data gating;
+- Open-Meteo default/no-key selection and explicit OpenWeather/local-key
+  selection, provider-change refresh and failure without selection change;
 - Settings validation, auto-save and preservation of the last valid value; and
 - offline country-first/city-scoped search and alias matching.
 
 ## Redacted Integration Fixtures
 
-Provider fixtures cover successful current/daily/hourly data, stale cache,
-provider/network failure, missing optional fields and incomplete required
-forecast fields. Use synthetic credentials only. Evidence must show the
-result/verdict, never a key or an unredacted request.
+Provider fixtures are separate and provider-identified:
+
+- Open-Meteo fixtures prove the `/v1/forecast` request has no credential,
+  maps returned city timezone/current/hourly/daily values, fills 10 daily
+  positions and follows Free API attribution/terms boundaries.
+- OpenWeather fixtures prove the `/data/3.0/onecall` request uses an
+  unmistakably synthetic `appid` only after explicit selection, maps
+  timezone/current/48-hour-hourly/8-day-daily values and projects 8+2 daily
+  positions. Captured URLs/results are redacted before evidence is written.
+- A call-counting two-adapter harness proves launch, city/provider change,
+  cadence and each selected-provider failure invoke only the selected adapter.
+- Provider/location cache and history fixtures prove mismatched records never
+  display, complete a forecast or enter a pressure comparison.
+- One-missing-slot examples cover each of the eight fixed city-local hourly
+  positions for both providers; incomplete provider-supported daily examples
+  cover fewer than 10 Open-Meteo or fewer than 8 OpenWeather records.
+
+Fixtures also cover successful current/daily/hourly data, stale cache,
+provider/network/access failure and missing optional fields. Use synthetic
+OpenWeather credentials only. Evidence must show the result/verdict, never a
+key or an unredacted request.
 
 Persistence/recovery probes define before execution:
 
@@ -123,10 +145,13 @@ it with a host-side runtime claim.
 
 ## Secret and Artifact Checks
 
-After the Foundation build path exists, inspect source, packaged resources,
-logs and produced evidence using a synthetic/redacted fixture workflow. A
-check passes only when the real user key was never introduced; test artifacts
-must remain key-free by construction.
+After the Foundation build path exists, inspect source literals, persisted
+non-secret state, packaged resources, logs, screenshots and produced evidence
+using a synthetic/redacted fixture workflow. A check passes only when the real
+user key was never introduced. Prove separately that Open-Meteo constructs no
+credential and that selected OpenWeather constructs the mandatory HTTPS
+`appid` query transiently, with the captured URL redacted before it becomes
+evidence.
 
 ## Evidence Ownership
 

@@ -1,7 +1,7 @@
 ---
 description: Implementation plan for the FT-005 preset timer configuration surface.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-10
 ---
 # IMPL-FT-005 — Preset timer configuration
 
@@ -112,7 +112,7 @@ These paths are advisory and non-exhaustive; no hard `write_boundary` is set.
   neighbor stores or raw adapters.
 - A valid configured duration is positive; invalid input cannot replace the
   previous valid value; configuration cannot create a parallel active timer.
-- Do not change Planning Revision `1`, add a canonical spec, add a graph edge or
+- Planning Revision is reconciled to `2`; do not add a canonical spec, graph edge or
   widen the product surface.
 
 ## Direct normative inputs
@@ -133,6 +133,8 @@ These paths are advisory and non-exhaustive; no hard `write_boundary` is set.
 
 ## Handoff
 
-After task-plan approval, the next route is `/review-tasks-plan FT-005`.
+Queue action is `reconciled`; no new task is created and
+`TASK-007-T3-FT-005-W6` remains `done`. Exact next owner is fresh
+`/review-tasks-plan --all`.
 Execution, `/mb-doctor`, `/verify`, `/red-verify` and `/mb-sync` are not part of
 this planning run.

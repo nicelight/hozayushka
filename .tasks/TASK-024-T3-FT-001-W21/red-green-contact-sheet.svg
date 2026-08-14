@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1580" viewBox="0 0 1280 1580">
+  <style>
+    .bg { fill: #10131b; }
+    .shell { fill: #191e29; stroke: #6c7280; stroke-width: 2; }
+    .header { fill: #252c3a; stroke: #8b93a3; stroke-width: 2; }
+    .card { fill: #34445b; stroke: #b9c4d8; stroke-width: 2; }
+    .today { fill: #5d476d; stroke: #ffd48a; stroke-width: 3; }
+    .preset { fill: #302c3b; stroke: #df78ad; stroke-width: 3; }
+    .label { fill: #eef2f8; font: 20px sans-serif; }
+    .small { fill: #bac3d4; font: 15px monospace; }
+    .title { fill: #ffffff; font: bold 26px sans-serif; }
+  </style>
+  <rect class="bg" x="0" y="0" width="1280" height="1580"/>
+
+  <text class="title" x="32" y="34">RED — pre-change source-derived 1280×720 bounds</text>
+  <rect class="shell" x="32" y="56" width="1216" height="672" rx="8"/>
+  <rect class="header" x="32" y="56" width="996" height="260" rx="8"/>
+  <text class="label" x="60" y="104">left header: HH:mm + date + city</text>
+  <text class="small" x="60" y="132">header owns clock/date/city before the four-card row</text>
+  <rect class="card" x="32" y="340" width="243" height="388" rx="8"/>
+  <rect class="card" x="283" y="340" width="243" height="388" rx="8"/>
+  <rect class="card" x="534" y="340" width="243" height="388" rx="8"/>
+  <rect class="card" x="785" y="340" width="243" height="388" rx="8"/>
+  <text class="label" x="78" y="540">yesterday</text>
+  <text class="label" x="350" y="540">today</text>
+  <text class="label" x="584" y="540">tomorrow</text>
+  <text class="label" x="824" y="540">day_after</text>
+  <text class="small" x="32" y="752">card widths 243/243/243/243; gaps 8/8/8</text>
+  <rect class="preset" x="1048" y="64" width="200" height="208" rx="18"/>
+  <rect class="preset" x="1048" y="280" width="200" height="208" rx="18"/>
+  <rect class="preset" x="1048" y="496" width="200" height="208" rx="18"/>
+  <text class="small" x="1032" y="752">presets right</text>
+
+  <text class="title" x="32" y="804">GREEN — deterministic W21 geometry model, measured bounds</text>
+  <rect class="shell" x="32" y="826" width="1216" height="672" rx="8"/>
+  <rect class="header" x="32" y="850" width="223" height="228" rx="8"/>
+  <text class="label" x="60" y="918">city/date</text>
+  <text class="small" x="60" y="944">left column above yesterday</text>
+  <rect class="header" x="271" y="850" width="757" height="228" rx="8"/>
+  <text class="label" x="514" y="918">idle HH:mm</text>
+  <text class="small" x="462" y="944">central/upper above three day cards</text>
+  <rect class="card" x="32" y="1078" width="223" height="396" rx="8"/>
+  <rect class="today" x="271" y="1078" width="279" height="396" rx="8"/>
+  <rect class="card" x="566" y="1078" width="223" height="396" rx="8"/>
+  <rect class="card" x="805" y="1078" width="223" height="396" rx="8"/>
+  <text class="label" x="78" y="1278">yesterday</text>
+  <text class="label" x="380" y="1278">today</text>
+  <text class="label" x="616" y="1278">tomorrow</text>
+  <text class="label" x="848" y="1278">day_after</text>
+  <text class="small" x="32" y="1520">weather bounds: [32,1078,255,1474] [271,1078,550,1474] [566,1078,789,1474] [805,1078,1028,1474]</text>
+  <rect class="preset" x="1028" y="850" width="220" height="208" rx="18"/>
+  <rect class="preset" x="1028" y="1058" width="220" height="208" rx="18"/>
+  <rect class="preset" x="1028" y="1266" width="220" height="208" rx="18"/>
+  <text class="small" x="1032" y="1520">Today 279 &gt; 223 = 223 = 223; gaps 16/16/16; presets right</text>
+</svg>

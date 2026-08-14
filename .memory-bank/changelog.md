@@ -4,6 +4,226 @@ status: active
 ---
 # Changelog
 
+## [2026-08-14] Wave 34 — FT-001 mixed-state allocation boundary sync
+- Reconciled: authoritative `TASK-037-T3-FT-001-W34` is `done` after executor
+  `PASS_FOR_HANDOFF`, independent `/verify PASS`, T3 `/red-verify
+  semantic-pass`, all five host gates and fresh physical TECNO LI6 RED/GREEN
+  on serial `1156725456009666` at `2460×1080` landscape.
+- Recorded: the accepted empty-Yesterday/three-populated proof at `2460×1080`
+  and `1280×720`, including the 25–30% weather band, 70–75% clock zone,
+  equal-height/common-bottom card allocation, preserved empty shell,
+  complete `HH:mm`, city/date and separate timer rail.
+- Evidence: all 13 unique `evidence_required` artifact paths and all 17
+  accepted closure paths exist; the W34 sync receipt records the claim-linked
+  host, native View, physical, functional and semantic evidence.
+- Updated: FT-001/EP-001 feature and epic routing, FT-001 plan/decision/IMPL,
+  requirements traceability, SDD backbone, feature/epic routers and FT-007's
+  separate timer-digit residual note. `spec-index.md` remains registry-only.
+- Preserved: W31 `done`, W32 `failed`, W33 `blocked` and W33's superseded
+  policy-invalid `blocked -> failed` transition history; FT-001/EP-001
+  lifecycle and RTM values remain unchanged. No production code, task status,
+  scheduler checkpoint, promotion, dependent unblock or terminal state was
+  changed by this sync.
+- Deferred: caller-owned strict post-sync gates and the documented
+  `HALT_DEPENDENCY_DEADLOCK` terminal route remain external; oversized timer
+  digits are a separate future FT-007 presentation concern.
+
+## [2026-08-13] Wave 31 — FT-001 Main Display physical boundary sync
+- Reconciled: authoritative `TASK-034-T3-FT-001-W31` is already `done` after
+  executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and T3
+  `semantic-pass`; the task card records 20 accepted W31 evidence links.
+- Recorded: fresh physical RED/GREEN on unlocked TECNO LI6 serial
+  `1156725456009666` at `2460×1080` proves the complete contained dominant
+  `HH:mm` and materially reduced secondary weather illustrations. Host geometry
+  at `2460×1080` and `1280×720` and all five host gates remain supporting,
+  explicitly separate from the physical visual PASS.
+- Preserved: exact two-file behavior boundary, four ordered weather slots,
+  city/date placement, right-side timer separation, host/device separation and
+  the no-emulator rule. W29 terminal `failed` provenance history and W30
+  history remain unchanged.
+- Updated: FT-001, EP-001, their routers, the FT-001 implementation plan,
+  requirements traceability note and SDD backbone now link W31 closure without
+  changing FT-001/EP-001 lifecycle or any RTM lifecycle; `spec-index.md` stays
+  a pure registry and no canonical spec/contract/graph decision is added.
+- Deferred: other resolutions/devices, custom-ROM rendering, physical audio
+  audibility and live provider refresh remain outside W31; scheduler checkpoint,
+  terminal handling, promotion and dependent-state changes remain outside this
+  reconciliation.
+- Evidence: [W31 sync report](../.tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-13] Wave 30 — FT-001 Main Display boundary sync
+- Reconciled: authoritative `TASK-033-T3-FT-001-W30` is already `done` after
+  executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and T3
+  `semantic-pass`; the task card records 19 accepted W30 evidence links.
+- Recorded: fresh verifier-owned host proof accepts `RED_NOT_APPLICABLE` at
+  `2460×1080` and `1280×720`, covering the complete `HH:mm`, four ordered
+  `NO_DATA`/partial/populated shells and the three preset radial/rim/glow
+  claims. The exact two-file code boundary remained unchanged and no W30
+  production/test behavior write was made; the five required host gates are
+  recorded as exit `0` in the task evidence.
+- Preserved: terminal W29 `failed` provenance disposition and all W29/W28
+  history, evidence, protocols, checkpoint and terminal-state handling. W29's
+  failure is a missing pre-write provenance/authority record, not an evidenced
+  product semantic failure; no W29 evidence is promoted to W30 RED/GREEN.
+- Updated: FT-001, EP-001, their routers, the FT-001 implementation plan and
+  the SDD backbone now link the W30 closure and retain the existing
+  `implemented` feature/epic and RTM lifecycle values. `spec-index.md` remains
+  a pure registry; no new spec, contract, graph edge, dependency or lifecycle
+  decision was introduced.
+- Deferred: target/device/fullscreen/keep-screen-on/physical readability and
+  live runtime evidence remain `DEFERRED`; host evidence is not runtime
+  `PASS`. Caller-owned post-sync lint/strict-doctor, promotion and terminal
+  handling remain outside this reconciliation.
+- Evidence: [W30 sync report](../.tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-13] Wave 28 — FT-007 overdue presentation boundary sync
+- Reconciled: authoritative `TASK-031-T3-FT-007-W28` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Recorded: dedicated content-free overdue surface, stable elapsed `256.0`
+  versus active `228.0` and idle `188.75`, transparent activating-preset color
+  circle, independently blinking plus, and fitting host bounds; focused/full
+  host, clean build and static gates pass in the accepted task evidence.
+- Preserved: exact two-file W28 code boundary, Timer & Alert/lifecycle/audio
+  ownership, W8/W23/W27 task history, existing RTM lifecycle values and
+  `spec-index.md` registry-only rules. Target/device/audio evidence remains
+  `DEFERRED`; no runtime/device/physical-audibility `PASS` is claimed.
+- Evidence: [W28 sync report](../.tasks/TASK-031-T3-FT-007-W28/TASK-031-T3-FT-007-W28-S-MB-SYNC-final-report-docs-01.md).
+- Deferred: scheduler-owned post-sync lint/strict-doctor, promotion and
+  terminal-state handling remain outside this reconciliation.
+
+## [2026-08-12] Wave 27 — FT-006 active countdown boundary sync
+- Reconciled: authoritative `TASK-030-T3-FT-006-W27` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Recorded: dedicated no-weather countdown surface, digits `228.0` versus idle
+  `188.75`, transparent preset-colored neon circle, and preserved lifecycle/
+  gesture/offline behavior; focused/full host, lifecycle, build and static
+  gates pass.
+- Preserved: TimerCapability/TimerAlertPolicy/PlatformRuntimeAdapter/W23 audio
+  ownership. Overdue/+ rendering and audio remain FT-007 scope; target/device/
+  audio runtime evidence is `DEFERRED`, with no runtime `PASS` claim.
+- Evidence: [W27 sync report](../.tasks/TASK-030-T3-FT-006-W27/TASK-030-T3-FT-006-W27-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 26 — FT-001 idle composition boundary sync
+- Reconciled: authoritative `TASK-029-T3-FT-001-W26` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Recorded: adaptive idle clock sizes `188.75`/`139.75`, transparent neon
+  preset circles `200x200` with `24` spacing, and card geometry
+  `217/273/217/217` with common gap `24`; focused/full host, build, diff and
+  visual gates pass.
+- Preserved: Timer & Alert/Weather Context ownership and W24/W25 history;
+  active countdown/overdue remain later FT-006/FT-007 scope. Target runtime
+  evidence remains `DEFERRED`, with no device/runtime `PASS` claim.
+- Evidence: [W26 sync report](../.tasks/TASK-029-T3-FT-001-W26/TASK-029-T3-FT-001-W26-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 24 — FT-001 clock/control boundary sync
+- Reconciled: authoritative `TASK-027-T3-FT-001-W24` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass` on Attempt 2.
+- Recorded: reachable idle clock size remains `176f` after refresh, countdown
+  remains `32f`, and the three existing right-side controls are measured
+  `220x220` circles with radius `110`; host suite and visual evidence pass.
+- Preserved: Timer & Alert/audio, Weather Context, card projection, gestures,
+  historical task records, Planning Revision `2` and target-device policy.
+  Samsung/custom-ROM runtime evidence remains `DEFERRED`, with no device/runtime
+  `PASS` claim. W25 remains planned pending scheduler promotion.
+- Evidence: [W24 sync report](../.tasks/TASK-027-T3-FT-001-W24/TASK-027-T3-FT-001-W24-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 25 — FT-002 weather presentation boundary sync
+- Reconciled: authoritative `TASK-028-T3-FT-002-W25` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Recorded: all six weather states remain present; illustration envelopes are
+  reduced to approximately 69.5–70.2%, the CLEAR sun disk is `1.1789474x`, and
+  pressure arrows are visible Canvas/Path geometry with `5 px` stroke and no
+  zero/steady pixels. Focused/full host, build, static and boundary gates pass.
+- Preserved: WeatherCapability pressure semantics, card/provider/timer/audio/
+  gesture ownership, historical task records, Planning Revision `2` and
+  target-device policy. Samsung/custom-ROM runtime evidence remains
+  `DEFERRED`, with no device/runtime `PASS` claim.
+- Evidence: [W25 sync report](../.tasks/TASK-028-T3-FT-002-W25/TASK-028-T3-FT-002-W25-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 23 — FT-007 overdue-audio boundary sync
+- Reconciled: authoritative `TASK-026-T3-FT-007-W23` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Updated: FT-007, EP-003 and the spec-backbone route scheduler-trace,
+  denial/error matrix and physical-audibility evidence; existing Timer &
+  Alert/Runtime Adapter ownership remains unchanged.
+- Recorded: host fake request/start/repeat/dismissal/cap and six denial/error
+  cases pass; physical audibility remains `DEFERRED`, with no device/runtime
+  `PASS` claim.
+- Preserved: historical task records, task index, Planning Revision `2`, W21/
+  W22 closures and scheduler terminal-state ownership.
+- Evidence: [W23 sync report](../.tasks/TASK-026-T3-FT-007-W23/TASK-026-T3-FT-007-W23-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 22 — FT-002 weather-card illustration boundary sync
+- Reconciled: authoritative `TASK-025-T3-FT-002-W22` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Updated: FT-002 and the spec-backbone route the six-state Canvas evidence,
+  contact sheet and measured bounds; provider, Weather Context and card-content
+  ownership remain unchanged.
+- Recorded: host/build/unit/static/image evidence is accepted; Samsung/custom-
+  ROM 1280x720 readability/fullscreen/keep-screen-on/runtime Canvas evidence
+  remains `DEFERRED`, with no device/runtime `PASS` claim.
+- Preserved: historical task records, task index, Planning Revision `2`, W21
+  closure and scheduler promotion ownership. W23 remains planned.
+- Evidence: [W22 sync report](../.tasks/TASK-025-T3-FT-002-W22/TASK-025-T3-FT-002-W22-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 21 — FT-001 Main Display composition boundary sync
+- Reconciled: authoritative `TASK-024-T3-FT-001-W21` is `done` after fresh
+  executor `PASS_FOR_HANDOFF`, functional `PASS` and independent T3
+  `semantic-pass`.
+- Updated: FT-001 and the spec-backbone route the accepted left/central/right
+  geometry and host contact-sheet evidence; task-owned changes remain inside
+  `DisplayCapability.kt` and `DisplayProjectionTest.kt`.
+- Recorded: host/build/unit/static evidence is accepted; Samsung/custom-ROM
+  1280x720 readability/fullscreen/keep-screen-on remains `DEFERRED`, with no
+  device/runtime `PASS` claim.
+- Preserved: Weather Context, Timer & Alert, gestures, public contracts,
+  historical task records, task index, Planning Revision `2` and scheduler
+  promotion ownership. W22 remains planned pending scheduler promotion.
+- Evidence: [W21 sync report](../.tasks/TASK-024-T3-FT-001-W21/TASK-024-T3-FT-001-W21-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 18 — FT-003 hourly-completeness sync
+- Reconciled: authoritative `TASK-021-T2-FT-003-W18` is `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and final independent semantic
+  `semantic-pass`; the task card now links only existing W18 closure evidence.
+- Linked: W18 executor handoff, fresh functional verification,
+  verifier-owned evidence, deterministic hourly matrix and final semantic
+  verification for `FT-003-AC-001` / `AC-005`.
+- Updated: FT-003/EP-002 feature, plan, implementation and navigation routes;
+  RTM `REQ-009` is now `implemented`, while FT-003/EP-002/FT-004 remain
+  `planned` and W19/TASK-022 remains blocked without execution or acceptance.
+- Preserved: W20 `done`, TASK-020 failed after exhausted `3/3` attempts, the
+  prior W18 dependency-block record and W19 blocked history; no downstream
+  scheduler promotion or unblock was applied.
+- Recorded: target device/emulator rendering, live provider/subscription
+  behavior and runtime network compatibility remain `DEFERRED` by the explicit
+  boundary; no runtime `PASS` is claimed.
+- Deferred: caller-owned post-sync `mb-lint`/strict-doctor, W19 recovery and
+  scheduler checkpoint/promotion actions remain external.
+
+## [2026-08-12] Wave 20 — FT-002 selected OpenWeather activation sync
+- Reconciled: authoritative `TASK-023-T3-FT-002-W20` is `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and final independent T3
+  `semantic-pass`; the task record now links the current closure evidence.
+- Updated: FT-002/EP-002 traceability, implementation and navigation surfaces;
+  REQ-007 and REQ-029 are `implemented`, while FT-002/EP-002 remain `planned`
+  because broader feature and downstream forecast claims remain open.
+- Routed: completed W20 is now the recovery prerequisite for blocked W18/W19;
+  their lifecycle, IDs, block evidence and acceptance scope remain unchanged.
+- Preserved: TASK-020 failed after `3/3` attempts, all W20 Attempt-1
+  supporting-only history, and the fresh verifier-owned functional/timer and
+  final semantic evidence links.
+- Recorded: host/build/static/redacted proof only. Target-device, custom-ROM
+  and live-provider evidence remains `DEFERRED`; no runtime `PASS` is claimed.
+- Deferred: scheduler post-sync `mb-lint`/strict-doctor, promotion, downstream
+  unblock and checkpoint updates remain caller-owned.
+
 ## [2026-08-02] Initial setup
 - Created Memory Bank skeleton
 - Seeded core docs (product, requirements, testing, task registry)
@@ -202,3 +422,69 @@ status: active
   queue semantics, production code and tests.
 - Deferred: scheduler-owned post-sync `mb-lint`, strict doctor, promotion and
   dependent-state reconciliation remain outside this sync.
+
+## [2026-08-11] Wave 16 — FT-008 provider-settings boundary sync
+- Reconciled: authoritative `TASK-019-T3-FT-008-W16` is already `done` after
+  final Attempt-3 executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and fresh
+  independent semantic `semantic-pass`; no task status was written by this
+  sync.
+- Preserved: Attempt 1's functional `FAIL` on unsafe task-owned synthetic-marker
+  evidence and Attempt 2's functional `PASS` followed by semantic-fail remain
+  traceable in the task record, reports, protocol and claim-linked attempt log.
+- Updated: FT-008 lifecycle and direct RTM rows REQ-017, REQ-018, REQ-024,
+  REQ-027 and REQ-028 to `implemented`; linked FT-008/FT-002 plans, epic/feature
+  routers and spec-backbone now route the final W16 evidence. EP-004 remains
+  `planned` because FT-009 remains planned.
+- Recorded: provider-unidentified legacy key access/refresh is intentionally
+  denied as a transition safeguard. Planned TASK-020 must atomically replace
+  that deny with selected-OpenWeather-authorized access while implementing
+  selected-provider dispatch; TASK-020/021/022 remain `planned`.
+- Deferred: physical-device/live-provider evidence remains `DEFERRED`, with no
+  runtime `PASS`. Scheduler-owned post-sync lint/strict-doctor, promotion,
+  dependent-state, checkpoint and terminal-state changes remain outside this
+  sync.
+
+## [2026-08-11] Wave 17 — FT-002 terminal provider-migration sync
+- Reconciled: authoritative `TASK-020-T3-FT-002-W17` is already `failed` after
+  `3/3` unsuccessful attempts; final executor handoff and functional
+  verification are `PASS_FOR_HANDOFF`/`PASS`, but required semantic
+  verification is `semantic-fail`. No task lifecycle status was written by
+  this sync and no fourth `/exe` is permitted.
+- Preserved: Attempt 1, Attempt 2 and Attempt 3 histories and evidence remain
+  durable. Implemented migration facts remain separate from the failed accepted
+  activation outcome: exactly Open-Meteo plus OpenWeather, Yandex removal,
+  ordinary selected-only dispatch, provider/location state identity,
+  provider-neutral mapping/fallbacks and credential redaction.
+- Recorded: first-time OpenWeather selection refreshes before key entry; later
+  valid-key save triggers no refresh, leaves the obsolete missing-key error
+  current and makes zero provider calls. TASK-021 is already directly `blocked`
+  and TASK-022 transitively `blocked`; neither has execution or acceptance
+  evidence.
+- Preserved: FT-002/003/004 and EP-002 lifecycles remain `planned`; existing
+  implemented RTM rows remain implemented, while REQ-007/008/009/010/029 remain
+  `planned`. Planning Revision `2`, design status, dependencies, tiers,
+  scheduler `HALT_FAILURE_BUDGET`, checkpoint/terminal state, production/tests
+  and `spec-index.md` remain unchanged.
+- Routed: repair owner is `/feature-to-tasks FT-002` for a new indexed task,
+  followed by fresh review/readiness/execution/verification. Device/live
+  evidence remains `DEFERRED`, with no runtime `PASS`. Scheduler-owned
+  post-sync lint, strict doctor and W17 advisory remain next; promotion
+  eligibility is none.
+- Evidence: [W17 sync report](../.tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-MB-SYNC-final-report-docs-01.md).
+
+## [2026-08-12] Wave 19 — FT-004 long-term capability boundary sync
+- Reconciled: authoritative `TASK-022-T2-FT-004-W19` is `done` after executor
+  `PASS_FOR_HANDOFF`, fresh functional `PASS` and feature-level FT-004
+  `semantic-pass`; closure metadata links only existing W19 task evidence and
+  the FT-004 semantic report.
+- Updated: FT-004 lifecycle and REQ-010 to `implemented`; FT-004/FT-003 plans,
+  EP-002/spec-backbone references and feature/epic navigation now route the
+  W19 10/8+2 capability evidence. EP-004 remains `planned` and its existing
+  FT-008/FT-009 ownership is unchanged.
+- Preserved: W5 presentation/exit ownership, W18 and W20 `done` records,
+  TASK-020 failed `3/3` history, task identity/dependency/attempt history,
+  scheduler checkpoint/terminal handling and `spec-index.md` registry-only
+  semantics.
+- Recorded: target Android/custom-ROM and live-provider/network evidence remain
+  `DEFERRED`; no runtime `PASS` is claimed. Caller-owned post-sync lint/strict
+  doctor and any promotion/terminal decision remain outside this sync.

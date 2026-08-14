@@ -1,0 +1,195 @@
+{
+  "id": "TASK-026-T3-FT-007-W23",
+  "title": "Restore overdue audio emission/start and repeat scheduling at timer completion",
+  "status": "done",
+  "wave": "W23",
+  "feature": "FT-007",
+  "reqs": [
+    "REQ-016"
+  ],
+  "depends_on": [
+    "TASK-009-T3-FT-007-W8"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/timer/TimerCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt",
+    "app/src/test/kotlin/com/hozayushka/app/OverdueAlertTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host overdue audio scheduler and policy suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Obtain fresh task-scoped RED before production changes by reproducing the reported missing-beep path under the accepted target/platform conditions when a target is available. In parallel, drive the current timer from a known idle state with a deterministic clock and fake PlatformRuntime/audio scheduler; the receipt must show whether the first overdue tick emits an AlertAudioRequest and whether the fake platform marks it started. Direct calls to advanceAt() alone are not end-to-end scheduler proof. If the host path is already claim-equivalent GREEN, preserve that pre-implementation result and do not force a production change; the operator's target observation remains the RED for physical audibility, or remains DEFERRED when no target is available.",
+    "Repair only the smallest failing seam inside TimerCapability and/or PlatformRuntimeAdapter, reusing the existing Timer & Alert -> Android Runtime Adapter path and current lifecycle/display tick source. At the first tick at or after configured duration, the selected signal request must be emitted and the permitted fake-platform start must be observable; requests must repeat at the accepted interval until dismissal or the 30-minute audio cap. Do not add an audio framework, dependency, event/message bus or second scheduler, and do not change the accepted signal, volume, ramp, repeat, cap or cancellation policy.",
+    "Obtain claim-equivalent GREEN with a deterministic fake-platform/audio-scheduler trace: countdown reaches zero, one request/start is recorded with selected/default signal, validated volume and ramp, subsequent requests occur only at the accepted repeat boundary, any single or double overdue tap stops audio and prevents later requests, and the visual overdue result remains through dismissal/cap. Preserve one active timer, idle/countdown/overdue transitions, countdown double-tap cancellation and temporary-resume behavior as regression checks only.",
+    "Run isolated error/permission cases for app volume 0, non-normal ringer/silent mode, DND, unavailable audio route, unavailable audio service and ToneGenerator/runtime start failure. Each must return a deterministic denied/error result without crashing, preserve visual overdue state and leave any-tap dismissal available; no case may change timer lifecycle or require network/credentials.",
+    "Separate host fake-platform proof from physical audibility: a host result of request-emitted/fake-started is not a device audio PASS. When an authorized target/custom-ROM observation is available, verify with the accepted signal/volume and permitted ringer/DND/route that a beep is audible at completion, repeats until dismissal/cap and stops on dismissal; record the target/model and decisive observation. Without a device, record target audio as DEFERRED with residual risk and do not claim runtime PASS.",
+    "Run the required build, host and Memory Bank/diff gates with disposable timer state, synthetic timestamps/policy inputs and cleanup. Preserve TASK-009-T3-FT-007-W8 status, terminal evidence, protocol history, feature/REQ lifecycle values, scheduler checkpoint and terminal state; this planning run performs no production change, emulator/device/adb/network/credential action.",
+    "Stop and route to /feature-to-tasks FT-007 with rebuild_required if the correction needs a different tier, dependency, AC ownership, public boundary, Display/composition-root business change or material scope. Route to /spec-design if a new module, graph edge, permission, dependency, event/message boundary or audio framework is required; route to /feature-doctor FT-007 if signal/volume/ramp/repeat/cap/dismissal behavior must change.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-026-T3-FT-007-W23/handoff.md",
+        ".tasks/TASK-026-T3-FT-007-W23/scheduler-trace.md",
+        ".tasks/TASK-026-T3-FT-007-W23/denial-error-matrix.md",
+        ".tasks/TASK-026-T3-FT-007-W23/physical-audibility.md",
+        ".protocols/TASK-026-T3-FT-007-W23/verification.md",
+        ".tasks/TASK-026-T3-FT-007-W23/TASK-026-T3-FT-007-W23-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-026-T3-FT-007-W23/red-verification.md",
+        ".tasks/TASK-026-T3-FT-007-W23/TASK-026-T3-FT-007-W23-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; W23 remains bounded to the existing Timer & Alert and Runtime Adapter owners.",
+      "accepted_residual_risk": [
+        "Physical audibility on the connected/custom Android target remains DEFERRED; host fake start is not device/runtime PASS."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-007-overdue-alert.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-009-T3-FT-007-W8.task.json",
+    ".protocols/FT-007/plan.md",
+    ".protocols/FT-007/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-007.md"
+  ],
+  "evidence_required": [
+    "[FT-007-AC-004 / REQ-016] RED_NOT_APPLICABLE: a host fake-platform request/start that is already GREEN must not be intentionally broken because that would falsify the accepted boundary; alternative proof: retain the host baseline and use the reported target missing-beep observation as RED for physical audibility, then compare GREEN at the first overdue tick, repeat boundary, dismissal stop and 30-minute cap. Artifact/receipt: `.tasks/TASK-026-T3-FT-007-W23/scheduler-trace.md`, label `AC-004-SCHEDULER-TRACE`; record labeled sections `ZERO_TRANSITION`, `FIRST_ALERT_REQUEST_START`, `REPEAT_BOUNDARY`, `DISMISSAL_STOP`, `AUDIO_CAP_30M`, and `HOST_FAKE_RESULT`, with `timer_state`, `timestamp_ms`, `event`, `AlertAudioRequest`, `start_result`, `signal`, `volume`, `ramp`, `request_count`, `visual_overdue`, `post_dismissal_requests` and decisive PASS/FAIL comparison. A direct advanceAt() unit call without the tick driver is insufficient.",
+    "[FT-007-AC-005 / REQ-016] RED_NOT_APPLICABLE: the completed W8 host policy baseline already preserves visual overdue and any-tap dismissal for audio suppression, so intentionally breaking that accepted boundary would falsify this follow-up; alternative proof: retain the baseline and obtain fresh deterministic fake-platform/audio-scheduler GREEN for app volume 0, silent/non-normal ringer, DND, unavailable route/service and audio-start failure. Artifact/receipt: `.tasks/TASK-026-T3-FT-007-W23/denial-error-matrix.md`, label `AC-005-DENIAL-ERROR-MATRIX`; provide one row for `VOLUME_0`, `SILENT_NON_NORMAL_RINGER`, `DND`, `UNAVAILABLE_ROUTE`, `UNAVAILABLE_SERVICE` and `AUDIO_START_ERROR`, with `policy_input`, `audio_result` (`DENIED` or `ERROR`), `reason`, `visual_overdue`, `any_tap_dismissal`, `no_crash`, `post_dismissal_requests` and decisive PASS/FAIL comparison. Host fake PASS proves policy/request handling only; physical audibility remains DEFERRED without an authorized target and never becomes runtime PASS by inference.",
+    "[FT-007-AC-004 / REQ-016; host/physical separation] Host fake-platform/audio-scheduler GREEN proves only request emission and fake start/repeat/stop. Artifact/receipt: `.tasks/TASK-026-T3-FT-007-W23/physical-audibility.md`, label `PHYSICAL-AUDIBILITY`; record `HOST_FAKE_RESULT=PASS` separately from `PHYSICAL_AUDIBILITY=DEFERRED` plus target availability/model and residual custom-ROM/audio-route risk. An actual audible completion/repeat/stop observation on an authorized Android target is a separate observation; without a target, keep `PHYSICAL_AUDIBILITY=DEFERRED` and claim no runtime PASS.",
+    "[Timer lifecycle; REQ-014 regression] RED_NOT_APPLICABLE: intentionally breaking idle/countdown/overdue, one-active-timer, cancellation or temporary-resume behavior would falsify this audio-boundary task. Alternative proof: deterministic regression trace confirms those accepted states and gestures remain unchanged while only the overdue audio request/start path is corrected; artifact: host test receipt and boundary inspection.",
+    "T3 isolation and cleanup: every host case starts from disposable idle state with synthetic settings/platform policy, records decisive pass/fail comparisons and leaves no durable cross-run state, live credential, network artifact or device-side mutation in the task evidence."
+  ],
+  "purpose": "Repair the observed overdue-audio gap at the existing Timer & Alert to Android Runtime Adapter boundary so reaching zero produces an observable permitted audio request/start and accepted repeats, while preserving the completed FT-007 lifecycle and policy contracts.",
+  "success_outcome": "Fresh host/build/static evidence proves a timer crossing its configured duration emits and fake-starts the selected/default alert, repeats at the accepted cadence until dismissal or the audio cap, and handles silent/DND/volume/route/service/start denial without removing visual overdue or dismissal; any actual custom-ROM audibility is separately observed on a device or remains DEFERRED, never a host-derived runtime PASS.",
+  "anti_goals": [
+    "Do not mutate, retry, reopen or backfill TASK-009-T3-FT-007-W8 or any prior task history, status, terminal evidence, scheduler checkpoint or feature/REQ lifecycle.",
+    "Do not change idle/countdown/overdue semantics, one active timer, countdown double-tap cancellation, overdue any-tap dismissal, selected signal/default, volume, ramp, repeat interval, 30-minute cap or temporary-resume policy.",
+    "Do not add a new audio framework, dependency, asset pipeline, event/message bus, notification/audio permission, network path, backend, credential or user-facing FT-009 Settings behavior.",
+    "Do not move Timer & Alert business orchestration into Main Display, MainActivity, FoundationRuntime or a generic helper, and do not bypass the existing PlatformRuntime contract."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/timer/TimerCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt",
+      "app/src/test/kotlin/com/hozayushka/app/OverdueAlertTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/display/",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/TimerAlertPolicy.kt",
+      "all historical TASK-001 through TASK-025 lifecycle/status/verification/protocol evidence and scheduler checkpoint or terminal-state artifacts",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "new module, dependency, public contract, graph edge, event/message path, permission or audio framework",
+      "live credentials, secret-bearing logs/evidence, live network/provider calls and unrelated device state"
+    ],
+    "stop_conditions": [
+      "The current fake-platform trace is already claim-equivalent GREEN and the only failure is physical audibility; preserve the host proof, record target audio as DEFERRED when unavailable and do not add speculative production machinery.",
+      "The smallest correction requires a Display/MainActivity/FoundationRuntime business change, a new scheduler abstraction, new module/edge/public contract/dependency/permission/audio framework or a change to accepted signal/volume/ramp/repeat/cap/dismissal semantics.",
+      "A target observation is unavailable; continue host proof but record target audibility as DEFERRED and never substitute fake-start evidence for runtime PASS.",
+      "Execution would need to touch any historical task, protocol, lifecycle/REQ status, scheduler checkpoint or terminal-state artifact."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-004",
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-005",
+    ".memory-bank/requirements.md#timers-and-alert",
+    ".memory-bank/tasks/TASK-009-T3-FT-007-W8.task.json",
+    ".tasks/TASK-009-T3-FT-007-W8/ft007-host-evidence-attempt-1.md",
+    ".tasks/TASK-009-T3-FT-007-W8/ft007-resume-audio-evidence-attempt-2.md",
+    ".tasks/TASK-009-T3-FT-007-W8/verifier-owned-probe.md",
+    ".protocols/TASK-009-T3-FT-007-W8/verification.md",
+    ".protocols/TASK-009-T3-FT-007-W8/red-verification.md",
+    ".protocols/FT-007/plan.md",
+    ".protocols/FT-007/decision-log.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-002---application-owned-local-state-is-the-product-source-of-truth",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-004---no-event-or-message-boundary-in-v1",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/capability-interfaces.md#timer-and-alert-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#orchestration-ownership",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/domains/local-data.md#ownership-matrix",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#compatibility-and-failure-rules",
+    ".memory-bank/contracts/platform-runtime.md#verification-route",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red-green-for-t2t3"
+  ],
+  "constraints": [
+    "Timer & Alert remains the sole owner of active timer state, idle/countdown/overdue transitions, elapsed interpretation and alert requests; Main Display only supplies existing gestures/renders state.",
+    "Use the existing Timer & Alert -> Android Runtime Adapter contract and current lifecycle/display tick source. The first overdue request, repeat cadence, stop and cap must be observable without creating a second scheduler or internal event boundary.",
+    "The selected/default built-in signal, validated app volume, 5–10 second ramp, accepted repeat interval, dismissal stop and 30-minute audio cap are fixed inputs to this repair; TimerAlertPolicy and FT-009 Settings ownership remain unchanged.",
+    "Android owns silent/DND/route/service permission and audio-start outcomes; denial/error is audio-only and never removes visual overdue or blocks dismissal. Host fake-platform start is not physical audibility evidence.",
+    "No network dependency, credential, new permission, new dependency, new storage owner, reboot recovery or production lifecycle expansion is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red-green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-007-AC-004 / REQ-016 completion-to-audio delta: a deterministic zero-crossing tick emits one selected/default AlertAudioRequest, the fake platform reports start, accepted cadence repeats until dismissal/cap and dismissal prevents later requests.",
+    "FT-007-AC-005 / REQ-016 failure/permission delta: app volume suppression, silent/non-normal ringer, DND, unavailable route/service and audio-start failure produce explicit denied/error results without crash while visual overdue and any-tap dismissal remain available.",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert and .memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary: existing ownership and registered Timer & Alert -> Android Runtime Adapter path remain intact; no direct storage, UI-handler or composition-root bypass.",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle: idle/countdown/overdue, one active timer, cancellation, dismissal and temporary-resume behavior remain unchanged and are checked as regression outcomes.",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence: host fake-platform/scheduler evidence cannot establish audibility; target/custom-ROM observation is DEFERRED without a device and never becomes runtime PASS by inference.",
+    "T3 claim-linked proof: fresh pre-change RED or accepted pre-implementation GREEN, claim-equivalent host GREEN, required build/host/static gates, isolated resettable state and safe cleanup are distinguishable for each owned claim."
+  ]
+}

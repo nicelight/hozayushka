@@ -1,0 +1,41 @@
+{
+  "attempt": 1,
+  "render_size": {
+    "width": 1280,
+    "height": 720
+  },
+  "idle": {
+    "surface": { "left": 273, "top": 24, "right": 1028, "bottom": 252 },
+    "text_size": 188.75,
+    "city": { "left": 32, "top": 24, "right": 249, "bottom": 138 },
+    "date": { "left": 32, "top": 138, "right": 249, "bottom": 252 },
+    "weather_cards": {
+      "top": 252,
+      "bottom": 696,
+      "widths": [217, 273, 217, 217],
+      "gaps": [24, 24, 24]
+    }
+  },
+  "active_countdown": {
+    "surface": { "left": 273, "top": 24, "right": 1028, "bottom": 252 },
+    "backdrop": { "left": 536, "top": 24, "right": 764, "bottom": 252 },
+    "backdrop_shape": "circle",
+    "backdrop_fill": "transparent",
+    "countdown_text_size": 228.0,
+    "countdown_text_size_is_larger_than_idle": true,
+    "hidden_content": ["weather_cards", "city", "date", "standard_card_shell"],
+    "preset": {
+      "slot": "SECOND",
+      "color_identity": "#FF4FA3",
+      "selected": true,
+      "active": true,
+      "neon_border": true
+    }
+  },
+  "comparison": {
+    "same_render_size": true,
+    "surface_does_not_intersect_weather_cards": true,
+    "surface_excludes_city_and_date_regions": true,
+    "countdown_vs_idle_text_size": 1.2079470198675496
+  }
+}

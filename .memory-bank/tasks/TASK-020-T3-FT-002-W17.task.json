@@ -1,0 +1,224 @@
+{
+  "id": "TASK-020-T3-FT-002-W17",
+  "title": "Replace Yandex with two selected-provider weather adapters and isolated state",
+  "status": "failed",
+  "wave": "W17",
+  "feature": "FT-002",
+  "reqs": [
+    "REQ-005",
+    "REQ-007",
+    "REQ-008",
+    "REQ-022",
+    "REQ-024",
+    "REQ-025",
+    "REQ-026",
+    "REQ-029"
+  ],
+  "depends_on": [
+    "TASK-019-T3-FT-008-W16"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/WeatherProviderAdapter.kt",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/YandexWeatherAdapter.kt",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/OpenMeteoWeatherAdapter.kt",
+    "app/src/main/kotlin/com/hozayushka/app/adapters/weather/OpenWeatherWeatherAdapter.kt",
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/app/FoundationRuntime.kt",
+    "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/YandexWeatherAdapterTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/OpenMeteoWeatherAdapterTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/OpenWeatherWeatherAdapterTest.kt",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host Weather Context and redacted adapter probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Establish claim-linked RED from current production state: Yandex is the only production adapter, Weather Context has no selected-provider dispatch, and cache/history records do not carry provider plus location identity. Do not treat fixture compatibility or terminal W15 Yandex evidence as target behavior.",
+    "With fake HTTPS transports, prove exactly two production WeatherProvider adapters: Open-Meteo default/no-key and OpenWeather explicit/local-key. A refresh invokes exactly one selected adapter, never the other, and production wiring contains no Yandex provider path or third adapter.",
+    "For Open-Meteo, observe the canonical coordinate/timezone/current/hourly/daily request shape with no credential field. For OpenWeather, observe the One Call 3.0 request shape and only a boolean/redacted receipt that `appid` was present in the ephemeral outbound HTTPS request; no key value may survive in DTOs, errors, logs, fixtures or evidence.",
+    "Decode deterministic redacted fixtures for each provider into one provider-neutral Weather Context envelope, preserve selected-city timezone and provider capability metadata, map current/four-card optional fields honestly, and use neutral cloud/regular moon fallback without invented labels or crashes.",
+    "Exercise launch, city change, explicit provider change and 30-minute refresh. Cache lookup/visibility and seven-day history/trends must key by provider plus location; only a fresh matching cache may remain visible, and provider/location changes cannot reuse or compare a different partition.",
+    "Exercise HTTP/auth/malformed/timeout/missing-required-data failures for each selected provider. The result must be atomic, preserve selection, avoid a second-provider request or substitution, retain only matching fresh cache, and leave clock/timer paths independent.",
+    "Use synthetic credentials, fake transports, deterministic time/location and disposable stores. No live endpoint, emulator/device evidence or runtime PASS claim is permitted; host/build/static/redaction evidence is mandatory.",
+    "Closure later requires fresh /verify PASS and /red-verify semantic-pass for all task-owned Revision-2 claims; scheduler promotion remains external.",
+    "Independent /verify Attempt 1 on 2026-08-11: FAIL. Required gates passed 3/3 (clean assemble 34/34, focused host 55/55, full host 83/83, Memory Bank/diff) and provider/secret/APK scans found exactly Open-Meteo plus OpenWeather, zero Yandex production/APK inventory and no secret leak. A fresh host-only negative probe changed location during the selected provider fetch and observed the old response displayed as FRESH and its pressure stored under the new location identity, violating FT-002-AC-004/005/008, REQ-007/008/029 and the direct provider+location response/cache/history contract. Device/live evidence remains DEFERRED with no runtime PASS. Evidence: .protocols/TASK-020-T3-FT-002-W17/verification.md, .tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-VERIFY-final-report-docs-01.md and .tasks/TASK-020-T3-FT-002-W17/VerifierResponseIdentityProbe.java. Lifecycle remains in_progress; recommended scheduler action is /exe TASK-020-T3-FT-002-W17 bounded retry, then fresh /verify; do not promote TASK-021 or run mb-sync.",
+    "Independent /verify Attempt 2 on 2026-08-11: FAIL. Required gates passed 3/3 (clean assemble 34/34, focused host 56/56, full host 84/84, Memory Bank/diff), security/APK checks passed 4/4 and inventory found exactly Open-Meteo plus OpenWeather, endpoint counts 1+1, zero Yandex/third provider and no credential leak. The exact Attempt-1 in-fetch location probe now passes, and 8/8 expanded in-fetch location/provider stale success/failure scenarios preserve cache/history/projection. A fresh verifier-owned request-capture probe failed for both providers: refreshIfNeeded built the request from location A, refreshWithProvider reread Settings and captured location B, then accepted the old-coordinate response under B, returned success, updated B cache/history and projected it FRESH. Matrix result: exit 1, 10 scenarios, 94/102 assertions passed, 8 failures. This violates FT-002-AC-004/005/008, REQ-007/008/029 and direct request-response/provider+location identity contracts. Device/live evidence remains DEFERRED with no runtime PASS. Evidence: .protocols/TASK-020-T3-FT-002-W17/verification.md, .tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-VERIFY-final-report-docs-02.md and .tasks/TASK-020-T3-FT-002-W17/VerifierAttempt2IdentityMatrixProbe.java. Lifecycle remains in_progress; recommended scheduler action is /exe TASK-020-T3-FT-002-W17 bounded retry capturing provider/location/request from one immutable access snapshot, then fresh /verify. Do not promote TASK-021/022, run red-verify or mb-sync before functional PASS.",
+    "Independent final /verify Attempt 3 on 2026-08-11: PASS. Required gates passed 3/3 (clean assemble 34/34, focused host 58/58, full host 86/86, Memory Bank/diff). The durable and unmodified verifier 10-scenario identity matrices both passed 102/102, including both providers' request-capture windows; the exact prior response-identity probe passed. Stale provider/location success and failure produced no accepted error/cache/history/projection effects, one selected call and zero other calls. Key reads were 0/1/0/0/0; cadence and freshness boundaries passed at <30m/=30m and 24h/24h+1ms. Security/APK checks passed 4/4; independent inventory found exactly Open-Meteo plus OpenWeather, source/APK endpoint counts 1+1, and zero Yandex/third-provider or credential findings. TASK-021/022 acceptance is not claimed. Device/live evidence remains DEFERRED with no runtime PASS. Evidence: .protocols/TASK-020-T3-FT-002-W17/verification.md and .tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-VERIFY-final-report-docs-03.md. Lifecycle remains in_progress; scheduler action is fresh /red-verify TASK-020-T3-FT-002-W17, with closure/promotion and mb-sync external.",
+    {
+      "stage": "reviewer_verification_attempt_3",
+      "mode": "manual_reviewer",
+      "attempt": 3,
+      "decision": "functional_pass_semantic_fail",
+      "decided_at": "2026-08-11",
+      "gate_summary": {
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-fail",
+        "target_evidence": "DEFERRED; no device/live-provider runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-020-T3-FT-002-W17/verification.md",
+        ".tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-VERIFY-final-report-docs-03.md",
+        ".protocols/TASK-020-T3-FT-002-W17/red-verification.md",
+        ".tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [
+        "First-time OpenWeather selection refreshes before a key exists; accepting a valid key later triggers no selected-provider refresh and leaves the obsolete missing-key error current."
+      ],
+      "lifecycle_note": "Final Attempt 3 semantic failure; all configured attempts are consumed and no fourth /exe is permitted."
+    },
+    {
+      "stage": "scheduler_failure_disposition",
+      "mode": "scheduler",
+      "decision": "failed",
+      "decided_at": "2026-08-11",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-fail",
+        "attempt_budget": "3/3 unsuccessful; exhausted",
+        "target_evidence": "DEFERRED by operator constraint; no device/live-provider runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-020-T3-FT-002-W17/handoff.md",
+        ".tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-EXE-final-report-code-03.md",
+        ".protocols/TASK-020-T3-FT-002-W17/verification.md",
+        ".tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-VERIFY-final-report-docs-03.md",
+        ".protocols/TASK-020-T3-FT-002-W17/red-verification.md",
+        ".tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "follow_up_owner": "/feature-to-tasks FT-002 must create a new indexed repair task, followed by fresh /review-tasks-plan, strict readiness, /exe, /verify and /red-verify.",
+      "lifecycle_note": "Scheduler disposition: in_progress -> failed; no fourth attempt; direct and transitive dependents are blocked."
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-019-T3-FT-008-W16.task.json",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md"
+  ],
+  "evidence_required": [
+    "[FT-002-AC-002; REQ-005, REQ-022] Expected RED: production mapping is Yandex-only and does not prove equivalent selected-provider city-timezone/current-card projection. GREEN: both redacted provider fixtures yield the same provider-neutral filled-card fields and selected-city day/night semantics, with honest optional moon fallback. Artifact: two-provider mapping comparison without forecast-completeness claims.",
+    "[FT-002-AC-004; REQ-007, REQ-025] Expected RED: current cache/refresh has no provider+location partition. GREEN: launch/city/provider/cadence refresh calls only the selected adapter and matching cache remains visible through 24 hours, while stale/mismatched data yields four empty contours and clock/timer paths remain independent. Artifact: deterministic refresh/freshness matrix.",
+    "[FT-002-AC-005; REQ-008] Expected RED: seven-day history and trends lack provider+location identity. GREEN: history begins locally, retains seven days per identity, never compares providers/locations, and preserves first-run dated empty Yesterday. Artifact: isolated partition/trend matrix.",
+    "[FT-002-AC-006; REQ-026] Expected RED: unknown/optional-field behavior is not proven for both target adapters. GREEN: each provider maps unknown conditions and absent optional moon/illustration data to accepted neutral fallbacks while preserving available temperature/color and inventing no text. Artifact: two-provider fallback fixture result.",
+    "[FT-002-AC-007; REQ-024] Expected RED: current production transport is the former provider and cannot prove Open-Meteo no-key plus OpenWeather transient-appid handling. GREEN: Open-Meteo sends no credential; OpenWeather uses the synthetic key only in the ephemeral outbound HTTPS request, and scans find no value elsewhere. Artifact: redacted request-shape receipts and absence scan.",
+    "[FT-002-AC-008; REQ-007, REQ-008, REQ-029] Expected RED: current production wiring has one Yandex adapter and no selected-provider isolation. GREEN: exactly two adapters exist, exactly one selected adapter is invoked, failures never call/substitute/mix the other provider, and cache/history identity is provider+location. Artifact: invocation-count, identity and failure-isolation matrix.",
+    "T3 safety: fake transports, synthetic credentials, deterministic clocks/locations and disposable stores produce repeatable redacted artifacts with no live request or secret-bearing output."
+  ],
+  "purpose": "Replace the historical Yandex production path with the accepted provider-neutral Weather Context, exactly two adapters and provider/location-isolated state without introducing a provider framework.",
+  "success_outcome": "A clean build and deterministic redacted evidence prove that Weather Context dispatches only the selected Open-Meteo or OpenWeather adapter, normalizes both into one ownership model, partitions cache/history by provider and location, never falls back or mixes data, and keeps OpenWeather appid ephemeral and redacted.",
+  "anti_goals": [
+    "Do not keep Yandex as a production provider or add any third provider.",
+    "Do not implement a plugin framework, adapter registry, DI framework, service locator, event bus or parallel provider race; one explicit selection branch is sufficient.",
+    "Do not own FT-003 exact eight-slot entry or FT-004 Open-Meteo-10/OpenWeather-8+2 projection; this task only preserves raw normalized provider data and capability metadata for those dependents.",
+    "Do not move provider selection/key ownership out of Settings & Location or add backend/shared-key/cloud behavior.",
+    "Do not use live endpoints or retain OpenWeather appid outside the ephemeral outbound HTTPS request."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "third provider, cross-provider fallback, data substitution, mixed cache/history or parallel provider requests",
+      "plugin/DI registry, service locator, event/message infrastructure and speculative provider extensibility",
+      "FT-003 hourly session presentation/exit and FT-004 long-term layout/8+2 capability projection",
+      "Settings catalog/personalization implementation, Timer & Alert behavior and unrelated Main Display layout",
+      "live credentials, live provider calls and secret-bearing source/logs/fixtures/evidence"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before changing the exact two-provider set, default provider, no-fallback rule, cache/history identity or secret posture.",
+      "Stop and route to /spec-design if implementation requires a new module, graph edge, public boundary, storage owner or composition-root business orchestration.",
+      "Stop and route to /feature-to-tasks FT-002 if task identity, tier, dependency, AC ownership or material scope must change.",
+      "Stop and leave strict hourly completeness to TASK-021-T2-FT-003-W18 and long-term capability projection to TASK-022-T2-FT-004-W19."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-002",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-004",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-005",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-006",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-007",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-008"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md#external-boundary-adapters",
+    ".memory-bank/architecture/system-architecture.md#ad-006---openweather-owner-key-is-local-and-redacted",
+    ".memory-bank/architecture/system-architecture.md#ad-008---selected-provider-isolation-is-owned-by-weather-context",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-provider.md#provider-neutral-boundary",
+    ".memory-bank/contracts/weather-provider.md#weather-provider-boundary",
+    ".memory-bank/contracts/weather-provider.md#provider-selection-and-dispatch",
+    ".memory-bank/contracts/weather-provider.md#open-meteo-endpoint",
+    ".memory-bank/contracts/weather-provider.md#openweather-one-call-30-endpoint",
+    ".memory-bank/contracts/weather-provider.md#provider-capability-matrix",
+    ".memory-bank/contracts/weather-provider.md#provider-neutral-response-contract",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/contracts/weather-provider.md#current-state-migration-evidence",
+    ".memory-bank/domains/local-data.md#ft-002-weather-context-records",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Weather Context owns provider-neutral normalization, refresh, selected-provider dispatch, cache/history and public weather projections; adapters own only provider transport decoding.",
+    "There are exactly two selectable production adapters: Open-Meteo default/no-key and OpenWeather explicit/local-key. One refresh calls exactly one selected adapter with no automatic fallback or mixing.",
+    "Cache and history identity is provider plus selected location; freshness and trend comparisons never cross either identity component.",
+    "OpenWeather appid exists only in the ephemeral outbound HTTPS request and is redacted everywhere else; Open-Meteo receives no credential.",
+    "The implementation remains the existing modular monolith with one interface, two adapters, Settings state, cache/history and composition wiring; no provider framework is authorized.",
+    "No hard write_boundary is declared because Yandex replacement may require adjacent project-conventional files; advisory files plus forbidden scope and stop conditions remain binding."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/weather-provider.md#provider-selection-and-dispatch",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules"
+  ],
+  "verification_targets": [
+    "FT-002-AC-002 / REQ-005, REQ-022: equivalent provider-neutral filled-card and selected-city day/night mapping from both adapters.",
+    "FT-002-AC-004 / REQ-007, REQ-025: selected-only refresh triggers and matching provider+location cache freshness/offline behavior.",
+    "FT-002-AC-005 / REQ-008: seven-day provider+location history and isolated pressure trends, including first-run Yesterday.",
+    "FT-002-AC-006 / REQ-026: two-provider unknown/optional-field fallback without invented text or crash.",
+    "FT-002-AC-007 / REQ-024: Open-Meteo no-key and OpenWeather ephemeral-appid redaction proof.",
+    "FT-002-AC-008 / REQ-007, REQ-008, REQ-029: exactly two adapters, one selected invocation, no fallback/mixing and provider+location identity.",
+    ".memory-bank/contracts/weather-provider.md#current-state-migration-evidence: Yandex production wiring and implementation are removed rather than treated as target architecture."
+  ]
+}

@@ -4,7 +4,7 @@ status: draft
 id: FT-006
 epic: EP-003
 lifecycle: implemented
-last_updated: 2026-08-09
+last_updated: 2026-08-12
 spec_design_status: complete
 spec_design_links:
   - .memory-bank/contracts/boundary-map.md
@@ -97,8 +97,10 @@ timer can be dismissed by any tap and return to the standard main display.
 
 ## SDD Design Gate
 
-Global backbone is complete at Planning Revision `1` and the Foundation Gate
-is closed; feature-level design is complete and reconciled for task planning.
+Global backbone is complete at Planning Revision `2` and the Foundation Gate
+anchors remain closed; feature-level design remains complete. Its indexed
+task-plan review is stale only by revision mismatch and is reconciled through
+`/feature-to-tasks --all` after Foundation revalidation.
 
 Applicable global specs: [System Architecture](../architecture/system-architecture.md),
 [Boundary Map](../contracts/boundary-map.md), [Capability Interfaces](../contracts/capability-interfaces.md),
@@ -147,3 +149,47 @@ task or timer contract. `TASK-008-T3-FT-006-W7`, FT-006 lifecycle,
 REQ-012/013/014/025 RTM values and Timer & Alert semantic ownership remain
 unchanged. Samsung/custom-ROM/1280x720 physical evidence remains `DEFERRED`;
 generic-emulator evidence is not promoted to a target-device `PASS`.
+
+## W27 post-terminal active countdown visual follow-up
+
+Operator visual feedback after terminal W26 requests one bounded continuation
+of `FT-006-AC-001`: while a countdown is active, Main Display must switch to a
+dedicated countdown surface with no weather cards, city, date or standard card
+shell; countdown digits must be materially larger than the final idle clock;
+and the activating preset's existing color identity must form a transparent
+neon circular backdrop. The selected preset presentation, accepted one-tap
+hint, double-tap cancellation, temporary-interruption recovery, one-active-
+timer invariant and network independence remain unchanged. This is a
+presentation delta, not a new lifecycle transition, Timer & Alert contract,
+audio repair or overdue behavior change.
+
+The new indexed
+[`TASK-030-T3-FT-006-W27`](../tasks/TASK-030-T3-FT-006-W27.task.json) is the
+single Main Display-owned planned T3 task after terminal
+[`TASK-029-T3-FT-001-W26`](../tasks/TASK-029-T3-FT-001-W26.task.json). Its hard
+write boundary is exactly `DisplayCapability.kt` and
+`DisplayProjectionTest.kt`; `TimerCapability.kt`, `TimerAlertPolicy.kt` and
+`PlatformRuntimeAdapter.kt` remain read-only regression owners. W23 audio
+history is context only and is not reopened.
+
+Fresh claim-linked host visual/lifecycle RED/GREEN evidence is required. The
+task must compare countdown digits with the final idle-clock result using the
+same host geometry/render case, prove the dedicated surface and color identity,
+and retain the accepted timer transitions through focused regression checks.
+Target readability/lifecycle/audio runtime evidence is `DEFERRED`; this
+planning boundary authorizes no emulator, device, adb, network or audio run.
+No fixed dp value, ratio or neon gradient stop is selected. If execution needs
+one to produce an unambiguous product verdict, route to `/feature-doctor
+FT-006` before changing the task.
+
+W27 is now `done` after executor `PASS_FOR_HANDOFF`, fresh functional `PASS`
+and independent T3 `semantic-pass`. Host evidence proves countdown `228.0`
+versus idle `188.75`, hides weather/city/date/cards, uses a transparent
+preset-colored neon circle, and preserves selected/active indication,
+one-active-timer, protected gestures, temporary recovery and offline
+independence. Focused/full host, lifecycle, build and static gates pass. Target
+readability/lifecycle and physical audio audibility remain `DEFERRED`, with no
+device/runtime/audio `PASS` claim. Overdue/+ rendering and audio remain the
+later FT-007 route. See the [W27 sync report](../../.tasks/TASK-030-T3-FT-006-W27/TASK-030-T3-FT-006-W27-S-MB-SYNC-final-report-docs-01.md),
+[functional verification](../../.tasks/TASK-030-T3-FT-006-W27/TASK-030-T3-FT-006-W27-S-VERIFY-final-report-docs-01.md)
+and [semantic verification](../../.tasks/TASK-030-T3-FT-006-W27/TASK-030-T3-FT-006-W27-S-RED-VERIFY-final-report-docs-01.md).

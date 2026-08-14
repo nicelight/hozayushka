@@ -4,22 +4,32 @@ import android.content.SharedPreferences
 import com.hozayushka.app.adapters.weather.ProviderDailyWeather
 import com.hozayushka.app.adapters.weather.ProviderHourlyWeather
 import com.hozayushka.app.adapters.weather.ProviderWeatherData
+import com.hozayushka.app.adapters.weather.WeatherProviderCapabilities
 import com.hozayushka.app.adapters.weather.WeatherProviderFailure
+import com.hozayushka.app.adapters.weather.WeatherProviderId
 import com.hozayushka.app.adapters.weather.WeatherProvider
 import com.hozayushka.app.adapters.weather.WeatherProviderRequest
+import com.hozayushka.app.adapters.weather.WeatherProviderResult
+import com.hozayushka.app.adapters.weather.WeatherFixture
+import com.hozayushka.app.settings.CoherentWeatherAccessReader
 import com.hozayushka.app.settings.LocationContext
 import com.hozayushka.app.settings.LocationReader
 import com.hozayushka.app.settings.WeatherAccessReader
+import com.hozayushka.app.settings.WeatherProviderSelection
+import com.hozayushka.app.settings.WeatherRefreshAccessProjection
+import com.hozayushka.app.settings.WeatherRefreshAccessSnapshot
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 private const val FRESHNESS_WINDOW_MILLIS = 24L * 60L * 60L * 1_000L
 private const val REFRESH_INTERVAL_MILLIS = 30L * 60L * 1_000L
 private const val HISTORY_WINDOW_MILLIS = 7L * 24L * 60L * 60L * 1_000L
 private const val LONG_TERM_DAYS = 10L
+private const val HPA_TO_MMHG = 0.75006157584566
 
 data class WeatherSnapshot(
     val cityLabel: String,
@@ -38,11 +48,15 @@ data class NormalizedDay(
     val dayCondition: String?,
     val nightCondition: String?,
     val moonPhase: String? = null,
+    val sunrise: LocalTime? = null,
+    val sunset: LocalTime? = null,
 )
 
 data class PressureHistoryEntry(
     val recordedAtMillis: Long,
     val pressureMmHg: Double,
+    val provider: WeatherProviderId,
+    val locationIdentity: String,
 )
 
 data class WeatherCacheRecord(
@@ -51,6 +65,9 @@ data class WeatherCacheRecord(
     val history: List<PressureHistoryEntry>,
     val installedAtMillis: Long,
     val hourly: List<NormalizedHourly> = emptyList(),
+    val provider: WeatherProviderId,
+    val locationIdentity: String,
+    val providerCapabilities: WeatherProviderCapabilities = provider.capabilities,
 )
 
 data class NormalizedHourly(
@@ -61,27 +78,15 @@ data class NormalizedHourly(
 )
 
 interface WeatherCacheStore {
-    fun load(): WeatherSnapshot?
+    fun loadRecord(): WeatherCacheRecord?
 
-    fun save(snapshot: WeatherSnapshot)
-
-    fun loadRecord(): WeatherCacheRecord? = load()?.let {
-        WeatherCacheRecord(it, emptyList(), emptyList(), it.updatedAtMillis)
-    }
-
-    fun saveRecord(record: WeatherCacheRecord) = save(record.snapshot)
+    fun saveRecord(record: WeatherCacheRecord)
 
     fun reset()
 }
 
 class InMemoryWeatherCacheStore : WeatherCacheStore {
     private var record: WeatherCacheRecord? = null
-
-    override fun load(): WeatherSnapshot? = record?.snapshot
-
-    override fun save(snapshot: WeatherSnapshot) {
-        record = WeatherCacheRecord(snapshot, emptyList(), emptyList(), snapshot.updatedAtMillis)
-    }
 
     override fun loadRecord(): WeatherCacheRecord? = record
 
@@ -98,10 +103,10 @@ class InMemoryWeatherCacheStore : WeatherCacheStore {
 class SharedPreferencesWeatherCacheStore(
     private val preferences: SharedPreferences,
 ) : WeatherCacheStore {
-    override fun load(): WeatherSnapshot? = loadRecord()?.snapshot
-
     override fun loadRecord(): WeatherCacheRecord? {
         if (!preferences.contains(KEY_CITY)) return null
+        val provider = WeatherProviderId.fromStorage(preferences.getString(KEY_PROVIDER, null)) ?: return null
+        val locationIdentity = preferences.getString(KEY_LOCATION_ID, null)?.takeIf(String::isNotBlank) ?: return null
         val snapshot = WeatherSnapshot(
             cityLabel = preferences.getString(KEY_CITY, null).orEmpty(),
             temperatureCelsius = preferences.getInt(KEY_TEMPERATURE, 0),
@@ -132,11 +137,10 @@ class SharedPreferencesWeatherCacheStore(
             history = history,
             installedAtMillis = preferences.getLong(KEY_INSTALLED_AT, snapshot.updatedAtMillis),
             hourly = hourly,
+            provider = provider,
+            locationIdentity = locationIdentity,
+            providerCapabilities = provider.capabilities,
         )
-    }
-
-    override fun save(snapshot: WeatherSnapshot) {
-        saveRecord(WeatherCacheRecord(snapshot, emptyList(), emptyList(), snapshot.updatedAtMillis))
     }
 
     override fun saveRecord(record: WeatherCacheRecord) {
@@ -152,6 +156,8 @@ class SharedPreferencesWeatherCacheStore(
             .putString(KEY_DAILY, record.daily.joinToString(";", transform = ::encodeDay))
             .putString(KEY_HISTORY, record.history.joinToString(";", transform = ::encodeHistory))
             .putString(KEY_HOURLY, record.hourly.joinToString(";", transform = ::encodeHourly))
+            .putString(KEY_PROVIDER, record.provider.storageId)
+            .putString(KEY_LOCATION_ID, record.locationIdentity)
             .apply()
     }
 
@@ -168,6 +174,8 @@ class SharedPreferencesWeatherCacheStore(
             .remove(KEY_DAILY)
             .remove(KEY_HISTORY)
             .remove(KEY_HOURLY)
+            .remove(KEY_PROVIDER)
+            .remove(KEY_LOCATION_ID)
             .apply()
     }
 
@@ -183,6 +191,8 @@ class SharedPreferencesWeatherCacheStore(
         const val KEY_DAILY = "weather.daily"
         const val KEY_HISTORY = "weather.history"
         const val KEY_HOURLY = "weather.hourly"
+        const val KEY_PROVIDER = "weather.provider"
+        const val KEY_LOCATION_ID = "weather.location_identity"
 
         fun encodeDay(day: NormalizedDay): String = listOf(
             day.date,
@@ -191,11 +201,13 @@ class SharedPreferencesWeatherCacheStore(
             day.dayCondition ?: "",
             day.nightCondition ?: "",
             day.moonPhase ?: "",
+            day.sunrise ?: "",
+            day.sunset ?: "",
         ).joinToString(",")
 
         fun decodeDay(value: String): NormalizedDay? {
-            val parts = value.split(',', limit = 6)
-            if (parts.size != 6) return null
+            val parts = value.split(',', limit = 8)
+            if (parts.size !in 6..8) return null
             return runCatching {
                 NormalizedDay(
                     date = LocalDate.parse(parts[0]),
@@ -204,19 +216,27 @@ class SharedPreferencesWeatherCacheStore(
                     dayCondition = parts[3].ifBlank { null },
                     nightCondition = parts[4].ifBlank { null },
                     moonPhase = parts[5].ifBlank { null },
+                    sunrise = parts.getOrNull(6)?.takeIf(String::isNotBlank)?.let(LocalTime::parse),
+                    sunset = parts.getOrNull(7)?.takeIf(String::isNotBlank)?.let(LocalTime::parse),
                 )
             }.getOrNull()
         }
 
-        fun encodeHistory(entry: PressureHistoryEntry): String =
-            "${entry.recordedAtMillis},${entry.pressureMmHg}"
+        fun encodeHistory(entry: PressureHistoryEntry): String = listOf(
+            entry.provider.storageId,
+            entry.locationIdentity,
+            entry.recordedAtMillis,
+            entry.pressureMmHg,
+        ).joinToString(",")
 
         fun decodeHistory(value: String): PressureHistoryEntry? {
-            val parts = value.split(',', limit = 2)
-            if (parts.size != 2) return null
+            val parts = value.split(',', limit = 4)
+            if (parts.size != 4) return null
             return PressureHistoryEntry(
-                recordedAtMillis = parts[0].toLongOrNull() ?: return null,
-                pressureMmHg = parts[1].toDoubleOrNull() ?: return null,
+                provider = WeatherProviderId.fromStorage(parts[0]) ?: return null,
+                locationIdentity = parts[1],
+                recordedAtMillis = parts[2].toLongOrNull() ?: return null,
+                pressureMmHg = parts[3].toDoubleOrNull() ?: return null,
             )
         }
 
@@ -291,8 +311,9 @@ data class WeatherProjection(
 
 data class WeatherRefreshResult(
     val snapshot: WeatherSnapshot,
+    val provider: WeatherProviderId,
     val credentialWasReceived: Boolean,
-    val redactedCredential: String,
+    val redactedCredential: String?,
     val projection: WeatherProjection,
 )
 
@@ -319,10 +340,10 @@ data class HourlyForecastProjection(
 data class LongTermForecastCardProjection(
     val date: LocalDate,
     val dateDayText: String,
-    val temperatureCelsius: Int,
-    val temperatureText: String,
-    val backgroundHex: String,
-    val illustration: WeatherIllustration,
+    val temperatureCelsius: Int?,
+    val temperatureText: String?,
+    val backgroundHex: String?,
+    val illustration: WeatherIllustration?,
     val pressureArrowCount: Int = 0,
 )
 
@@ -347,20 +368,35 @@ interface WeatherReadPort {
 enum class WeatherRefreshTrigger {
     LAUNCH,
     LOCATION_CHANGE,
+    PROVIDER_CHANGE,
     SCHEDULED,
 }
 
 class WeatherCapability(
     private val locationReader: LocationReader,
     private val cacheStore: WeatherCacheStore,
-    private val provider: WeatherProvider,
-    private val fixtureProvider: WeatherProvider? = null,
+    private val openMeteoProvider: WeatherProvider,
+    private val openWeatherProvider: WeatherProvider,
+    private val fixtureProvider: WeatherFixture? = null,
 ) : WeatherReadPort {
-    private var lastRefreshFailure: WeatherProviderFailure? = null
+    private data class AttributedProviderFailure(
+        val provider: WeatherProviderId,
+        val reason: WeatherProviderFailure,
+    )
+
+    private data class ProviderRequestIdentity(
+        val provider: WeatherProviderId,
+        val location: LocationContext,
+        val locationIdentity: String,
+    )
+
+    private var lastRefreshFailure: AttributedProviderFailure? = null
     private var projectionSnapshot: ProjectionSnapshot? = null
 
     private data class ProjectionSnapshot(
+        val provider: WeatherProviderId,
         val location: LocationContext?,
+        val locationIdentity: String?,
         val record: WeatherCacheRecord?,
         val projection: WeatherProjection,
         val builtAtMillis: Long,
@@ -368,41 +404,69 @@ class WeatherCapability(
         val daytime: Boolean,
         val nextPressureBoundaryMillis: Long?,
     ) {
-        fun canReuse(currentLocation: LocationContext?, nowMillis: Long): Boolean {
-            if (location != currentLocation || nowMillis < builtAtMillis) return false
+        fun canReuse(
+            currentProvider: WeatherProviderId,
+            currentLocation: LocationContext?,
+            currentLocationIdentity: String?,
+            nowMillis: Long,
+        ): Boolean {
+            if (provider != currentProvider || location != currentLocation || locationIdentity != currentLocationIdentity) {
+                return false
+            }
+            if (nowMillis < builtAtMillis) return false
             val zoneId = record?.snapshot?.apiTimeZone?.toZoneIdOrUtc()
                 ?: currentLocation?.apiTimeZone?.toZoneIdOrUtc()
                 ?: ZoneId.of("UTC")
             val zonedNow = Instant.ofEpochMilli(nowMillis).atZone(zoneId)
-            if (zonedNow.toLocalDate() != localDate || isDaytime(nowMillis, zoneId) != daytime) return false
+            if (zonedNow.toLocalDate() != localDate || isDaytime(nowMillis, zoneId, record?.daily.orEmpty()) != daytime) {
+                return false
+            }
             val updatedAt = record?.snapshot?.updatedAtMillis
             if (updatedAt != null && nowMillis > updatedAt + FRESHNESS_WINDOW_MILLIS) return false
             return nextPressureBoundaryMillis == null || nowMillis < nextPressureBoundaryMillis
         }
     }
 
-    fun inlineErrorMessage(): String? = when (lastRefreshFailure) {
-        WeatherProviderFailure.INVALID_CREDENTIAL -> "Неверный API-ключ"
-        WeatherProviderFailure.NETWORK -> "Нет подключения"
-        WeatherProviderFailure.UNKNOWN_CITY -> "Город не найден"
-        null -> if (locationReader is WeatherAccessReader && !locationReader.hasWeatherApiKey()) {
-            "API-ключ не указан"
+    fun inlineErrorMessage(): String? {
+        val selectedProvider = selectedProvider()
+        val failure = lastRefreshFailure?.takeIf { it.provider == selectedProvider }
+        if (failure != null) {
+            val message = when (failure.reason) {
+                WeatherProviderFailure.MISSING_CREDENTIAL -> "API-ключ не указан"
+                WeatherProviderFailure.INVALID_CREDENTIAL -> "Неверный API-ключ"
+                WeatherProviderFailure.UNKNOWN_CITY -> "Город не найден"
+                WeatherProviderFailure.NETWORK,
+                WeatherProviderFailure.TIMEOUT,
+                WeatherProviderFailure.MALFORMED_RESPONSE,
+                WeatherProviderFailure.PROVIDER_MISMATCH,
+                -> "Нет подключения"
+            }
+            return "${failure.provider.displayName}: $message"
+        }
+        val access = locationReader as? WeatherAccessReader
+        return if (selectedProvider == WeatherProviderId.OPEN_WEATHER && access?.hasWeatherApiKey() != true) {
+            "${WeatherProviderId.OPEN_WEATHER.displayName}: API-ключ не указан"
         } else {
             null
         }
     }
-    override fun snapshot(): WeatherSnapshot? = cacheStore.loadRecord()?.snapshot
+
+    override fun snapshot(): WeatherSnapshot? = matchingRecord()?.snapshot
 
     override fun projection(nowMillis: Long): WeatherProjection {
+        val provider = selectedProvider()
         val location = locationReader.currentLocation()
+        val locationIdentity = location?.weatherLocationIdentity()
         val cached = projectionSnapshot
-        if (cached != null && cached.canReuse(location, nowMillis)) return cached.projection
-        val record = cacheStore.loadRecord()
-        return rebuildProjection(location, record, nowMillis)
+        if (cached != null && cached.canReuse(provider, location, locationIdentity, nowMillis)) return cached.projection
+        val record = matchingRecord(provider, locationIdentity)
+        return rebuildProjection(provider, location, locationIdentity, record, nowMillis)
     }
 
     private fun rebuildProjection(
+        provider: WeatherProviderId,
         location: LocationContext?,
+        locationIdentity: String?,
         record: WeatherCacheRecord?,
         nowMillis: Long,
     ): WeatherProjection {
@@ -410,9 +474,12 @@ class WeatherCapability(
             ?: location?.apiTimeZone?.toZoneIdOrUtc()
             ?: ZoneId.of("UTC")
         val today = Instant.ofEpochMilli(nowMillis).atZone(zoneId).toLocalDate()
-        val daytime = isDaytime(nowMillis, zoneId)
+        val daytime = isDaytime(nowMillis, zoneId, record?.daily.orEmpty())
         val dates = WeatherCardSlot.entries.mapIndexed { index, slot ->
             slot to today.plusDays(index - 1L)
+        }
+        val matchingHistory = record?.history.orEmpty().filter {
+            it.provider == provider && it.locationIdentity == locationIdentity
         }
         val projection = when {
             record == null || location == null -> WeatherProjection(
@@ -449,8 +516,8 @@ class WeatherCapability(
                         }
                         val moon = if (!daytime && day != null) day.moonPhase ?: "regular" else null
                         val trend = when (slot) {
-                            WeatherCardSlot.TODAY -> pressureTrend(record.history, nowMillis)
-                            WeatherCardSlot.YESTERDAY -> yesterdayTrend(record.history, date, zoneId)
+                            WeatherCardSlot.TODAY -> pressureTrend(matchingHistory, nowMillis)
+                            WeatherCardSlot.YESTERDAY -> yesterdayTrend(matchingHistory, date, zoneId)
                             else -> PressureTrend(0, null)
                         }
                         WeatherCardProjection(
@@ -470,14 +537,16 @@ class WeatherCapability(
             }
         }
         projectionSnapshot = ProjectionSnapshot(
+            provider = provider,
             location = location,
+            locationIdentity = locationIdentity,
             record = record,
             projection = projection,
             builtAtMillis = nowMillis,
             localDate = today,
             daytime = daytime,
             nextPressureBoundaryMillis = if (projection.freshness == WeatherFreshness.FRESH) {
-                nextPressureBoundaryMillis(record?.history.orEmpty(), nowMillis)
+                nextPressureBoundaryMillis(matchingHistory, nowMillis)
             } else {
                 null
             },
@@ -486,12 +555,12 @@ class WeatherCapability(
     }
 
     override fun hourlyProjection(nowMillis: Long): HourlyForecastProjection? {
-        val record = cacheStore.loadRecord() ?: return null
+        val record = matchingRecord() ?: return null
         val zoneId = record.snapshot.apiTimeZone.toZoneIdOrUtc()
         val today = Instant.ofEpochMilli(nowMillis).atZone(zoneId).toLocalDate()
         val expected = hourlyKeys(today)
         val byKey = record.hourly.associateBy { it.date to it.time }
-        if (record.hourly.size != expected.size || expected.any { it !in byKey }) return null
+        if (expected.any { it !in byKey }) return null
         val age = (nowMillis - record.snapshot.updatedAtMillis).coerceAtLeast(0L)
         if (age > FRESHNESS_WINDOW_MILLIS) return null
         val cards = expected.map { (date, time) ->
@@ -513,46 +582,93 @@ class WeatherCapability(
     }
 
     override fun longTermProjection(nowMillis: Long): LongTermForecastProjection? {
-        val record = cacheStore.loadRecord() ?: return null
+        val record = matchingRecord() ?: return null
         val zoneId = record.snapshot.apiTimeZone.toZoneIdOrUtc()
         val today = Instant.ofEpochMilli(nowMillis).atZone(zoneId).toLocalDate()
         val expectedDates = (0L until LONG_TERM_DAYS).map(today::plusDays)
-        if (record.daily.size != LONG_TERM_DAYS.toInt() || record.daily.map { it.date } != expectedDates) return null
+        val supportedRecords = record.provider.capabilities.supportedDailyRecords
+        if (record.daily.size != supportedRecords || record.daily.map { it.date } != expectedDates.take(supportedRecords)) return null
+        if (record.daily.any {
+                it.dayTemperatureCelsius == null ||
+                    it.nightTemperatureCelsius == null ||
+                    it.dayCondition.isNullOrBlank() ||
+                    it.nightCondition.isNullOrBlank()
+            }) return null
         val age = (nowMillis - record.snapshot.updatedAtMillis).coerceAtLeast(0L)
         if (age > FRESHNESS_WINDOW_MILLIS) return null
 
-        val daytime = isDaytime(nowMillis, zoneId)
-        val cards = record.daily.map { day ->
-            val temperature = if (daytime) day.dayTemperatureCelsius else day.nightTemperatureCelsius
-            val condition = if (daytime) day.dayCondition else day.nightCondition
-            if (temperature == null || condition.isNullOrBlank()) return null
+        val daytime = isDaytime(nowMillis, zoneId, record.daily)
+        val cards = expectedDates.mapIndexed { index, date ->
+            val day = record.daily.getOrNull(index)
+            val temperature = day?.let { if (daytime) it.dayTemperatureCelsius else it.nightTemperatureCelsius }
+            val condition = day?.let { if (daytime) it.dayCondition else it.nightCondition }
             LongTermForecastCardProjection(
-                date = day.date,
-                dateDayText = "%02d".format(day.date.dayOfMonth),
+                date = date,
+                dateDayText = "%02d".format(date.dayOfMonth),
                 temperatureCelsius = temperature,
-                temperatureText = temperatureText(temperature),
-                backgroundHex = TemperaturePalette.colorFor(temperature),
-                illustration = conditionIllustration(condition, daytime),
+                temperatureText = temperature?.let(::temperatureText),
+                backgroundHex = temperature?.let(TemperaturePalette::colorFor),
+                illustration = condition?.takeIf(String::isNotBlank)?.let { conditionIllustration(it, daytime) },
             )
         }
         return LongTermForecastProjection(record.snapshot.apiTimeZone, cards)
     }
 
-    /** Normalizes one successful provider response and atomically replaces the owner cache. */
+    /** Test/fixture seam that still obeys the currently selected provider identity. */
     fun refresh(
         request: WeatherProviderRequest,
         nowMillis: Long,
-    ): WeatherRefreshResult? = refreshWithProvider(provider, request, nowMillis)
+    ): WeatherRefreshResult? = withRefreshAccessSnapshot { accessSnapshot ->
+        val requestIdentity = accessSnapshot.projection.toRequestIdentity()
+        val provider = requestIdentity.provider
+        val adapter = adapterFor(provider) ?: return@withRefreshAccessSnapshot rejectMismatchedAdapter(provider)
+        refreshWithProvider(requestIdentity, adapter, request, nowMillis)
+    }
 
     private fun refreshWithProvider(
+        requestIdentity: ProviderRequestIdentity,
         sourceProvider: WeatherProvider,
         request: WeatherProviderRequest,
         nowMillis: Long,
     ): WeatherRefreshResult? {
-        val location = locationReader.currentLocation() ?: return null
+        val expectedProvider = requestIdentity.provider
+        if (sourceProvider.providerId != expectedProvider) return rejectMismatchedAdapter(expectedProvider)
+        if (expectedProvider == WeatherProviderId.OPEN_METEO && request.hasCredential()) {
+            lastRefreshFailure = AttributedProviderFailure(expectedProvider, WeatherProviderFailure.PROVIDER_MISMATCH)
+            return null
+        }
         val result = sourceProvider.fetch(request)
+        return acceptProviderResultIfCurrent(requestIdentity, result, nowMillis)
+    }
+
+    private fun acceptProviderResultIfCurrent(
+        requestIdentity: ProviderRequestIdentity,
+        result: WeatherProviderResult,
+        nowMillis: Long,
+    ): WeatherRefreshResult? {
+        val currentAccess = currentWeatherRefreshAccessProjection() ?: return null
+        if (
+            currentAccess.selectedProvider.toProviderId() != requestIdentity.provider ||
+            currentAccess.location.weatherLocationIdentity() != requestIdentity.locationIdentity
+        ) {
+            return null
+        }
+        return acceptProviderResult(requestIdentity, result, nowMillis)
+    }
+
+    private fun acceptProviderResult(
+        requestIdentity: ProviderRequestIdentity,
+        result: WeatherProviderResult,
+        nowMillis: Long,
+    ): WeatherRefreshResult? {
+        val expectedProvider = requestIdentity.provider
+        val location = requestIdentity.location
+        if (result.provider != expectedProvider) {
+            lastRefreshFailure = AttributedProviderFailure(expectedProvider, WeatherProviderFailure.PROVIDER_MISMATCH)
+            return null
+        }
         if (result.failure != null) {
-            lastRefreshFailure = result.failure
+            lastRefreshFailure = AttributedProviderFailure(expectedProvider, result.failure)
             return null
         }
         val structuredData = result.weatherData
@@ -560,49 +676,50 @@ class WeatherCapability(
             apiTimeZone = location.apiTimeZone,
             current = com.hozayushka.app.adapters.weather.ProviderCurrentWeather(
                 temperatureCelsius = result.payload.temperatureCelsius,
-                pressureMmHg = 0.0,
+                pressureHpa = 0.0,
                 condition = result.payload.condition,
             ),
             daily = emptyList(),
         )
+        if (structuredData != null && !validStructuredData(data, nowMillis)) {
+            lastRefreshFailure = AttributedProviderFailure(expectedProvider, WeatherProviderFailure.MALFORMED_RESPONSE)
+            return null
+        }
+
+        val locationIdentity = requestIdentity.locationIdentity
         val previous = cacheStore.loadRecord()
-        if (structuredData != null) {
-            val expectedCityDate = Instant.ofEpochMilli(nowMillis)
-                .atZone(data.apiTimeZone.toZoneIdOrUtc())
-                .toLocalDate()
-            if (!data.current.pressureMmHg.isFinite() || data.daily.none {
-                    it.date == expectedCityDate &&
-                        it.dayTemperatureCelsius != null &&
-                        it.nightTemperatureCelsius != null
-                } ||
-                (data.daily.size >= LONG_TERM_DAYS.toInt() && !hasCompleteDaily(data.daily, expectedCityDate)) ||
-                (data.hourly.isNotEmpty() && !hasCompleteHourly(data.hourly, expectedCityDate)) ||
-                (data.hourly.isEmpty() && previous?.hourly?.isNotEmpty() == true)) {
-                return null
-            }
+        val matchingPrevious = previous?.takeIf {
+            it.provider == expectedProvider && it.locationIdentity == locationIdentity
         }
-        val normalized = normalize(data, location, nowMillis)
-        val history = (previous?.history.orEmpty() + PressureHistoryEntry(nowMillis, data.current.pressureMmHg))
+        val normalized = normalize(expectedProvider, data, location, nowMillis)
+        val historyEntry = PressureHistoryEntry(
+            recordedAtMillis = nowMillis,
+            pressureMmHg = data.current.pressureHpa * HPA_TO_MMHG,
+            provider = expectedProvider,
+            locationIdentity = locationIdentity,
+        )
+        val history = (previous?.history.orEmpty() + historyEntry)
             .filter { it.recordedAtMillis >= nowMillis - HISTORY_WINDOW_MILLIS }
-            .distinctBy { it.recordedAtMillis }
+            .distinctBy { listOf(it.provider, it.locationIdentity, it.recordedAtMillis) }
             .sortedBy { it.recordedAtMillis }
-        val daily = if (data.daily.size >= LONG_TERM_DAYS.toInt()) {
-            normalized.daily
-        } else {
-            previous?.daily?.takeIf { it.size == LONG_TERM_DAYS.toInt() } ?: normalized.daily
-        }
+        val daily = retainCompleteDailySubset(expectedProvider, normalized.daily, matchingPrevious?.daily)
+        val hourly = retainCompleteHourlySubset(normalized.hourly, matchingPrevious?.hourly, data.apiTimeZone, nowMillis)
         val record = WeatherCacheRecord(
             snapshot = normalized.snapshot,
             daily = daily,
             history = history,
             installedAtMillis = previous?.installedAtMillis ?: nowMillis,
-            hourly = normalized.hourly,
+            hourly = hourly,
+            provider = expectedProvider,
+            locationIdentity = locationIdentity,
+            providerCapabilities = expectedProvider.capabilities,
         )
         cacheStore.saveRecord(record)
         lastRefreshFailure = null
-        val projection = rebuildProjection(location, record, nowMillis)
+        val projection = rebuildProjection(expectedProvider, location, locationIdentity, record, nowMillis)
         return WeatherRefreshResult(
             snapshot = record.snapshot,
+            provider = expectedProvider,
             credentialWasReceived = result.credentialWasReceived,
             redactedCredential = result.redactedCredential,
             projection = projection,
@@ -613,44 +730,60 @@ class WeatherCapability(
         nowMillis: Long,
         networkAvailable: Boolean,
         trigger: WeatherRefreshTrigger,
-        requireStoredCredential: Boolean = false,
-    ): WeatherRefreshResult? {
-        val access = locationReader as? WeatherAccessReader
-        if (requireStoredCredential && (access == null || !access.hasWeatherApiKey())) {
-            lastRefreshFailure = null
-            return null
-        }
+    ): WeatherRefreshResult? = withRefreshAccessSnapshot { accessSnapshot ->
+        val requestIdentity = accessSnapshot.projection.toRequestIdentity()
+        val provider = requestIdentity.provider
         if (!networkAvailable) {
-            lastRefreshFailure = WeatherProviderFailure.NETWORK
-            return null
+            lastRefreshFailure = AttributedProviderFailure(provider, WeatherProviderFailure.NETWORK)
+            return@withRefreshAccessSnapshot null
         }
-        val last = cacheStore.loadRecord()?.snapshot?.updatedAtMillis
+        val last = matchingRecord(provider, requestIdentity.locationIdentity)?.snapshot?.updatedAtMillis
         if (trigger == WeatherRefreshTrigger.SCHEDULED && last != null && nowMillis - last < REFRESH_INTERVAL_MILLIS) {
-            return null
+            return@withRefreshAccessSnapshot null
         }
-        val location = locationReader.currentLocation() ?: return null
-        val request = if (requireStoredCredential) {
-            access?.withWeatherApiKey { key ->
-                WeatherProviderRequest.fromUserInput(key, location.latitude, location.longitude)
-            }
-        } else {
-            storedRequest(location) ?: WeatherProviderRequest.fromSyntheticProbe(location.latitude, location.longitude)
+        val adapter = adapterFor(provider) ?: return@withRefreshAccessSnapshot rejectMismatchedAdapter(provider)
+        val request = when (provider) {
+            WeatherProviderId.OPEN_METEO -> WeatherProviderRequest.withoutCredential(
+                requestIdentity.location.latitude,
+                requestIdentity.location.longitude,
+            )
+            WeatherProviderId.OPEN_WEATHER ->
+                accessSnapshot.withSelectedOpenWeatherApiKey { key ->
+                    WeatherProviderRequest.fromUserInput(
+                        key,
+                        requestIdentity.location.latitude,
+                        requestIdentity.location.longitude,
+                    )
+                }
         }
         if (request == null) {
-            lastRefreshFailure = WeatherProviderFailure.INVALID_CREDENTIAL
-            return null
+            lastRefreshFailure = AttributedProviderFailure(provider, WeatherProviderFailure.MISSING_CREDENTIAL)
+            return@withRefreshAccessSnapshot null
         }
-        return refresh(request, nowMillis)
+        refreshWithProvider(requestIdentity, adapter, request, nowMillis)
     }
 
-    /** Existing Foundation probe route; request construction remains inside Weather Context. */
+    /** Existing Foundation fake route; request construction remains inside Weather Context. */
     fun refreshFoundationFixture(nowMillis: Long = System.currentTimeMillis()): WeatherRefreshResult? {
         val location = locationReader.currentLocation() ?: return null
-        return refreshWithProvider(
-            sourceProvider = fixtureProvider ?: provider,
-            request = WeatherProviderRequest.fromSyntheticProbe(location.latitude, location.longitude),
-            nowMillis = nowMillis,
-        )
+        val request = WeatherProviderRequest.withoutCredential(location.latitude, location.longitude)
+        val fixture = fixtureProvider
+        return if (fixture == null) {
+            val requestIdentity = ProviderRequestIdentity(
+                provider = WeatherProviderId.OPEN_METEO,
+                location = location,
+                locationIdentity = location.weatherLocationIdentity(),
+            )
+            refreshWithProvider(requestIdentity, openMeteoProvider, request, nowMillis)
+        } else {
+            val requestIdentity = ProviderRequestIdentity(
+                provider = WeatherProviderId.OPEN_METEO,
+                location = location,
+                locationIdentity = location.weatherLocationIdentity(),
+            )
+            val result = fixture.fetch(request)
+            acceptProviderResultIfCurrent(requestIdentity, result, nowMillis)
+        }
     }
 
     fun resetFoundationState() {
@@ -659,41 +792,111 @@ class WeatherCapability(
         projectionSnapshot = null
     }
 
-    private fun storedRequest(location: LocationContext): WeatherProviderRequest? {
-        val access = locationReader as? WeatherAccessReader ?: return null
-        return access.withWeatherApiKey { key ->
-            WeatherProviderRequest.fromUserInput(key, location.latitude, location.longitude)
-        }
+    private fun selectedProvider(): WeatherProviderId = when (
+        (locationReader as? WeatherAccessReader)?.selectedWeatherProvider() ?: WeatherProviderSelection.OPEN_METEO
+    ) {
+        WeatherProviderSelection.OPEN_METEO -> WeatherProviderId.OPEN_METEO
+        WeatherProviderSelection.OPEN_WEATHER -> WeatherProviderId.OPEN_WEATHER
     }
 
-    private fun normalize(
-        data: ProviderWeatherData,
-        location: LocationContext,
-        nowMillis: Long,
-    ): NormalizedWeather {
-        val currentCondition = normalizeCondition(data.current.condition)
-        return NormalizedWeather(
-            snapshot = WeatherSnapshot(
-                cityLabel = location.cityLabel,
-                temperatureCelsius = data.current.temperatureCelsius,
-                condition = currentCondition,
-                source = "redacted-provider",
-                updatedAtMillis = nowMillis,
-                pressureMmHg = data.current.pressureMmHg,
-                apiTimeZone = data.apiTimeZone.ifBlank { location.apiTimeZone },
-            ),
-            daily = data.daily.map(::normalizeDay),
-            hourly = normalizeSelectedHourly(data.hourly, data.apiTimeZone, nowMillis),
+    private fun <T> withRefreshAccessSnapshot(
+        block: (WeatherRefreshAccessSnapshot) -> T,
+    ): T? {
+        val access = locationReader as? WeatherAccessReader
+        val coherentAccess = access as? CoherentWeatherAccessReader
+        if (coherentAccess != null) {
+            return coherentAccess.withWeatherRefreshAccessSnapshot(block)
+        }
+        val projection = WeatherRefreshAccessProjection(
+            selectedProvider = access?.selectedWeatherProvider() ?: WeatherProviderSelection.OPEN_METEO,
+            location = locationReader.currentLocation() ?: return null,
+        )
+        return block(object : WeatherRefreshAccessSnapshot {
+            override val projection: WeatherRefreshAccessProjection = projection
+
+            override fun <R> withSelectedOpenWeatherApiKey(block: (String) -> R): R? {
+                if (projection.selectedProvider != WeatherProviderSelection.OPEN_WEATHER) return null
+                return access?.withSelectedOpenWeatherApiKey(block)
+            }
+        })
+    }
+
+    private fun currentWeatherRefreshAccessProjection(): WeatherRefreshAccessProjection? {
+        val access = locationReader as? WeatherAccessReader
+        val coherentAccess = access as? CoherentWeatherAccessReader
+        if (coherentAccess != null) return coherentAccess.currentWeatherRefreshAccessProjection()
+        return WeatherRefreshAccessProjection(
+            selectedProvider = access?.selectedWeatherProvider() ?: WeatherProviderSelection.OPEN_METEO,
+            location = locationReader.currentLocation() ?: return null,
         )
     }
 
-    private fun normalizeDay(day: ProviderDailyWeather): NormalizedDay = NormalizedDay(
+    private fun WeatherRefreshAccessProjection.toRequestIdentity(): ProviderRequestIdentity =
+        ProviderRequestIdentity(
+            provider = selectedProvider.toProviderId(),
+            location = location,
+            locationIdentity = location.weatherLocationIdentity(),
+        )
+
+    private fun WeatherProviderSelection.toProviderId(): WeatherProviderId = when (this) {
+        WeatherProviderSelection.OPEN_METEO -> WeatherProviderId.OPEN_METEO
+        WeatherProviderSelection.OPEN_WEATHER -> WeatherProviderId.OPEN_WEATHER
+    }
+
+    private fun adapterFor(provider: WeatherProviderId): WeatherProvider? = when (provider) {
+        WeatherProviderId.OPEN_METEO -> openMeteoProvider
+        WeatherProviderId.OPEN_WEATHER -> openWeatherProvider
+    }.takeIf { it.providerId == provider }
+
+    private fun rejectMismatchedAdapter(provider: WeatherProviderId): WeatherRefreshResult? {
+        lastRefreshFailure = AttributedProviderFailure(provider, WeatherProviderFailure.PROVIDER_MISMATCH)
+        return null
+    }
+
+    private fun matchingRecord(
+        provider: WeatherProviderId = selectedProvider(),
+        locationIdentity: String? = locationReader.currentLocation()?.weatherLocationIdentity(),
+    ): WeatherCacheRecord? = cacheStore.loadRecord()?.takeIf {
+        locationIdentity != null && it.provider == provider && it.locationIdentity == locationIdentity
+    }
+
+    private fun validStructuredData(data: ProviderWeatherData, nowMillis: Long): Boolean {
+        if (!data.current.pressureHpa.isFinite()) return false
+        val zoneId = runCatching { ZoneId.of(data.apiTimeZone) }.getOrNull() ?: return false
+        val expectedCityDate = Instant.ofEpochMilli(nowMillis).atZone(zoneId).toLocalDate()
+        return data.daily.any { it.date == expectedCityDate }
+    }
+
+    private fun normalize(
+        provider: WeatherProviderId,
+        data: ProviderWeatherData,
+        location: LocationContext,
+        nowMillis: Long,
+    ): NormalizedWeather = NormalizedWeather(
+        snapshot = WeatherSnapshot(
+            cityLabel = location.cityLabel,
+            temperatureCelsius = data.current.temperatureCelsius,
+            condition = normalizeCondition(provider, data.current.condition),
+            source = provider.storageId,
+            updatedAtMillis = nowMillis,
+            pressureMmHg = data.current.pressureHpa * HPA_TO_MMHG,
+            apiTimeZone = data.apiTimeZone,
+        ),
+        daily = data.daily.map { normalizeDay(provider, it) },
+        hourly = data.hourly.map { normalizeHourly(provider, it) }
+            .distinctBy { it.date to it.time }
+            .sortedWith(compareBy(NormalizedHourly::date, NormalizedHourly::time)),
+    )
+
+    private fun normalizeDay(provider: WeatherProviderId, day: ProviderDailyWeather): NormalizedDay = NormalizedDay(
         date = day.date,
         dayTemperatureCelsius = day.dayTemperatureCelsius,
         nightTemperatureCelsius = day.nightTemperatureCelsius,
-        dayCondition = normalizeCondition(day.dayCondition),
-        nightCondition = normalizeCondition(day.nightCondition),
+        dayCondition = day.dayCondition?.takeIf(String::isNotBlank)?.let { normalizeCondition(provider, it) },
+        nightCondition = day.nightCondition?.takeIf(String::isNotBlank)?.let { normalizeCondition(provider, it) },
         moonPhase = day.moonPhase?.takeIf(String::isNotBlank),
+        sunrise = day.sunrise,
+        sunset = day.sunset,
     )
 
     private data class NormalizedWeather(
@@ -721,43 +924,61 @@ private fun hourlyKeys(today: LocalDate): List<Pair<LocalDate, LocalTime>> =
         today.plusDays(if (index >= 6) 1L else 0L) to time
     }
 
-private fun normalizeSelectedHourly(
-    hourly: List<ProviderHourlyWeather>,
-    apiTimeZone: String,
-    nowMillis: Long,
-): List<NormalizedHourly> {
-    if (hourly.isEmpty()) return emptyList()
-    val today = Instant.ofEpochMilli(nowMillis)
-        .atZone(apiTimeZone.toZoneIdOrUtc())
-        .toLocalDate()
-    val byKey = hourly.associateBy { it.date to it.time }
-    return hourlyKeys(today).map { key -> normalizeHourly(byKey.getValue(key)) }
-}
-
-private fun normalizeHourly(hourly: ProviderHourlyWeather): NormalizedHourly = NormalizedHourly(
+private fun normalizeHourly(
+    provider: WeatherProviderId,
+    hourly: ProviderHourlyWeather,
+): NormalizedHourly = NormalizedHourly(
     date = hourly.date,
     time = hourly.time,
     temperatureCelsius = hourly.temperatureCelsius,
-    illustration = hourlyIllustration(normalizeCondition(hourly.condition)),
+    illustration = hourly.condition?.takeIf(String::isNotBlank)?.let {
+        hourlyIllustration(normalizeCondition(provider, it))
+    },
 )
 
-private fun hasCompleteHourly(hourly: List<ProviderHourlyWeather>, today: LocalDate): Boolean {
+private fun hasCompleteHourly(hourly: List<NormalizedHourly>, today: LocalDate): Boolean {
     val expected = hourlyKeys(today)
     val byKey = hourly.associateBy { it.date to it.time }
     return expected.all { key ->
         val value = byKey[key]
-        value?.temperatureCelsius != null && !value.condition.isNullOrBlank()
+        value?.temperatureCelsius != null && value.illustration != null
     }
 }
 
-private fun hasCompleteDaily(daily: List<ProviderDailyWeather>, today: LocalDate): Boolean {
-    val expected = (0L until LONG_TERM_DAYS).map(today::plusDays)
-    if (daily.size != LONG_TERM_DAYS.toInt() || daily.map { it.date } != expected) return false
+private fun hasCompleteDaily(provider: WeatherProviderId, daily: List<NormalizedDay>): Boolean {
+    val expectedCount = provider.capabilities.supportedDailyRecords
+    if (daily.size != expectedCount || daily.zipWithNext().any { (first, second) -> second.date != first.date.plusDays(1) }) {
+        return false
+    }
     return daily.all { day ->
         day.dayTemperatureCelsius != null &&
             day.nightTemperatureCelsius != null &&
             !day.dayCondition.isNullOrBlank() &&
             !day.nightCondition.isNullOrBlank()
+    }
+}
+
+private fun retainCompleteDailySubset(
+    provider: WeatherProviderId,
+    incoming: List<NormalizedDay>,
+    previous: List<NormalizedDay>?,
+): List<NormalizedDay> = when {
+    hasCompleteDaily(provider, incoming) -> incoming
+    previous != null && hasCompleteDaily(provider, previous) -> previous
+    else -> incoming
+}
+
+private fun retainCompleteHourlySubset(
+    incoming: List<NormalizedHourly>,
+    previous: List<NormalizedHourly>?,
+    apiTimeZone: String,
+    nowMillis: Long,
+): List<NormalizedHourly> {
+    val today = Instant.ofEpochMilli(nowMillis).atZone(apiTimeZone.toZoneIdOrUtc()).toLocalDate()
+    return when {
+        hasCompleteHourly(incoming, today) -> incoming
+        previous != null && hasCompleteHourly(previous, today) -> previous
+        else -> incoming
     }
 }
 
@@ -837,11 +1058,34 @@ private fun temperatureText(temperature: Int): String = when {
     else -> "${kotlin.math.abs(temperature)}°"
 }
 
-private fun normalizeCondition(condition: String?): String = when (condition?.lowercase()) {
-    "clear", "sunny" -> "clear"
-    "cloud", "partly-cloudy", "overcast" -> "cloud"
-    "rain", "drizzle", "showers" -> "rain"
-    "snow" -> "snow"
+private fun normalizeCondition(provider: WeatherProviderId, condition: String?): String {
+    val normalized = condition?.lowercase()
+    return when {
+        normalized == "clear" || normalized == "sunny" -> "clear"
+        normalized == "cloud" || normalized == "partly-cloudy" || normalized == "overcast" -> "cloud"
+        normalized == "rain" || normalized == "drizzle" || normalized == "showers" -> "rain"
+        normalized == "snow" -> "snow"
+        provider == WeatherProviderId.OPEN_METEO && normalized?.startsWith("wmo:") == true ->
+            normalizeWmoCode(normalized.substringAfter(':').toIntOrNull())
+        provider == WeatherProviderId.OPEN_WEATHER && normalized?.startsWith("owm:") == true ->
+            normalizeOpenWeatherId(normalized.substringAfter(':').toIntOrNull())
+        else -> "neutral-cloud"
+    }
+}
+
+private fun normalizeWmoCode(code: Int?): String = when (code) {
+    0 -> "clear"
+    1, 2, 3, 45, 48 -> "cloud"
+    71, 73, 75, 77, 85, 86 -> "snow"
+    51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99 -> "rain"
+    else -> "neutral-cloud"
+}
+
+private fun normalizeOpenWeatherId(id: Int?): String = when {
+    id == 800 -> "clear"
+    id != null && id in 600..699 -> "snow"
+    id != null && id in 200..599 -> "rain"
+    id != null && id in 700..804 -> "cloud"
     else -> "neutral-cloud"
 }
 
@@ -862,9 +1106,30 @@ private fun hourlyIllustration(condition: String): WeatherIllustration = when (c
     else -> WeatherIllustration.NEUTRAL_CLOUD
 }
 
-private fun isDaytime(nowMillis: Long, zoneId: ZoneId): Boolean {
-    val hour = Instant.ofEpochMilli(nowMillis).atZone(zoneId).hour
-    return hour in 6..17
+private fun isDaytime(
+    nowMillis: Long,
+    zoneId: ZoneId,
+    daily: List<NormalizedDay> = emptyList(),
+): Boolean {
+    val local = Instant.ofEpochMilli(nowMillis).atZone(zoneId)
+    val today = daily.firstOrNull { it.date == local.toLocalDate() }
+    val sunrise = today?.sunrise
+    val sunset = today?.sunset
+    return if (sunrise != null && sunset != null && sunrise < sunset) {
+        !local.toLocalTime().isBefore(sunrise) && local.toLocalTime().isBefore(sunset)
+    } else {
+        local.hour in 6..17
+    }
 }
 
 private fun String.toZoneIdOrUtc(): ZoneId = runCatching { ZoneId.of(this) }.getOrDefault(ZoneId.of("UTC"))
+
+private fun LocationContext.weatherLocationIdentity(): String = String.format(
+    Locale.US,
+    "%s|%s|%.6f|%.6f|%s",
+    countryCode,
+    cityId.ifBlank { "coordinates" },
+    latitude,
+    longitude,
+    apiTimeZone,
+)

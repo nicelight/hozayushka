@@ -1,0 +1,241 @@
+{
+  "id": "TASK-034-T3-FT-001-W31",
+  "title": "Correct Main Display physical clock and weather-icon geometry",
+  "status": "done",
+  "wave": "W31",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-005",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-033-T3-FT-001-W30"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Focused display projection suite",
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "required": true
+    },
+    {
+      "name": "Full host unit suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Android debug lint",
+      "command": "./gradlew lintDebug",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before any behavior write, obtain a fresh W31 physical RED on the connected and unlocked TECNO LI6 through only adb -s 1156725456009666. Record fresh wm size/orientation, app bounds, a full-screen screenshot and measured clock/icon/card geometry. The current status reports 2460x1080 as a prior observation, but execution must record the actual current value rather than assume it. The existing W30 host receipts and prior smoke screenshot are baseline context only and cannot satisfy W31 RED/GREEN.",
+    "Run a fresh host geometry probe at the resolved physical landscape size and at 1280x720 using deterministic redacted fixtures. The probe must measure the complete HH:mm bounds, available clock region, each weather illustration footprint, card bounds/order and the three right-side timer-control bounds. A host result may support geometry but cannot replace the physical visual claim.",
+    "If physical RED is confirmed, correct only Main Display presentation geometry in DisplayCapability.kt with focused DisplayProjectionTest.kt support: make the complete HH:mm the largest/readable focal element fully contained in the actual device landscape area; materially reduce weather-icon scale so icons are secondary and do not dominate their cards; preserve the existing adaptive/relative geometry without inventing a fixed product ratio unless routed to /feature-doctor FT-001.",
+    "Preserve the four stable weather slots in yesterday/today/tomorrow/day_after order across NO_DATA, partial and populated redacted fixtures; keep city/date in the left column above Yesterday; keep the large clock in the free upper/central area above the three day cards; and keep the three timer controls separate on the right with existing labels/order/touch behavior.",
+    "Obtain fresh claim-equivalent GREEN on the same unlocked TECNO LI6 serial and resolved landscape size after the correction, with before/after screenshots and a geometry receipt. GREEN requires complete HH:mm with no clipping/overflow, clock dominance over weather icons, materially reduced non-dominant icons, preserved date/city and timer separation, and no card-slot disappearance or layout shift. If the target is locked, disconnected or otherwise unavailable, stop without PASS and record DEFERRED; do not substitute host-only evidence.",
+    "Run the host gates and a named Reviewer/visual-QA rubric against the physical and host receipts. The rubric must record PASS/FAIL and decisive observations for clock dominance/readability, full-string containment, reduced icon scale, four-slot stability, date/city placement, timer separation and honest host/device separation.",
+    "Prove by static/boundary review that the task only consumes the existing Weather Context projection and Timer & Alert presentation: no provider, refresh, freshness, cache/history, normalized data, timer lifecycle, control dispatch, fullscreen owner, runtime wiring or public contract changes.",
+    "Do not start or use an emulator, AVD or QEMU. Do not use another device serial, a locked target, network/provider calls or credentials. Stop and route to /feature-doctor FT-001 if a fixed dp/font/ratio or numeric icon target is required; stop and route to /spec-design if ownership, module, edge, public contract or runtime ownership must change.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-13",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "PASS on unlocked physical TECNO LI6 serial 1156725456009666 at 2460x1080 landscape"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-034-T3-FT-001-W31/handoff.md",
+        ".protocols/TASK-034-T3-FT-001-W31/progress.md",
+        ".tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-EXE-final-report-code-01.md",
+        ".tasks/TASK-034-T3-FT-001-W31/physical-main-before.png",
+        ".tasks/TASK-034-T3-FT-001-W31/physical-main-after.png",
+        ".tasks/TASK-034-T3-FT-001-W31/physical-main-verify.png",
+        ".tasks/TASK-034-T3-FT-001-W31/physical-visual-receipt.md",
+        ".tasks/TASK-034-T3-FT-001-W31/geometry.json",
+        ".tasks/TASK-034-T3-FT-001-W31/red-green-contact-sheet.svg",
+        ".tasks/TASK-034-T3-FT-001-W31/weather-slot-matrix.json",
+        ".tasks/TASK-034-T3-FT-001-W31/visual-rubric.md",
+        ".tasks/TASK-034-T3-FT-001-W31/boundary-static-review.md",
+        ".tasks/TASK-034-T3-FT-001-W31/weather-boundary-regression.md",
+        ".tasks/TASK-034-T3-FT-001-W31/timer-boundary-regression.md",
+        ".tasks/TASK-034-T3-FT-001-W31/host-gates.md",
+        ".tasks/TASK-034-T3-FT-001-W31/verifier-owned-evidence.md",
+        ".protocols/TASK-034-T3-FT-001-W31/verification.md",
+        ".tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-034-T3-FT-001-W31/red-verification.md",
+        ".tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh physical RED/GREEN, functional PASS and semantic-pass. W31 remains bounded to Main Display geometry in the exact two-file boundary.",
+      "accepted_residual_risk": [
+        "Physical visual geometry is verified on TECNO LI6 at 2460x1080 landscape; other devices, resolutions and custom-ROM rendering remain residual risk.",
+        "Physical audio audibility and live provider refresh remain outside W31 ownership and are not claimed as W31 PASS."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/foundation.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-033-T3-FT-001-W30.task.json",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002 / REQ-002 / REQ-023] Fresh physical RED and GREEN on unlocked TECNO LI6 serial 1156725456009666 must compare the complete HH:mm and visible weather-icon/card geometry at the actual recorded landscape size. GREEN passes only when all HH:mm glyphs are readable and contained, the clock is the largest focal element, weather icons are materially reduced and secondary, and the screenshot shows no clipping or overlap. Artifacts: .tasks/TASK-034-T3-FT-001-W31/physical-main-before.png, physical-main-after.png and physical-visual-receipt.md.",
+    "[FT-001-AC-002 / REQ-002] Fresh host receipts at the actual physical landscape size and 1280x720 must record clock bounds, icon footprints, available regions and card bounds/order. The comparison must distinguish host geometry from device observation; W30 geometry.json and host receipts are not W31 proof. Artifact: .tasks/TASK-034-T3-FT-001-W31/geometry.json and red-green-contact-sheet.svg.",
+    "[FT-001-AC-002 / REQ-002 / REQ-005] NO_DATA, partial and populated redacted fixtures must retain four visible yesterday/today/tomorrow/day_after shells in order without invented values or layout shift, while date/city remain above Yesterday and timer controls remain separate on the right. Artifact: .tasks/TASK-034-T3-FT-001-W31/weather-slot-matrix.json and boundary-static-review.md.",
+    "[REQ-001 / REQ-023] The physical receipt must include the observed landscape size and readable fullscreen composition. Host-only geometry, W30 RED_NOT_APPLICABLE, or an unlocked smoke that proves only launch/health cannot become runtime visual PASS; a locked/unavailable target is DEFERRED with residual risk and no closure PASS.",
+    "[Timer & Alert read-only regression] RED_NOT_APPLICABLE: intentionally changing preset execution, selected/active/touch dispatch, countdown, cancellation, overdue, audio or lifecycle behavior would exceed this Main Display geometry task; alternative proof: focused/full host regression and exact-boundary review show existing timer controls and Timer & Alert ownership are unchanged. Artifact: .tasks/TASK-034-T3-FT-001-W31/timer-boundary-regression.md.",
+    "[Weather Context read-only regression] RED_NOT_APPLICABLE: intentionally changing provider selection, refresh, freshness, cache/history, normalized data or weather ownership would exceed this Main Display task; alternative proof: the three fixture-state receipts and static review show read-only projection consumption with no provider/runtime write. Artifact: .tasks/TASK-034-T3-FT-001-W31/weather-boundary-regression.md.",
+    "[REQ-023] A named Reviewer/visual-QA rubric must record PASS/FAIL, decisive observation and artifact locator for physical clock dominance/readability, full HH:mm containment, reduced icon scale, four-slot stability, date/city placement, timer separation, lightweight rendering and host/device separation. Artifact: .tasks/TASK-034-T3-FT-001-W31/visual-rubric.md.",
+    "T3 isolation and cleanup: use only the unlocked connected TECNO serial for target evidence, deterministic redacted host fixtures and safe reset/cleanup; preserve W30/W29 history, all lifecycle/status/checkpoint/terminal state and secret/network boundaries. Artifact: .tasks/TASK-034-T3-FT-001-W31/host-gates.md and boundary-static-review.md."
+  ],
+  "purpose": "Correct the proven physical Main Display visual hierarchy that W30 host-only receipts could not establish: make the complete clock dominant and contained at the actual TECNO landscape size while reducing weather icons to a secondary card scale, with the existing composition and ownership boundaries intact.",
+  "success_outcome": "Fresh physical and host claim-linked evidence proves a complete readable HH:mm is the largest contained element at the actual unlocked TECNO landscape size, weather icons are materially reduced and do not dominate cards, four ordered weather slots/date-city/timer separation remain stable, and no provider, timer, runtime-owner or public-boundary behavior changes; host-only evidence is never promoted to runtime PASS.",
+  "anti_goals": [
+    "Do not edit production code during planning; execution writes only the exact task boundary and does not modify any other production/test path.",
+    "Do not reopen, rewrite or change W29/W30 identities, statuses, evidence, protocols, scheduler checkpoint, lifecycle/REQ state or terminal history; W30 host claims and the earlier physical smoke are context, not W31 visual proof.",
+    "Do not change Weather Context/provider selection, adapters, refresh/freshness/cache/history/normalized data, weather card semantics, Timer & Alert behavior, control dispatch, fullscreen/runtime ownership, resources, assets, dependencies, modules, public contracts or graph edges.",
+    "Do not start or use an emulator, AVD or QEMU, and do not claim runtime PASS from host probes, prior smoke health, a locked device or an unavailable target."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-032-T3-FT-001-W29.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-033-T3-FT-001-W30.task.json status, evidence and history",
+      ".protocols/TASK-032-T3-FT-001-W29/",
+      ".protocols/TASK-033-T3-FT-001-W30/",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, lifecycle/REQ state, promotion decisions and terminal state",
+      "any device serial other than 1156725456009666, locked-target runtime, emulator/AVD/QEMU, network/provider calls, credentials and secret-bearing artifacts",
+      "new module, dependency, public contract, graph edge, event/message path, permission or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "The TECNO LI6 serial is not connected and unlocked, or its actual landscape size cannot be recorded; stop without visual PASS and hand off DEFERRED target evidence for scheduler handling.",
+      "The complete HH:mm cannot be made readable and fully contained, or icon reduction/clock dominance cannot be judged without selecting a new fixed dp, font, ratio or numeric visual target; route to /feature-doctor FT-001.",
+      "The correction requires Weather Context/provider, Timer & Alert, Settings, Forecast, Android Runtime, resources, MainActivity, a new module/edge/public contract or another owner; route to /spec-design or the owning feature.",
+      "Any production/test write leaves the two exact boundary files, any emulator/AVD/QEMU is started, or any historical task/status/checkpoint/terminal state is changed."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#ft-001-ac-002-main-display-composition",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/requirements.md#main-display-and-clock",
+    ".memory-bank/requirements.md#weather-context-and-forecast",
+    ".memory-bank/requirements.md#cross-cutting-constraints-and-resilience",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/tasks/TASK-032-T3-FT-001-W29.task.json",
+    ".memory-bank/tasks/TASK-033-T3-FT-001-W30.task.json",
+    ".tasks/TASK-033-T3-FT-001-W30/geometry.json",
+    ".tasks/TASK-033-T3-FT-001-W30/target-device.md",
+    ".tasks/TASK-033-T3-FT-001-W30/visual-rubric.md",
+    ".tasks/REAL-DEVICE-SMOKE-2026-08-10/evidence-attempt-2/05-main-weather-fixture.png",
+    ".protocols/AUTONOMOUS-RUN/status.md",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display is the sole owner of shell composition and presentation; it consumes the existing Weather Context and Timer & Alert projections and does not write neighbor state or move business orchestration into MainActivity/FoundationRuntime/generic helpers.",
+    "The task-owned acceptance locator is FT-001-AC-002. REQ-001 constrains the existing landscape/fullscreen policy, REQ-002 governs dominant HH:mm, left date/city, four-card composition and right-side controls, REQ-005 preserves weather slot/content semantics, and REQ-023 requires target-device readability and clock-first lightweight visuals.",
+    "The full HH:mm must be readable and fully contained at the freshly recorded physical landscape size; host 1280x720 remains a supporting comparison. No fixed dp, font, ratio or numeric icon scale is selected by planning.",
+    "Weather icons must be materially reduced relative to the current physical baseline and visually subordinate to the clock while remaining inside their existing cards. Four stable slots, accepted Today-versus-smaller-card relation and weather data/content ownership remain unchanged.",
+    "City/date stay in the left column above Yesterday, the clock remains in the free upper/central region above the three day cards, and the three timer controls remain separate on the right with existing order, labels, selected/active styling and touch routing.",
+    "Physical visual evidence is mandatory for this task claim and is valid only from the connected, unlocked TECNO LI6 serial 1156725456009666. Host receipts support but do not replace it; emulator/AVD/QEMU is forbidden and locked/unavailable target evidence is DEFERRED without PASS."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002 / REQ-023: fresh physical RED/GREEN on unlocked TECNO LI6 at the actual recorded landscape size proves the full HH:mm is readable, complete and contained, is the largest focal element, and weather icons are materially reduced and secondary rather than dominant.",
+    "FT-001-AC-002 / REQ-002: fresh host geometry at the physical size and 1280x720 records clock/icon/card bounds and proves no clipping/overflow; host proof is supporting evidence only and cannot become runtime PASS.",
+    "FT-001-AC-002 / REQ-002 / REQ-005: fresh NO_DATA, partial and populated redacted fixtures retain four visible yesterday/today/tomorrow/day_after slots in order, with city/date above Yesterday, existing relative card sizing and no fabricated values or layout shift.",
+    "FT-001-AC-002 / REQ-002: the three existing timer controls remain separate on the right with unchanged order, labels, selected/active styling and touch routing; Timer & Alert remains the owner of execution/countdown/cancellation/overdue/audio/lifecycle behavior.",
+    "REQ-001 / platform-runtime display boundary: the physical receipt records actual landscape composition and preserves the existing fullscreen/runtime policy without changing its owner; no emulator/AVD/QEMU evidence is accepted.",
+    "T3 claim-linked proof: each task-owned visual claim has fresh physical and/or host RED/GREEN with distinguishable artifacts, safe rerun/cleanup and honest DEFERRED handling for locked/unavailable target; W30 host-only RED_NOT_APPLICABLE is not an alternative proof for W31 physical visual claims."
+  ]
+}

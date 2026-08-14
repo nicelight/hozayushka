@@ -1,7 +1,7 @@
 ---
 description: Working plan for FT-005 preset timer decomposition.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-10
 ---
 # FT-005 — Plan
 
@@ -20,7 +20,7 @@ leaving countdown lifecycle and overdue behavior to later features.
   the approved chain.
 - Tier: `T3`, because the outcome combines Android user-facing state,
   owner-local mutable persistence and cross-slice runtime contracts.
-- Status: `planned`; planning does not claim scheduler closure or promotion.
+- Authoritative indexed status: `done`; terminal evidence remains unchanged.
 
 ## Acceptance closure
 
@@ -44,5 +44,12 @@ rollout unit or material risk requires a second task.
 
 Existing subject-based canonical specs are sufficient. No new or feature-owned
 spec is created, no global architecture choice is reopened, and Planning
-Revision remains `1`. Exact persistence implementation, class split and
+Revision is reconciled to `2`. Exact persistence implementation, class split and
 filename identity remain executor discretion within the accepted code roots.
+
+## Revision-2 reconciliation
+
+Queue action is `reconciled`. `TASK-007-T3-FT-005-W6` remains the sole FT-005
+task with its existing T3/W6 identity, dependency, `done` status and evidence.
+Provider migration changes no preset acceptance, so no follow-up task is
+created. Exact next owner is fresh `/review-tasks-plan --all`.

@@ -1,0 +1,55 @@
+{
+  "screen": {"width": 1280, "height": 720, "orientation": "landscape"},
+  "rowCards": [
+    {
+      "slot": "yesterday",
+      "illustration": "CLEAR",
+      "cardBounds": {"left": 32, "top": 252, "right": 255, "bottom": 696},
+      "paintedIllustrationBounds": {"left": 13, "top": 13, "right": 210, "bottom": 150},
+      "temperatureBounds": {"left": 22, "top": 177, "right": 200, "bottom": 328},
+      "dateBounds": {"left": 13, "top": 364, "right": 100, "bottom": 431},
+      "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}
+    },
+    {
+      "slot": "today",
+      "illustration": "CLOUD",
+      "cardBounds": {"left": 271, "top": 252, "right": 550, "bottom": 696},
+      "paintedIllustrationBounds": {"left": 16, "top": 16, "right": 263, "bottom": 150},
+      "temperatureBounds": {"left": 27, "top": 177, "right": 251, "bottom": 328},
+      "dateBounds": {"left": 16, "top": 364, "right": 125, "bottom": 428},
+      "pressureBounds": {"left": 156, "top": 177, "right": 263, "bottom": 328}
+    },
+    {
+      "slot": "tomorrow",
+      "illustration": "RAIN",
+      "cardBounds": {"left": 566, "top": 252, "right": 789, "bottom": 696},
+      "paintedIllustrationBounds": {"left": 13, "top": 13, "right": 210, "bottom": 150},
+      "temperatureBounds": {"left": 22, "top": 177, "right": 200, "bottom": 328},
+      "dateBounds": {"left": 13, "top": 364, "right": 100, "bottom": 431},
+      "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}
+    },
+    {
+      "slot": "day_after",
+      "illustration": "SNOW",
+      "cardBounds": {"left": 805, "top": 252, "right": 1028, "bottom": 696},
+      "paintedIllustrationBounds": {"left": 13, "top": 13, "right": 210, "bottom": 150},
+      "temperatureBounds": {"left": 22, "top": 177, "right": 200, "bottom": 328},
+      "dateBounds": {"left": 13, "top": 364, "right": 100, "bottom": 431},
+      "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}
+    }
+  ],
+  "additionalStatePanels": [
+    {"state": "NEUTRAL_CLOUD", "panel": "contact-sheet bottom-left", "width": 223, "height": 444},
+    {"state": "MOON", "panel": "contact-sheet bottom-second", "width": 279, "height": 444, "moonPhase": "0.25", "nullMoonPhaseFallback": "regular"}
+  ],
+  "checks": {
+    "illustrationIntersectsTemperature": false,
+    "illustrationIntersectsDate": false,
+    "illustrationIntersectsPressure": false,
+    "fourSlotOrder": ["yesterday", "today", "tomorrow", "day_after"],
+    "cardWidths": [223, 279, 223, 223],
+    "todayIsLarger": true,
+    "nonTodayWidthsEqual": true,
+    "interCardGaps": [16, 16, 16]
+  }
+}

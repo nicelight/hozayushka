@@ -15,11 +15,11 @@ status: active
 - [.memory-bank/roles/implementer.md](roles/implementer.md): Implementer role contract.
 - [.memory-bank/roles/reviewer.md](roles/reviewer.md): Reviewer role contract.
 - [.memory-bank/prd.md](prd.md): Clarified Product Requirements Document для `/spec-init` и decomposition.
-- [.memory-bank/product.md](product.md): Продукт (C4 L1).
-- [.memory-bank/requirements.md](requirements.md): Требования + RTM.
+- [.memory-bank/product.md](product.md): C4 L1 product identity and accepted selectable-provider value/constraints.
+- [.memory-bank/requirements.md](requirements.md): Stable REQ registry and RTM, including provider capability and attribution acceptance.
 - [.memory-bank/changelog.md](changelog.md): Durable Memory Bank change log by wave.
-- [.memory-bank/epics/index.md](epics/index.md): Эпики (C4 L2) и их product outcomes.
-- [.memory-bank/features/index.md](features/index.md): Фичи (C4 L3) и их acceptance boundaries.
+- [.memory-bank/epics/index.md](epics/index.md): C4 L2 epics and provider-reconciled product outcomes.
+- [.memory-bank/features/index.md](features/index.md): C4 L3 features, stable AC boundaries and design routing.
 - [.memory-bank/behavior-specs/](behavior-specs/): Optional JSON behavior examples linked from feature docs and task `source_artifacts`.
 - [.memory-bank/tasks/index.json](tasks/index.json): Authoritative JSON task record index.
 - [.memory-bank/schemas/task.schema.json](schemas/task.schema.json): JSON schema for task records.

@@ -1,0 +1,40 @@
+{
+  "attempt": 1,
+  "fixture": "resettable in-memory Settings/Weather/Timer with fixed clock ticks",
+  "selected_provider": "open_weather",
+  "initial_missing_key": {
+    "error_present": true,
+    "weather_context_error": "selected-provider missing-key state",
+    "open_weather_calls": 0,
+    "open_meteo_calls": 0
+  },
+  "treatment_after_valid_key_save": {
+    "save_accepted": true,
+    "open_weather_calls": 1,
+    "open_meteo_calls": 0,
+    "fresh_matching_projection": true,
+    "obsolete_missing_key_cleared": true,
+    "provider_identity_preserved": true,
+    "location_identity_preserved": true,
+    "credential_observation": "present-only/redacted"
+  },
+  "clock_ticks_millis": [0, 1000, 5000, 60000, 60001],
+  "control_timer_trace": [
+    ["COUNTDOWN", 0, 60000],
+    ["COUNTDOWN", 1000, 59000],
+    ["COUNTDOWN", 5000, 55000],
+    ["OVERDUE", 60000, 0],
+    ["OVERDUE", 60001, 0]
+  ],
+  "treatment_timer_trace": [
+    ["COUNTDOWN", 0, 60000],
+    ["COUNTDOWN", 1000, 59000],
+    ["COUNTDOWN", 5000, 55000],
+    ["OVERDUE", 60000, 0],
+    ["OVERDUE", 60001, 0]
+  ],
+  "timer_trace_matches": true,
+  "countdown_double_tap_cancel_matches": true,
+  "overdue_single_tap_dismissal_matches": true,
+  "cleanup": "owner-local in-memory state discarded; no raw credential or cross-run state"
+}

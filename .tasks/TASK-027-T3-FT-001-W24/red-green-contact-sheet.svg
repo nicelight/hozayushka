@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1640" viewBox="0 0 1280 1640">
+  <style>
+    .bg { fill: #10131b; }
+    .shell { fill: #191e29; stroke: #6c7280; stroke-width: 2; }
+    .header { fill: #252c3a; stroke: #8b93a3; stroke-width: 2; }
+    .card { fill: #34445b; stroke: #b9c4d8; stroke-width: 2; }
+    .today { fill: #5d476d; stroke: #ffd48a; stroke-width: 3; }
+    .preset { fill: #302c3b; stroke: #df78ad; stroke-width: 3; }
+    .label { fill: #eef2f8; font: 20px sans-serif; }
+    .small { fill: #bac3d4; font: 15px monospace; }
+    .title { fill: #ffffff; font: bold 26px sans-serif; }
+    .clock-red { fill: #d6dbe5; font: 132px monospace; text-anchor: middle; }
+    .clock-green { fill: #ffffff; font: 176px monospace; text-anchor: middle; }
+    .circle { fill: #302c3b; stroke: #df78ad; stroke-width: 3; }
+  </style>
+  <rect class="bg" x="0" y="0" width="1280" height="1580"/>
+
+  <text class="title" x="32" y="34">RED — Attempt 2 fresh reachable-refresh baseline, same 1280×720 host model</text>
+  <rect class="shell" x="32" y="56" width="1216" height="720" rx="8"/>
+  <rect class="header" x="32" y="80" width="223" height="228" rx="8"/>
+  <rect class="header" x="271" y="80" width="757" height="228" rx="8"/>
+  <text class="clock-red" x="650" y="245">HH:mm</text>
+  <text class="label" x="72" y="154">city/date</text>
+  <text class="small" x="72" y="180">left anchor</text>
+  <text class="small" x="420" y="294">clock region [271,24,1028,252], style 132</text>
+  <rect class="card" x="32" y="308" width="223" height="444" rx="8"/>
+  <rect class="today" x="271" y="308" width="279" height="444" rx="8"/>
+  <rect class="card" x="566" y="308" width="223" height="444" rx="8"/>
+  <rect class="card" x="805" y="308" width="223" height="444" rx="8"/>
+  <text class="label" x="78" y="540">yesterday</text>
+  <text class="label" x="380" y="540">today</text>
+  <text class="label" x="616" y="540">tomorrow</text>
+  <text class="label" x="848" y="540">day_after</text>
+  <rect class="preset" x="1028" y="80" width="220" height="224" rx="18"/>
+  <rect class="preset" x="1028" y="304" width="220" height="224" rx="18"/>
+  <rect class="preset" x="1028" y="528" width="220" height="224" rx="18"/>
+  <text class="small" x="32" y="790">preset bounds 220×224; effective radius 18; 18 &lt; 112 → not circular</text>
+
+  <text class="title" x="32" y="804">GREEN — Attempt 2 correction plus post-refresh regression, same 1280×720 host model</text>
+  <rect class="shell" x="32" y="826" width="1216" height="720" rx="8"/>
+  <rect class="header" x="32" y="850" width="223" height="228" rx="8"/>
+  <rect class="header" x="271" y="850" width="757" height="228" rx="8"/>
+  <text class="clock-green" x="650" y="1038">HH:mm</text>
+  <text class="label" x="72" y="924">city/date</text>
+  <text class="small" x="72" y="950">left anchor above yesterday</text>
+  <text class="small" x="418" y="1064">clock region [271,24,1028,252], style 176</text>
+  <rect class="card" x="32" y="1078" width="223" height="444" rx="8"/>
+  <rect class="today" x="271" y="1078" width="279" height="444" rx="8"/>
+  <rect class="card" x="566" y="1078" width="223" height="444" rx="8"/>
+  <rect class="card" x="805" y="1078" width="223" height="444" rx="8"/>
+  <text class="label" x="78" y="1290">yesterday</text>
+  <text class="label" x="380" y="1290">today</text>
+  <text class="label" x="616" y="1290">tomorrow</text>
+  <text class="label" x="848" y="1290">day_after</text>
+  <circle class="circle" cx="1138" cy="962" r="110"/>
+  <circle class="circle" cx="1138" cy="1186" r="110"/>
+  <circle class="circle" cx="1138" cy="1410" r="110"/>
+  <text class="small" x="32" y="1590">post-refresh: idle hour/colon/minute 176f; countdown 32f; presets [1028,26..246], [1028,250..470], [1028,474..694]; each 220×220; gaps 4/4; radius 110 = side/2; cards 223/279/223/223; gaps 16/16/16</text>
+</svg>

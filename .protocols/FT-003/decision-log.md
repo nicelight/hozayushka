@@ -1,9 +1,54 @@
 ---
 description: Decision log for FT-003 hourly forecast task decomposition.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-11
 ---
 # FT-003 — Decision log
+
+## 2026-08-12 — W18 completeness boundary reconciled
+
+- The already-decided `TASK-021-T2-FT-003-W18` closure is `done` after
+  executor `PASS_FOR_HANDOFF`, fresh `/verify` `PASS` and final independent
+  `/red-verify` `semantic-pass`. W18 evidence is independent and owns only
+  AC-001/AC-005: both selected providers require all eight fixed city-local
+  slots, and all sixteen one-missing-slot cases reject entry without synthesis,
+  borrowing or fallback.
+- The W18 task card now links only existing W18 handoff, verifier and matrix
+  evidence for its closure metadata. The previous W17 dependency block remains
+  historical task evidence; W20 remains done and W17 remains failed after 3/3.
+- REQ-009 is reconciled to `implemented` in the RTM for the completed hourly
+  outcome. FT-003/EP-002 lifecycle remains `planned`; no feature closure,
+  W19/TASK-022 unblock or scheduler promotion is inferred here.
+- Target device/emulator rendering, live provider/subscription behavior and
+  runtime network compatibility remain `DEFERRED` by the explicit boundary;
+  no runtime `PASS` is claimed.
+
+## 2026-08-11 — Upstream repair dependency rebuild
+
+- W17's failed 3/3 lifecycle and all historical block evidence remain
+  unchanged. The accepted migration implementation facts remain upstream
+  baseline context, but W18 cannot depend on a failed terminal card for fresh
+  scheduler eligibility.
+- Rebuild W18's direct dependency from `TASK-020-T3-FT-002-W17` to the new
+  `TASK-023-T3-FT-002-W20` selected OpenWeather activation repair. Preserve
+  W18's identity, T2 tier, W18 wave, acceptance scope, blocked status and
+  scheduler block record; this is a dependency recovery route, not execution
+  or acceptance evidence.
+- W19 remains transitively behind W18. Existing canonical hourly/provider/
+  lifecycle contracts are sufficient; no FT-003 product decision, spec or
+  task outcome changes. Fresh review is required before any recovery.
+
+## 2026-08-10 — Revision-2 hourly completeness reconciled
+
+- Failed W4 and done W4/W5 records remain unchanged historical evidence.
+- New `TASK-021-T2-FT-003-W18` solely owns current AC-001/AC-005: all eight
+  fixed selected-provider slots or unavailable, including elapsed OpenWeather
+  slots, with no synthesis or Open-Meteo borrowing.
+- Unchanged AC-002/AC-003 remain assigned to done W4 and AC-004 to done W5.
+  W18 depends on W17, starts `planned`, and produces independent evidence.
+- Existing capability, provider, local-data and verification specs are reused;
+  no adapter work, UI redesign, abstraction or hard write boundary is added.
+- Exact next owner is fresh `/review-tasks-plan --all`.
 
 ## 2026-08-06 — Clean task surface generated
 

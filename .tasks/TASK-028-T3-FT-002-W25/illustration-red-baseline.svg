@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="960" viewBox="0 0 1280 960">
+  <title>W25 fresh RED — current W22-sized Main Display illustration envelopes</title>
+  <rect width="1280" height="960" fill="#10151B"/>
+  <g font-family="sans-serif" font-size="18" fill="#F4F7FA">
+    <text x="32" y="24">FRESH RED — current full W22 painted bounds</text>
+    <text x="32" y="50" font-size="14" fill="#B8C3CB">Main Display source uses the full illustration view and Unicode TextView pressure arrows.</text>
+  </g>
+  <g stroke="#F4F7FA" stroke-opacity="0.62" stroke-width="2">
+    <rect x="32" y="72" width="223" height="390" rx="18" fill="#E7B205"/>
+    <rect x="271" y="72" width="279" height="390" rx="18" fill="#69A4BF"/>
+    <rect x="566" y="72" width="223" height="390" rx="18" fill="#97A5C5"/>
+    <rect x="805" y="72" width="223" height="390" rx="18" fill="#47884D"/>
+    <rect x="32" y="492" width="223" height="390" rx="18" fill="#5D8E30"/>
+    <rect x="271" y="492" width="279" height="390" rx="18" fill="#4F7EA6"/>
+  </g>
+  <g fill="none" stroke="#B8C3CB" stroke-width="1" stroke-dasharray="6 6" opacity="0.78">
+    <rect x="45" y="85" width="197" height="137" rx="12"/>
+    <rect x="287" y="88" width="247" height="134" rx="12"/>
+    <rect x="579" y="85" width="197" height="137" rx="12"/>
+    <rect x="818" y="85" width="197" height="137" rx="12"/>
+    <rect x="45" y="505" width="197" height="137" rx="12"/>
+    <rect x="287" y="508" width="247" height="134" rx="12"/>
+  </g>
+  <g font-family="sans-serif" font-size="14" fill="#F4F7FA">
+    <text x="45" y="242">CLEAR / row 223×444</text>
+    <text x="287" y="242">CLOUD / Today 279×444</text>
+    <text x="579" y="242">NEUTRAL_CLOUD</text>
+    <text x="818" y="242">RAIN</text>
+    <text x="45" y="662">SNOW</text>
+    <text x="287" y="662">MOON / Today 279×444</text>
+  </g>
+  <g transform="translate(45 85)">
+    <g fill="#FFD554" stroke="#FFF6C2" stroke-width="4" stroke-linecap="round">
+      <circle cx="98.5" cy="63" r="26" stroke="none"/>
+      <path d="M98.5 25v-18M98.5 101v18M60.5 63h-18M136.5 63h18M71.6 36.1 59 23.5M125.4 89.9 138 102.5M125.4 36.1 138 23.5M71.6 89.9 59 102.5" fill="none"/>
+      <circle cx="98.5" cy="63" r="26" fill="none"/>
+    </g>
+  </g>
+  <g transform="translate(287 88) scale(1.25 1)" fill="#EDF7FC" stroke="#F7FCFF" stroke-width="4" stroke-linejoin="round">
+    <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+  </g>
+  <g transform="translate(579 85)" fill="#CADEEA" stroke="#F7FCFF" stroke-width="4" stroke-linejoin="round">
+    <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+  </g>
+  <g transform="translate(818 85)" fill="#DEEFF9" stroke="#F7FCFF" stroke-width="4" stroke-linejoin="round">
+    <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+    <g stroke="#7ED3F6" stroke-width="5" stroke-linecap="round" fill="none"><path d="M59 108l-7 23M99 108l-7 23M138 108l-7 23"/></g>
+  </g>
+  <g transform="translate(45 505)" fill="#F1F7FC" stroke="#F7FCFF" stroke-width="4" stroke-linejoin="round">
+    <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+    <g stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none"><path d="M51 115h24M63 103v24M54 106l18 18M72 106l-18 18M86 115h24M98 103v24M89 106l18 18M107 106l-18 18M121 115h24M133 103v24M124 106l18 18M142 106l-18 18"/></g>
+  </g>
+  <g transform="translate(287 508)"><path d="M123.5 31a33 33 0 1 0 0 66a33 33 0 0 1 0-66Z" fill="#F8E9A1" stroke="#FFF8CF" stroke-width="4"/></g>
+</svg>

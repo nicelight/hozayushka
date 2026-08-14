@@ -84,8 +84,10 @@ selected/active visual state is available to the countdown feature.
 
 ## SDD Design Gate
 
-Global backbone is complete at Planning Revision `1` and the Foundation Gate
-is closed; feature-level SDD design is complete for task handoff.
+Global backbone is complete at Planning Revision `2` and the Foundation Gate
+anchors remain closed; feature-level SDD design remains complete. Its indexed
+task-plan review is stale only by revision mismatch and is reconciled through
+`/feature-to-tasks --all` after Foundation revalidation.
 
 Applicable global specs: [Boundary Map](../contracts/boundary-map.md),
 [Capability Interfaces](../contracts/capability-interfaces.md), [Local Data](../domains/local-data.md),

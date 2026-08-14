@@ -1,0 +1,109 @@
+{
+  "task": "TASK-028-T3-FT-002-W25",
+  "screen": {"width": 1280, "height": 720, "orientation": "landscape"},
+  "method": "deterministic geometry from WeatherCardContentGeometry plus the W25 0.70 centered Canvas paint transform; bounds are conservative painted envelopes and are not a target-device observation",
+  "baselineRed": {
+    "rowCard223x444": {"viewBounds": {"left": 13, "top": 13, "right": 210, "bottom": 150, "width": 197, "height": 137}},
+    "today279x444": {"viewBounds": {"left": 16, "top": 16, "right": 263, "bottom": 150, "width": 247, "height": 134}},
+    "pressurePath": "Unicode TextView glyphs ↑/↓; no measured stroke/shaft/head pixels"
+  },
+  "green": {
+    "paintScale": 0.70,
+    "clearSun": {
+      "baselineRadiusFactor": 0.19,
+      "finalRadiusFactorInsideScaledBounds": 0.32,
+      "diameterRatio": 1.1789474,
+      "requiredRange": [1.15, 1.30]
+    },
+    "states": ["CLEAR", "CLOUD", "NEUTRAL_CLOUD", "RAIN", "SNOW", "MOON"],
+    "cards": [
+      {
+        "slot": "yesterday",
+        "illustration": "CLEAR",
+        "cardBounds": {"left": 32, "top": 252, "right": 255, "bottom": 696},
+        "baselinePaintedEnvelope": {"left": 13, "top": 13, "right": 210, "bottom": 150, "width": 197, "height": 137},
+        "finalPaintedEnvelope": {"left": 43, "top": 34, "right": 180, "bottom": 130, "width": 137, "height": 96},
+        "reductionVsRed": {"width": 0.6954, "height": 0.7007},
+        "temperatureBounds": {"left": 22, "top": 177, "right": 200, "bottom": 328},
+        "dateBounds": {"left": 13, "top": 364, "right": 100, "bottom": 431},
+        "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328},
+        "contentNonOverlap": true
+      },
+      {
+        "slot": "today",
+        "illustration": "CLOUD",
+        "cardBounds": {"left": 271, "top": 252, "right": 550, "bottom": 696},
+        "baselinePaintedEnvelope": {"left": 16, "top": 16, "right": 263, "bottom": 150, "width": 247, "height": 134},
+        "finalPaintedEnvelope": {"left": 53, "top": 36, "right": 226, "bottom": 130, "width": 173, "height": 94},
+        "reductionVsRed": {"width": 0.7004, "height": 0.7015},
+        "temperatureBounds": {"left": 27, "top": 177, "right": 251, "bottom": 328},
+        "dateBounds": {"left": 16, "top": 364, "right": 125, "bottom": 428},
+        "pressureBounds": {"left": 156, "top": 177, "right": 263, "bottom": 328},
+        "contentNonOverlap": true
+      },
+      {
+        "slot": "tomorrow",
+        "illustration": "RAIN",
+        "cardBounds": {"left": 566, "top": 252, "right": 789, "bottom": 696},
+        "baselinePaintedEnvelope": {"left": 13, "top": 13, "right": 210, "bottom": 150, "width": 197, "height": 137},
+        "finalPaintedEnvelope": {"left": 43, "top": 34, "right": 180, "bottom": 130, "width": 137, "height": 96},
+        "reductionVsRed": {"width": 0.6954, "height": 0.7007},
+        "temperatureBounds": {"left": 22, "top": 177, "right": 200, "bottom": 328},
+        "dateBounds": {"left": 13, "top": 364, "right": 100, "bottom": 431},
+        "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328},
+        "contentNonOverlap": true
+      },
+      {
+        "slot": "day_after",
+        "illustration": "SNOW",
+        "cardBounds": {"left": 805, "top": 252, "right": 1028, "bottom": 696},
+        "baselinePaintedEnvelope": {"left": 13, "top": 13, "right": 210, "bottom": 150, "width": 197, "height": 137},
+        "finalPaintedEnvelope": {"left": 43, "top": 34, "right": 180, "bottom": 130, "width": 137, "height": 96},
+        "reductionVsRed": {"width": 0.6954, "height": 0.7007},
+        "temperatureBounds": {"left": 22, "top": 177, "right": 200, "bottom": 328},
+        "dateBounds": {"left": 13, "top": 364, "right": 100, "bottom": 431},
+        "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328},
+        "contentNonOverlap": true
+      },
+      {
+        "slot": "additional",
+        "illustration": "NEUTRAL_CLOUD",
+        "cardSize": [223, 444],
+        "baselinePaintedEnvelope": {"width": 197, "height": 137},
+        "finalPaintedEnvelope": {"width": 137, "height": 96},
+        "reductionVsRed": {"width": 0.6954, "height": 0.7007},
+        "contentNonOverlap": true
+      },
+      {
+        "slot": "additional",
+        "illustration": "MOON",
+        "cardSize": [279, 444],
+        "moonPhase": "0.25",
+        "nullMoonPhaseFallback": "regular",
+        "baselinePaintedEnvelope": {"width": 247, "height": 134},
+        "finalPaintedEnvelope": {"width": 173, "height": 94},
+        "reductionVsRed": {"width": 0.7004, "height": 0.7015},
+        "temperatureBounds": {"left": 27, "top": 177, "right": 251, "bottom": 328},
+        "dateBounds": {"left": 16, "top": 364, "right": 125, "bottom": 428},
+        "pressureBounds": {"left": 156, "top": 177, "right": 263, "bottom": 328},
+        "contentNonOverlap": true
+      }
+    ],
+    "checks": {
+      "allSixStates": true,
+      "noPartlyCloudyState": true,
+      "noMainDisplayTextOrEmojiIllustration": true,
+      "allFinalWidthsAtMost90PercentOfRed": true,
+      "allFinalHeightsAtMost90PercentOfRed": true,
+      "clearSunRatioWithin115To130Percent": true,
+      "illustrationIntersectsTemperature": false,
+      "illustrationIntersectsDate": false,
+      "illustrationIntersectsPressure": false,
+      "fourSlotOrder": ["yesterday", "today", "tomorrow", "day_after"],
+      "cardWidths": [223, 279, 223, 223],
+      "todayIsLarger": true,
+      "nonTodayWidthsEqual": true,
+      "interCardGaps": [16, 16, 16]
+    }
+  }
+}

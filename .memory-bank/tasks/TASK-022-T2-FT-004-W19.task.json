@@ -1,0 +1,175 @@
+{
+  "id": "TASK-022-T2-FT-004-W19",
+  "title": "Project Open-Meteo ten-day and OpenWeather eight-plus-two capability honestly",
+  "status": "done",
+  "wave": "W19",
+  "feature": "FT-004",
+  "reqs": [
+    "REQ-010",
+    "REQ-022",
+    "REQ-026"
+  ],
+  "depends_on": [
+    "TASK-021-T2-FT-003-W18"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/forecast/ForecastSessionCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/ForecastSessionTest.kt",
+    "app/src/test/resources/fixtures/"
+  ],
+  "tier": "T2",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host provider-capability and long-term session probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Establish claim-linked RED against current state: long-term entry assumes one ten-record provider shape and has no selected-provider capability proof for OpenWeather eight records plus two intentional empty positions.",
+    "With a selected-city date/timezone fixture, prove complete Open-Meteo data requires ten records and fills all ten dated positions starting today; fewer than ten keeps Main Display with the accepted unavailable message.",
+    "Prove complete OpenWeather data requires eight records, opens the same ten-position session, fills positions one through eight and leaves nine and ten dated but unavailable/empty without temperature or illustration; fewer than eight keeps Main Display with the accepted message.",
+    "Exercise Tomorrow and Day-after entry against both providers and prove they open the same capability-correct session. No position is synthesized, duplicated, borrowed from Open-Meteo or filled from another provider/cache partition.",
+    "Keep the existing 2x5 available-card presentation and shared exit flow as regression checks owned historically by W5; do not redesign them.",
+    "Use deterministic fixtures and resettable session state; no live provider, secret, emulator/device evidence or runtime PASS claim is permitted.",
+    "Closure later requires fresh /verify PASS and /red-verify semantic-pass for FT-004-AC-001, AC-002, AC-005 and AC-006 Revision-2 claims; scheduler promotion remains external.",
+    {
+      "stage": "scheduler_dependency_block",
+      "mode": "scheduler",
+      "decision": "blocked",
+      "decided_at": "2026-08-11",
+      "blocked_by": "TASK-021-T2-FT-003-W18",
+      "root_cause_dependency": "TASK-020-T3-FT-002-W17",
+      "reason": "Transitive dependency chain is blocked by exhausted failed TASK-020; no TASK-022 execution or acceptance gate is eligible.",
+      "resume_owner": "/feature-to-tasks FT-002 creates and closes an indexed upstream repair, followed by scheduler dependency recovery."
+    },
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/live-provider runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-022-T2-FT-004-W19/handoff.md",
+        ".tasks/TASK-022-T2-FT-004-W19/TASK-022-T2-FT-004-W19-S-EXE-final-report-code-01.md",
+        ".protocols/TASK-022-T2-FT-004-W19/verification.md",
+        ".tasks/TASK-022-T2-FT-004-W19/TASK-022-T2-FT-004-W19-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-022-T2-FT-004-W19/red-baseline.md",
+        ".tasks/TASK-022-T2-FT-004-W19/long-term-completeness-matrix.json",
+        ".tasks/TASK-022-T2-FT-004-W19/gate-results.md",
+        ".tasks/FT-004/FT-004-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after executor PASS_FOR_HANDOFF, fresh functional PASS and feature-level FT-004 semantic-pass; W18 and W20 remain done, while TASK-020 remains failed after exhausted 3/3 attempts.",
+      "accepted_residual_risk": [
+        "Target Android/custom-ROM rendering and live-provider/network compatibility remain DEFERRED by the explicit boundary; no runtime PASS is claimed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-004-ten-day-forecast.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-021-T2-FT-003-W18.task.json",
+    ".protocols/FT-004/plan.md",
+    ".protocols/FT-004/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-004.md"
+  ],
+  "evidence_required": [
+    "[FT-004-AC-001; REQ-010, REQ-026] Expected RED: current entry logic has no provider-specific complete-set threshold. GREEN: Tomorrow and Day-after open only for 10 Open-Meteo or 8 OpenWeather selected-provider records; one fewer produces the accepted unavailable result. Artifact: complete/incomplete entry matrix for both providers and both entry cards.",
+    "[FT-004-AC-002; REQ-010, REQ-022] Expected RED: current ten-position model does not prove dated empty positions for an eight-record provider. GREEN: every session has ten selected-city dates from today; Open-Meteo fills ten and OpenWeather retains all dates while leaving positions nine and ten empty. Artifact: ordered date/value projection comparison.",
+    "[FT-004-AC-005; REQ-010, REQ-026] Expected RED: missing-data rejection uses a single ten-record threshold. GREEN: fewer than 10 Open-Meteo or fewer than 8 OpenWeather records keeps Main Display with `Долгосрочный прогноз еще не подгрузился`. Artifact: provider-specific boundary cases.",
+    "[FT-004-AC-006; REQ-010, REQ-026] Expected RED: no honest OpenWeather 8+2 projection exists. GREEN: OpenWeather positions one through eight are available, nine and ten are dated empty cells, and no synthesis/cross-provider fill occurs; Open-Meteo fills all ten. Artifact: capability projection and source-identity result.",
+    "T2 repeatability: fixtures fix provider/date/timezone, session state starts closed, each case records entry/projection/message and cleanup leaves no cross-run state."
+  ],
+  "purpose": "Apply provider-specific daily completeness to the existing shared long-term session so Open-Meteo fills ten positions and OpenWeather honestly supplies eight plus two dated empty positions.",
+  "success_outcome": "Deterministic host evidence proves provider-correct entry thresholds and one ten-position selected-city projection: Open-Meteo 10 filled, OpenWeather 8 filled plus 2 empty, with incomplete sets unavailable and no synthesis or cross-provider data.",
+  "anti_goals": [
+    "Do not implement provider HTTP adapters, selection/key Settings, cache/history ownership or no-fallback dispatch already owned upstream.",
+    "Do not redesign the accepted 2x5 layout, available-card presentation, auto-close or gesture exit flow owned by terminal W5 evidence.",
+    "Do not demand ten records from OpenWeather, invent two provider records, hide the two positions, borrow Open-Meteo data or create provider-specific screens.",
+    "Do not add a plugin framework, new module, dependency or speculative forecast abstraction."
+  ],
+  "runtime_context": {
+    "forbidden_scope": [
+      "weather HTTP transport, adapter parsing, provider/key Settings and cache/history implementation",
+      "hourly forecast slot behavior",
+      "long-term layout/presentation/gesture redesign beyond regression preservation",
+      "synthetic/duplicated/cross-provider daily records or provider-specific screens",
+      "new modules, dependencies, plugin/DI/event infrastructure and live external calls"
+    ],
+    "stop_conditions": [
+      "Stop and ask the operator before changing Open-Meteo 10, OpenWeather 8+2, ten dated positions or the accepted unavailable message.",
+      "Stop and route to /spec-design if a new module, graph edge, public contract or state owner is required.",
+      "Stop and route to /feature-to-tasks FT-004 if task identity, tier, dependency, AC ownership or material scope must change.",
+      "Stop and return upstream to TASK-020 if normalized provider data cannot preserve required date/capability identity without adapter changes."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-001",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-002",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-005",
+    ".memory-bank/features/FT-004-ten-day-forecast.md#FT-004-AC-006"
+  ],
+  "normative_inputs": [
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#ft-004-long-term-forecast-session-surface",
+    ".memory-bank/contracts/capability-interfaces.md#forecast-sessions-to-weather-context",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/weather-provider.md#provider-capability-matrix",
+    ".memory-bank/contracts/weather-provider.md#provider-neutral-response-contract",
+    ".memory-bank/contracts/weather-provider.md#mapping-and-timezone-obligations",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/domains/local-data.md#ft-004-long-term-forecast-records",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Forecast Sessions owns session entry/lifecycle; Weather Context owns normalized selected-provider daily data and capability metadata.",
+    "A complete selected-provider set is exactly 10 Open-Meteo records or 8 OpenWeather records. Both yield ten dated positions from selected-city today.",
+    "OpenWeather positions nine and ten are intentional unavailable/empty projections and do not invalidate a complete eight-record set.",
+    "No missing record or empty position is synthesized, copied, borrowed from another provider or filled from a mismatched cache/history partition.",
+    "Existing available-card presentation and shared exit flow remain unchanged; no hard write_boundary is declared beyond advisory files and semantic controls."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/weather-provider.md#provider-capability-matrix",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/domains/local-data.md#ft-004-long-term-forecast-records"
+  ],
+  "verification_targets": [
+    "FT-004-AC-001 / REQ-010, REQ-026: provider-specific complete/incomplete entry from Tomorrow and Day-after.",
+    "FT-004-AC-002 / REQ-010, REQ-022: ten selected-city dated positions for both provider capabilities.",
+    "FT-004-AC-005 / REQ-010, REQ-026: fewer than provider threshold yields exact unavailable message and no session.",
+    "FT-004-AC-006 / REQ-010, REQ-026: Open-Meteo 10 filled versus OpenWeather 8 filled plus two empty without synthesis or cross-provider fill."
+  ]
+}

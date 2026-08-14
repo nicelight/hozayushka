@@ -1,7 +1,7 @@
 ---
 description: Foundation Dev Path evidence and feature pressure map.
 status: active
-last_updated: 2026-08-06
+last_updated: 2026-08-10
 ---
 # Foundation Dev Path
 
@@ -37,7 +37,10 @@ evidence use the normal requirement, feature, task, protocol and plan paths.
   TASK-001 establishes the preliminary build/start/test commands, walking
   skeleton, supported Foundation probe mode, owner-local persistence baseline
   and provider fixture path. The final Foundation Gate proves the host baseline;
-  target-device compatibility is a later readiness gate.
+  target-device compatibility is a later readiness gate. The provider migration
+  reuses the established adapter seam, owner-local Settings/Weather stores and
+  isolated fixture path; it requires Foundation revalidation against Planning
+  Revision `2`, not a new Foundation work item.
 
 ## TASK-001 preliminary baseline
 
@@ -61,13 +64,13 @@ FT-000 host verification.
 | Feature | Pressure | Foundation Response | Probe | Status |
 |---|---|---|---|---|
 | FT-001 | Android entry, fullscreen, clock shell and device runtime | Establish one composition root and target-display shell | Launch/readability/fullscreen/keep-screen-on probe | established |
-| FT-002 | Provider mapping, cache/freshness, history and deterministic weather visuals | Establish local-data owner path and redacted weather fixture | Fresh/stale/missing-field/palette/trend probe | established |
-| FT-003 | Hourly fields, city timezone and shared forecast session | Establish normalized forecast fixture and session timing path | Eight-slot/timezone/completeness probe | established |
-| FT-004 | Ten-day horizon, date boundaries and shared forecast exit | Reuse forecast contract and deterministic daily fixture | Ten-card/order/timezone/exit probe | established |
+| FT-002 | Two provider mappings, selected dispatch, provider-identified cache/history and deterministic weather visuals | Reuse established adapter seam, local-data owner path and isolated redacted fixtures | No-key/synthetic-key dispatch, matching-cache/freshness/palette/trend probe | established; revalidate |
+| FT-003 | Strict eight-slot fields, city timezone and shared forecast session | Reuse normalized forecast fixture and session timing path | Per-provider eight-slot/timezone/completeness probe | established; revalidate |
+| FT-004 | Provider-supported 10-versus-8 horizon, ten-position projection and shared forecast exit | Reuse forecast contract and deterministic provider fixtures | Open-Meteo 10/OpenWeather 8+2/order/timezone/exit probe | established; revalidate |
 | FT-005 | Validated preset values and persistent timer preferences | Establish settings persistence and timer preference read path | Defaults/ranges/labels/last-valid-value probe | established |
 | FT-006 | Timer persistence and temporary process-stop recovery | Establish active-timer durable data and lifecycle adapter seam | Countdown/overdue/recovery/cancel probe | established |
 | FT-007 | Overdue visual state, audio policy and target-ROM behavior | Establish platform audio adapter and manual device probe route | Visual dismissal/silent-DND/ramp/cap probe | established |
-| FT-008 | Local API key, offline GeoNames data and provider access | Establish key-safe local storage, catalog fixture and redacted provider path | Artifact absence/offline search/provider failure probe | established |
+| FT-008 | Default/no-key provider, explicit OpenWeather local key, offline GeoNames data and attribution | Reuse key-safe local storage, catalog fixture and redacted provider seam | Selection/reopen/artifact absence/offline search/attribution/provider failure probe | established; revalidate |
 | FT-009 | Auto-save validation and live pseudo-glass preview | Establish settings/UI test seam and preview fixture path | Valid/invalid persistence and preview-state probe | established |
 
 ## Deferred Decisions
@@ -76,7 +79,7 @@ FT-000 host verification.
 |---|---|---|
 | Exact Gradle/package/UI toolkit setup | TASK-001 uses the cached Android Gradle/Kotlin plugins, provisional `com.hozayushka.app` namespace and platform `Activity`/`View` APIs; this does not add a runtime library or alter the target shape. | Final packaging review / Foundation Gate. |
 | Project-native persistence primitive | TASK-001 establishes owner-local Android `SharedPreferences` stores plus isolated in-memory host-probe stores; no shared storage owner is introduced. | Foundation Gate and later feature schema work; operator checkpoint if a new dependency or security posture is required. |
-| Exact provider field serialization | Product semantics are accepted; feature-level mapping needs a runnable fixture. | FT-002–FT-004 feature design. |
+| Exact provider serializer types and fixture literals | Global endpoints, mapping semantics, capability matrix and ownership are accepted; implementation-level serialization still needs runnable provider-specific fixtures. | FT-002–FT-004/FT-008 feature design. |
 | Target custom-ROM lifecycle/audio behavior | Runtime cannot be meaningfully evaluated while only the walking skeleton is under construction. | Later readiness/release validation after the application is ready; not FT-000 execution. |
 
 ## Foundation Exit Criteria
@@ -86,10 +89,19 @@ FT-000 host verification.
 - no P0/P1 design pressure unresolved
 - feature dev path allowed
 
+## Provider-Migration Revalidation Decision
+
+The accepted provider migration does not require a new composition root,
+runtime, storage owner, harness, dependency or Foundation task. The existing
+Foundation path has been revalidated against Planning Revision `2` and remains
+sufficient. The Gate Anchors, historical task records, statuses and evidence
+remain unchanged; no Foundation probe or task is added.
+
 ## Queue Handoff
 
 - Queue created: `TASK-001-T3-FT-000-W0` -> `TASK-002-T3-FT-000-W1`.
 - Foundation Gate closed: `TASK-002-T3-FT-000-W1` is `done` by explicit owner
   decision on 2026-08-06.
-- Product task design may proceed through `/feature-to-tasks FT-<NNN>`;
+- Revision `2` Foundation revalidation is complete with the queue unchanged.
+  Provider-migration task design proceeds through `/feature-to-tasks --all`;
   target-device compatibility remains a later readiness/release gate.

@@ -1,7 +1,7 @@
 ---
 description: Implementation plan for FT-009 alert and glass personalization settings.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-10
 ---
 # FT-009 — Feature plan
 
@@ -17,16 +17,16 @@ preview that uses the production Today weather-card presentation.
 - Epic: [.memory-bank/epics/EP-004-settings-location.md](../../epics/EP-004-settings-location.md)
 - Direct requirements: `REQ-019`, `REQ-020`, `REQ-021`
 - Feature acceptance: `FT-009-AC-001`
-- Global Backbone: `complete`, Planning Revision `1`
+- Global Backbone: `complete`, Planning Revision `2`
 - Foundation Gate: `TASK-002-T3-FT-000-W1`, status `done`
-- Approved sequential predecessor: `TASK-010-T3-FT-008-W9`, status `planned`
+- Approved sequential predecessor: `TASK-010-T3-FT-008-W9`, status `done`
 - Clarified PRD: `clarification_status: complete`
 
 ## Queue
 
 | Order | Task | Tier | Wave | Status | Depends on | Primary owner |
 |---|---|---|---|---|---|---|
-| 1 | `TASK-011-T3-FT-009-W10` | T3 | W10 | planned | `TASK-010-T3-FT-008-W9` | Settings & Location |
+| 1 | `TASK-011-T3-FT-009-W10` | T3 | W10 | done | `TASK-010-T3-FT-008-W9` | Settings & Location |
 
 One task is sufficient. Alert sound/volume validation, glass persistence,
 preview composition, invalid-value preservation and consumer projection form
@@ -59,7 +59,7 @@ optional behavior-spec file is required.
 | Platform compatibility and proof | `reuse` | `platform-runtime.md#timer-and-audio-runtime-boundary`, `#compatibility-and-failure-rules`; `runtime-verification.md#deterministic-host-side-checks`, `#target-device-evidence` |
 
 No `needed_before_tasks` Backbone row remains and Planning Revision remains
-positive and unchanged at `1`.
+positive and reconciled at Planning Revision `2`.
 
 ## Scope and execution path
 
@@ -105,6 +105,6 @@ needed, and deterministic tests under
 
 ## Handoff
 
-After this task-plan surface is accepted, the immediate route is
-`/review-tasks-plan FT-009`; execution, `/mb-doctor`, `/verify`,
+Queue action is `reconciled`; no new FT-009 task is created. Exact next owner is
+fresh `/review-tasks-plan --all`; execution, `/mb-doctor`, `/verify`,
 `/red-verify` and `/mb-sync` are outside this planning run.

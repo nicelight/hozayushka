@@ -6,6 +6,7 @@ import com.hozayushka.app.adapters.weather.ProviderHourlyWeather
 import com.hozayushka.app.adapters.weather.ProviderWeatherData
 import com.hozayushka.app.adapters.weather.WeatherProvider
 import com.hozayushka.app.adapters.weather.WeatherProviderFailure
+import com.hozayushka.app.adapters.weather.WeatherProviderId
 import com.hozayushka.app.adapters.weather.WeatherProviderRequest
 import com.hozayushka.app.adapters.weather.WeatherProviderResult
 import com.hozayushka.app.adapters.weather.RedactedProviderPayload
@@ -24,6 +25,9 @@ import com.hozayushka.app.weather.WeatherFreshness
 import com.hozayushka.app.weather.WeatherIllustration
 import com.hozayushka.app.weather.WeatherRefreshTrigger
 import com.hozayushka.app.weather.WeatherSnapshot
+import com.hozayushka.app.timer.InMemoryTimerStateStore
+import com.hozayushka.app.timer.TimerCapability
+import com.hozayushka.app.timer.TimerGesture
 import java.time.LocalDate
 import java.time.LocalTime
 import org.junit.Assert.assertEquals
@@ -107,7 +111,8 @@ class WeatherContextTest {
         val weather = WeatherCapability(
             locationReader = locationReader,
             cacheStore = store,
-            provider = QueueProvider(sampleData(pressure = 100.0), sampleData(pressure = 104.1)),
+            openMeteoProvider = QueueProvider(sampleData(pressure = 100.0), sampleData(pressure = 104.1)),
+            openWeatherProvider = QueueProvider(sampleData()),
         )
         weather.refresh(request(), midday - 3L * 60L * 60L * 1_000L)
         weather.refresh(request(), midday)
@@ -142,7 +147,8 @@ class WeatherContextTest {
         val weather = WeatherCapability(
             locationReader = settings,
             cacheStore = InMemoryWeatherCacheStore(),
-            provider = QueueProvider(sampleData(apiTimeZone = "Asia/Dushanbe", moonPhase = null)),
+            openMeteoProvider = QueueProvider(sampleData(apiTimeZone = "Asia/Dushanbe", moonPhase = null)),
+            openWeatherProvider = QueueProvider(sampleData()),
         )
         weather.refresh(request(), nightMillis)
 
@@ -195,6 +201,76 @@ class WeatherContextTest {
         assertEquals(4, stale.cards.size)
         assertTrue(stale.cards.all { it.temperatureCelsius == null && it.pressureArrowCount == 0 })
         assertEquals(3, provider.calls)
+    }
+
+    @Test
+    fun selectedWeatherActivationLeavesClockAndTimerControlTraceUnchanged() {
+        val clockTicks = listOf(0L, 1_000L, 5_000L, 60_000L, 60_001L)
+        val controlTimer = TimerCapability(InMemoryTimerStateStore())
+        controlTimer.start(midday, 60_000L)
+        val controlTrace = clockTicks.map { controlTimer.snapshotAt(midday + it) }
+        val controlCancelled = controlTimer.handleGesture(midday + 1_000L, TimerGesture.DOUBLE_TAP)
+
+        val controlOverdueTimer = TimerCapability(InMemoryTimerStateStore())
+        controlOverdueTimer.start(midday, 1_000L)
+        val controlDismissed = controlOverdueTimer.handleGesture(midday + 1_001L, TimerGesture.SINGLE_TAP)
+
+        val settingsStore = InMemorySettingsStateStore()
+        lateinit var weather: WeatherCapability
+        val settings = SettingsCapability(
+            stateStore = settingsStore,
+            onValidOpenWeatherApiKeySaved = {
+                weather.refreshIfNeeded(midday, true, WeatherRefreshTrigger.PROVIDER_CHANGE)
+            },
+        )
+        settings.saveFoundationLocation(location)
+        settings.updateWeatherProvider(com.hozayushka.app.settings.WeatherProviderSelection.OPEN_WEATHER)
+        val openMeteo = object : WeatherProvider {
+            override val providerId: WeatherProviderId = WeatherProviderId.OPEN_METEO
+
+            override fun fetch(request: WeatherProviderRequest): WeatherProviderResult {
+                error("non-selected provider invoked")
+            }
+        }
+        var openWeatherCalls = 0
+        val openWeather = object : WeatherProvider {
+            override val providerId: WeatherProviderId = WeatherProviderId.OPEN_WEATHER
+
+            override fun fetch(request: WeatherProviderRequest): WeatherProviderResult {
+                openWeatherCalls += 1
+                return WeatherProviderResult(
+                    payload = RedactedProviderPayload(21, "owm:803"),
+                    credentialWasReceived = request.hasCredential(),
+                    redactedCredential = request.redactedCredential(),
+                    weatherData = sampleData(),
+                    provider = providerId,
+                )
+            }
+        }
+        val store = InMemoryWeatherCacheStore()
+        weather = WeatherCapability(settings, store, openMeteo, openWeather)
+        assertNull(weather.refreshIfNeeded(midday, true, WeatherRefreshTrigger.PROVIDER_CHANGE))
+        assertEquals("OpenWeather: API-ключ не указан", weather.inlineErrorMessage())
+
+        val treatmentTimer = TimerCapability(InMemoryTimerStateStore())
+        treatmentTimer.start(midday, 60_000L)
+        assertTrue(settings.updateOpenWeatherApiKey(syntheticKey()).accepted)
+        val treatmentTrace = clockTicks.map { treatmentTimer.snapshotAt(midday + it) }
+        val treatmentCancelled = treatmentTimer.handleGesture(midday + 1_000L, TimerGesture.DOUBLE_TAP)
+
+        val treatmentOverdueTimer = TimerCapability(InMemoryTimerStateStore())
+        treatmentOverdueTimer.start(midday, 1_000L)
+        val treatmentDismissed = treatmentOverdueTimer.handleGesture(midday + 1_001L, TimerGesture.SINGLE_TAP)
+
+        assertEquals(controlTrace, treatmentTrace)
+        assertEquals(controlCancelled, treatmentCancelled)
+        assertEquals(controlDismissed, treatmentDismissed)
+        assertEquals(1, openWeatherCalls)
+        assertNull(weather.inlineErrorMessage())
+        assertEquals(WeatherFreshness.FRESH, weather.projection(midday).freshness)
+        assertEquals(WeatherProviderId.OPEN_WEATHER, store.loadRecord()?.provider)
+        assertEquals(location.cityLabel, store.loadRecord()?.snapshot?.cityLabel)
+        assertTrue(store.loadRecord()?.locationIdentity.orEmpty().isNotBlank())
     }
 
     @Test
@@ -331,7 +407,7 @@ class WeatherContextTest {
                 ),
             )
 
-            assertNull(weather.refresh(request(), now))
+            assertNotNull(weather.refresh(request(), now))
             assertNull(weather.hourlyProjection(now))
         }
     }
@@ -352,9 +428,9 @@ class WeatherContextTest {
         assertNotNull(cachedLongTerm)
         assertTrue(requireNotNull(cachedLongTerm).cards.none { it.illustration == WeatherIllustration.NEUTRAL_CLOUD })
 
-        assertNull(weather.refresh(request(), midday + 1_000L))
+        assertNotNull(weather.refresh(request(), midday + 1_000L))
         assertEquals(cachedLongTerm, weather.longTermProjection(midday + 1_000L))
-        assertEquals(cachedSnapshot, weather.snapshot())
+        assertEquals(cachedSnapshot?.copy(updatedAtMillis = midday + 1_000L), weather.snapshot())
     }
 
     @Test
@@ -379,9 +455,9 @@ class WeatherContextTest {
             val cachedSnapshot = weather.snapshot()
             assertNotNull(cachedHourly)
 
-            assertNull(weather.refresh(request(), midday + 1_000L))
+            assertNotNull(weather.refresh(request(), midday + 1_000L))
             assertEquals(cachedHourly, weather.hourlyProjection(midday + 1_000L))
-            assertEquals(cachedSnapshot, weather.snapshot())
+            assertEquals(cachedSnapshot?.copy(updatedAtMillis = midday + 1_000L), weather.snapshot())
         }
     }
 
@@ -414,10 +490,16 @@ class WeatherContextTest {
         cacheStore: WeatherCacheStore = InMemoryWeatherCacheStore(),
     ): WeatherCapability {
         val settings = SettingsCapability(InMemorySettingsStateStore()).also { it.saveFoundationLocation(location) }
-        return WeatherCapability(settings, cacheStore, provider)
+        return WeatherCapability(settings, cacheStore, provider, provider)
     }
 
-    private fun request(): WeatherProviderRequest = WeatherProviderRequest.fromSyntheticProbe()
+    private fun request(): WeatherProviderRequest = WeatherProviderRequest.withoutCredential()
+
+    private fun syntheticKey(): String = buildString {
+        append(WeatherContextTest::class.java.name.hashCode().toUInt().toString(16))
+        append('-')
+        append(midday.toString(16))
+    }
 
     private fun sampleData(
         apiTimeZone: String = "UTC",
@@ -491,10 +573,6 @@ class WeatherContextTest {
         private val delegate = InMemoryWeatherCacheStore()
         var loadRecordCalls: Int = 0
             private set
-
-        override fun load(): WeatherSnapshot? = delegate.load()
-
-        override fun save(snapshot: WeatherSnapshot) = delegate.save(snapshot)
 
         override fun loadRecord(): WeatherCacheRecord? {
             loadRecordCalls += 1

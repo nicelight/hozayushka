@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
+  <title>W25 fresh RED — Unicode pressure TextView baseline</title>
+  <rect width="900" height="260" fill="#10151B"/>
+  <g font-family="sans-serif" fill="#F4F7FA">
+    <text x="24" y="30" font-size="18">FRESH RED — current Main Display pressure path</text>
+    <text x="24" y="56" font-size="14" fill="#B8C3CB">TextView glyphs are not measured Canvas/Path arrows; no stroke/shaft/head pixel proof exists.</text>
+    <g font-size="54" text-anchor="middle" fill="#FFFFFF">
+      <text x="150" y="150">↑</text><text x="225" y="150">↑</text>
+      <text x="425" y="150">↓</text><text x="500" y="150">↓</text>
+    </g>
+    <text x="188" y="205" text-anchor="middle" font-size="15">UP ×2 TextView</text>
+    <text x="463" y="205" text-anchor="middle" font-size="15">DOWN ×2 TextView</text>
+    <text x="720" y="150" text-anchor="middle" font-size="42" fill="#7E8B94">zero: no view</text>
+  </g>
+</svg>

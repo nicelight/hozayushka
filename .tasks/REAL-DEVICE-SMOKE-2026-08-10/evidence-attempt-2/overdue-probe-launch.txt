@@ -1,0 +1,7 @@
+Starting: Intent { cmp=com.hozayushka.app/.app.MainActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: com.hozayushka.app/.app.MainActivity
+TotalTime: 3444
+WaitTime: 3493
+Complete

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="960" viewBox="0 0 1280 960">
+  <title>W25 GREEN — reduced six-state Main Display illustration bounds</title>
+  <rect width="1280" height="960" fill="#10151B"/>
+  <g stroke="#F4F7FA" stroke-opacity="0.62" stroke-width="2">
+    <rect x="32" y="24" width="223" height="444" rx="18" fill="#E7B205"/>
+    <rect x="271" y="24" width="279" height="444" rx="18" fill="#69A4BF"/>
+    <rect x="566" y="24" width="223" height="444" rx="18" fill="#97A5C5"/>
+    <rect x="805" y="24" width="223" height="444" rx="18" fill="#47884D"/>
+    <rect x="32" y="492" width="223" height="444" rx="18" fill="#5D8E30"/>
+    <rect x="271" y="492" width="279" height="444" rx="18" fill="#4F7EA6"/>
+  </g>
+  <g fill="none" stroke="#F4F7FA" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="5 5">
+    <rect x="64" y="56" width="159" height="96" rx="10"/>
+    <rect x="323" y="56" width="173" height="94" rx="10"/>
+    <rect x="598" y="56" width="159" height="96" rx="10"/>
+    <rect x="837" y="56" width="159" height="96" rx="10"/>
+    <rect x="64" y="524" width="159" height="96" rx="10"/>
+    <rect x="323" y="524" width="173" height="94" rx="10"/>
+  </g>
+  <g font-family="sans-serif" font-size="15" fill="#F4F7FA">
+    <text x="45" y="190">CLEAR · row 223×444</text>
+    <text x="287" y="190">CLOUD · Today 279×444</text>
+    <text x="579" y="190">NEUTRAL_CLOUD</text>
+    <text x="818" y="190">RAIN</text>
+    <text x="45" y="658">SNOW</text>
+    <text x="287" y="658">MOON · Today 279×444</text>
+  </g>
+  <g transform="translate(45 37)">
+    <g transform="translate(98.5 68.5) scale(.70) translate(-98.5 -68.5)">
+      <g fill="#FFD554" stroke="#FFF6C2" stroke-width="3.7" stroke-linecap="round">
+        <circle cx="98.5" cy="63" r="30.7" stroke="none"/>
+        <path d="M98.5 26.8v-13.7M98.5 99.2v13.7M62.3 63H48.6M134.7 63h13.7M72.9 37.4l-9.6-9.6M124.1 88.6l9.6 9.6M124.1 37.4l9.6-9.6M72.9 88.6l-9.6 9.6" fill="none"/>
+        <circle cx="98.5" cy="63" r="30.7" fill="none"/>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(287 37)">
+    <g transform="translate(123.5 67) scale(.70) translate(-123.5 -67)" fill="#EDF7FC" stroke="#F7FCFF" stroke-width="3.5" stroke-linejoin="round">
+      <path d="M30 94V82C30 66 45 53 62 58C69 39 93 31 112 43C126 31 150 39 152 56C171 51 180 64 180 80V94Z"/>
+    </g>
+  </g>
+  <g transform="translate(579 37)">
+    <g transform="translate(98.5 68.5) scale(.70) translate(-98.5 -68.5)" fill="#CADEEA" stroke="#F7FCFF" stroke-width="3.5" stroke-linejoin="round">
+      <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+    </g>
+  </g>
+  <g transform="translate(818 37)">
+    <g transform="translate(98.5 68.5) scale(.70) translate(-98.5 -68.5)" fill="#DEEFF9" stroke="#F7FCFF" stroke-width="3.5" stroke-linejoin="round">
+      <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+      <g stroke="#7ED3F6" stroke-width="4" stroke-linecap="round" fill="none"><path d="M59 108l-7 23M99 108l-7 23M138 108l-7 23"/></g>
+    </g>
+  </g>
+  <g transform="translate(45 505)">
+    <g transform="translate(98.5 68.5) scale(.70) translate(-98.5 -68.5)" fill="#F1F7FC" stroke="#F7FCFF" stroke-width="3.5" stroke-linejoin="round">
+      <path d="M24 96V83C24 66 39 53 56 58C63 39 87 31 106 43C120 31 144 39 146 56C165 51 174 64 174 80V96Z"/>
+      <g stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none"><path d="M51 115h24M63 103v24M54 106l18 18M72 106l-18 18M86 115h24M98 103v24M89 106l18 18M107 106l-18 18M121 115h24M133 103v24M124 106l18 18M142 106l-18 18"/></g>
+    </g>
+  </g>
+  <g transform="translate(287 505)">
+    <g transform="translate(123.5 67) scale(.70) translate(-123.5 -67)">
+      <path d="M123.5 44.5a22.5 22.5 0 1 0 0 45a22.5 22.5 0 0 1 0-45Z" fill="#F8E9A1" stroke="#FFF8CF" stroke-width="3.5"/>
+    </g>
+  </g>
+</svg>

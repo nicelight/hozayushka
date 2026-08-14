@@ -5,6 +5,8 @@ import com.hozayushka.app.adapters.platform.AlertAudioRequest
 import com.hozayushka.app.adapters.platform.AudioProbeResult
 import com.hozayushka.app.adapters.platform.PlatformRuntime
 import com.hozayushka.app.display.DisplayFormatters
+import com.hozayushka.app.display.MainDisplayTickerOwner
+import com.hozayushka.app.display.MainDisplayTickerScheduler
 import com.hozayushka.app.display.OverduePresentation
 import com.hozayushka.app.display.PresetPresentation
 import com.hozayushka.app.settings.BuiltInAlertSignal
@@ -15,10 +17,12 @@ import com.hozayushka.app.settings.TimerAlertSettingsProjection
 import com.hozayushka.app.settings.TimerPresetSlot
 import com.hozayushka.app.timer.InMemoryTimerStateStore
 import com.hozayushka.app.timer.TimerAlertPolicy
+import com.hozayushka.app.timer.TimerAlertDecision
 import com.hozayushka.app.timer.TimerCapability
 import com.hozayushka.app.timer.TimerGesture
 import com.hozayushka.app.timer.TimerLifecycleState
 import java.time.ZoneId
+import java.util.PriorityQueue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -26,6 +30,115 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class OverdueAlertTest {
+    @Test
+    fun overdueDisplayTicksEmitStartRepeatStopAndThirtyMinuteCap() {
+        val scheduler = DeterministicDisplayTickScheduler()
+        val platform = RecordingPlatform()
+        val timer = TimerCapability(InMemoryTimerStateStore(), platform = platform)
+        timer.start(startedAtMillis = 0L, durationMillis = 1_000L)
+        val ticker = tickerFor(timer, scheduler)
+
+        scheduler.advanceTo(999L)
+        assertEquals(TimerLifecycleState.COUNTDOWN, timer.snapshotAt(scheduler.nowMillis).state)
+        scheduler.advanceTo(1_000L)
+
+        assertEquals(1, platform.requests.size)
+        assertEquals(1, platform.startCalls)
+        assertTrue(platform.audioActive)
+        assertEquals("classic", platform.requests.first().signalId)
+        assertEquals(10, platform.requests.first().rampPercent)
+        assertEquals(0L, platform.requests.first().overdueElapsedMillis)
+        assertEquals(TimerLifecycleState.OVERDUE, timer.snapshotAt(scheduler.nowMillis).state)
+
+        scheduler.advanceTo(1_000L + TimerAlertPolicy.REPEAT_INTERVAL_MILLIS - 1L)
+        assertEquals(1, platform.requests.size)
+        scheduler.advanceTo(1_000L + TimerAlertPolicy.REPEAT_INTERVAL_MILLIS)
+        assertEquals(2, platform.requests.size)
+        assertEquals(100, platform.requests.last().rampPercent)
+
+        val dismissed = timer.handleGesture(scheduler.nowMillis, TimerGesture.SINGLE_TAP)
+        assertTrue(dismissed.dismissed)
+        assertEquals(TimerLifecycleState.IDLE, dismissed.snapshot.state)
+        assertFalse(platform.audioActive)
+        val requestsAtDismissal = platform.requests.size
+        scheduler.advanceTo(scheduler.nowMillis + TimerAlertPolicy.REPEAT_INTERVAL_MILLIS)
+        assertEquals(requestsAtDismissal, platform.requests.size)
+        ticker.dispose()
+
+        val capScheduler = DeterministicDisplayTickScheduler()
+        val capPlatform = RecordingPlatform()
+        val cappedTimer = TimerCapability(InMemoryTimerStateStore(), platform = capPlatform)
+        cappedTimer.start(startedAtMillis = 0L, durationMillis = 1_000L)
+        val capTicker = tickerFor(cappedTimer, capScheduler)
+        val capAt = 1_000L + TimerAlertPolicy.AUDIO_CAP_MILLIS
+        capScheduler.advanceTo(capAt)
+
+        assertEquals(TimerLifecycleState.OVERDUE, cappedTimer.snapshotAt(capAt).state)
+        assertTrue(cappedTimer.advanceAt(capAt).visualOverdue)
+        assertTrue(capPlatform.stopCalls >= 1)
+        assertFalse(capPlatform.audioActive)
+        val requestsAtCap = capPlatform.requests.size
+        capScheduler.advanceTo(capAt + TimerAlertPolicy.REPEAT_INTERVAL_MILLIS)
+        assertEquals(requestsAtCap, capPlatform.requests.size)
+        capTicker.dispose()
+    }
+
+    @Test
+    fun overdueSchedulerDenialAndErrorMatrixPreservesVisualAndDismissal() {
+        data class Case(
+            val name: String,
+            val expectedReason: String,
+            val volumePercent: Int = 70,
+            val platform: () -> RecordingPlatform,
+        )
+
+        val cases = listOf(
+            Case("VOLUME_0", "app_volume_suppressed", volumePercent = 0, platform = { RecordingPlatform() }),
+            Case("SILENT_NON_NORMAL_RINGER", "ringer_mode_suppressed", platform = { RecordingPlatform("ringer_mode_suppressed") }),
+            Case("DND", "dnd_suppressed", platform = { RecordingPlatform("dnd_suppressed") }),
+            Case("UNAVAILABLE_ROUTE", "audio_route_unavailable", platform = { RecordingPlatform("audio_route_unavailable") }),
+            Case("UNAVAILABLE_SERVICE", "audio_service_unavailable", platform = { RecordingPlatform("audio_service_unavailable") }),
+            Case("AUDIO_START_ERROR", "audio_start_error", platform = { RecordingPlatform(startError = true) }),
+        )
+
+        cases.forEach { case ->
+            val scheduler = DeterministicDisplayTickScheduler()
+            val platform = case.platform()
+            val settingsStore = InMemorySettingsStateStore().also {
+                it.save(SettingsState(timerAlert = TimerAlertSettingsProjection(
+                    signal = BuiltInAlertSignal.CLASSIC,
+                    volumePercent = case.volumePercent,
+                )))
+            }
+            val settings = SettingsCapability(settingsStore)
+            val timer = TimerCapability(
+                stateStore = InMemoryTimerStateStore(),
+                platform = platform,
+                alertSettingsReader = settings,
+            )
+            timer.start(startedAtMillis = 0L, durationMillis = 1L)
+            val ticker = tickerFor(timer, scheduler)
+
+            scheduler.advanceTo(50L)
+            val decision = scheduler.lastDecision
+            assertTrue(case.name, decision?.visualOverdue == true)
+            val audioResult = decision?.audioResult
+            assertNotNull(case.name, audioResult)
+            assertFalse(case.name, audioResult!!.permitted)
+            assertEquals(case.name, case.expectedReason, audioResult.reason)
+            assertEquals(case.name, TimerLifecycleState.OVERDUE, timer.snapshotAt(scheduler.nowMillis).state)
+
+            val dismissed = timer.handleGesture(scheduler.nowMillis, TimerGesture.DOUBLE_TAP)
+            assertTrue(case.name, dismissed.dismissed)
+            assertEquals(case.name, TimerLifecycleState.IDLE, dismissed.snapshot.state)
+            val requestsAtDismissal = platform.requests.size
+            scheduler.advanceTo(scheduler.nowMillis + TimerAlertPolicy.REPEAT_INTERVAL_MILLIS)
+            assertEquals(case.name, requestsAtDismissal, platform.requests.size)
+            assertFalse(case.name, platform.audioActive)
+            ticker.dispose()
+        }
+    }
+
     @Test
     fun overdueProjectionUsesActivePresetColorBlinkSplitAndFullElapsedCounter() {
         val settings = SettingsCapability(InMemorySettingsStateStore())
@@ -163,10 +276,12 @@ class OverdueAlertTest {
 
     private class RecordingPlatform(
         private val suppressionReason: String? = null,
+        private val startError: Boolean = false,
     ) : PlatformRuntime {
         val requests = mutableListOf<AlertAudioRequest>()
         var stopCalls = 0
         var audioActive = false
+        var startCalls = 0
 
         override fun nowMillis(): Long = 0L
         override fun deviceTimeText(nowMillis: Long): String = "00:00"
@@ -181,8 +296,20 @@ class OverdueAlertTest {
         override fun requestAlertAudio(): AudioProbeResult = AudioProbeResult(false, false, "not_applicable")
         override fun requestAlertAudio(request: AlertAudioRequest): AudioProbeResult {
             requests += request
-            audioActive = suppressionReason == null
-            return if (suppressionReason == null) {
+            val result = if (startError) {
+                audioActive = false
+                AudioProbeResult(
+                    requested = false,
+                    permitted = false,
+                    reason = "audio_start_error",
+                    signalId = request.signalId,
+                    volumePercent = request.volumePercent,
+                    rampPercent = request.rampPercent,
+                    overdueElapsedMillis = request.overdueElapsedMillis,
+                )
+            } else if (suppressionReason == null) {
+                startCalls += 1
+                audioActive = true
                 AudioProbeResult(
                     requested = true,
                     permitted = true,
@@ -193,6 +320,7 @@ class OverdueAlertTest {
                     overdueElapsedMillis = request.overdueElapsedMillis,
                 )
             } else {
+                audioActive = false
                 AudioProbeResult(
                     requested = false,
                     permitted = false,
@@ -203,11 +331,64 @@ class OverdueAlertTest {
                     overdueElapsedMillis = request.overdueElapsedMillis,
                 )
             }
+            return result
         }
 
         override fun stopAlertAudio() {
             stopCalls += 1
             audioActive = false
+        }
+    }
+
+    private fun tickerFor(
+        timer: TimerCapability,
+        scheduler: DeterministicDisplayTickScheduler,
+    ): MainDisplayTickerOwner {
+        val ticker = MainDisplayTickerOwner(
+            scheduler = scheduler,
+            onTick = {
+                scheduler.lastDecision = timer.advanceAt(scheduler.nowMillis)
+            },
+        )
+        ticker.onViewAttachedToWindow()
+        ticker.onActivityResumed()
+        return ticker
+    }
+
+    private class DeterministicDisplayTickScheduler : MainDisplayTickerScheduler {
+        private data class Entry(
+            val atMillis: Long,
+            val sequence: Long,
+            val runnable: Runnable,
+        )
+
+        private val queue = PriorityQueue<Entry>(compareBy<Entry> { it.atMillis }.thenBy { it.sequence })
+        private var sequence = 0L
+        var nowMillis: Long = 0L
+            private set
+        var lastDecision: TimerAlertDecision? = null
+
+        override fun post(runnable: Runnable) = enqueue(runnable, nowMillis)
+
+        override fun postDelayed(runnable: Runnable, delayMillis: Long) =
+            enqueue(runnable, nowMillis + delayMillis)
+
+        override fun removeCallbacks(runnable: Runnable) {
+            queue.removeIf { it.runnable === runnable }
+        }
+
+        fun advanceTo(targetMillis: Long) {
+            require(targetMillis >= nowMillis)
+            while (queue.peek()?.atMillis?.let { it <= targetMillis } == true) {
+                val next = queue.remove()
+                nowMillis = next.atMillis
+                next.runnable.run()
+            }
+            nowMillis = targetMillis
+        }
+
+        private fun enqueue(runnable: Runnable, atMillis: Long) {
+            queue.add(Entry(atMillis, sequence++, runnable))
         }
     }
 }

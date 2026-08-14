@@ -1,0 +1,293 @@
+{
+  "id": "TASK-032-T3-FT-001-W29",
+  "title": "Repair Main Display landscape clock, four weather slots, and preset radial glow",
+  "status": "failed",
+  "wave": "W29",
+  "feature": "FT-001",
+  "reqs": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-005",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-031-T3-FT-007-W28"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Focused display projection suite",
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "required": true
+    },
+    {
+      "name": "Full host unit suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Android debug lint",
+      "command": "./gradlew lintDebug",
+      "required": true
+    },
+    {
+      "name": "Static diff integrity",
+      "command": "git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before any production write, capture fresh task-scoped RED from the current Main Display source and deterministic host render/geometry probes at exactly 2460x1080 and 1280x720. Record the full HH:mm text bounds and measured width/height, available central/upper bounds, all four weather-slot bounds/order, NO_DATA/async-refresh shell behavior, populated redacted-fixture behavior, and current preset rim/gradient/glow observations. Do not reuse W26 or W28 as current RED; they are terminal historical references only.",
+    "Implement only the bounded Main Display correction in DisplayCapability.kt with focused DisplayProjectionTest.kt support: make the full density-safe HH:mm fit the available landscape central/upper area at both host sizes with no clipping or overflow; keep the four Yesterday/today/tomorrow/day-after slots present and geometrically stable through honest NO_DATA and an in-flight/async refresh state as well as a populated redacted fixture; and replace the existing linear white-to-color outline with one preset-color radial shade gradient, a materially wider rim than the current baseline, and a static outward-fading neon glow around each circular preset button.",
+    "Obtain claim-equivalent GREEN at both 2460x1080 and 1280x720 using the same deterministic host path and same-size visual receipts. The receipts must distinguish the complete HH:mm string and prove every measured clock bound fits its available region with no clipping/overflow; prove four slots in yesterday/today/tomorrow/day_after order for NO_DATA, async refresh and populated redacted-fixture cases without fabricated weather values, disappearing slots or layout shift; and prove each preset has one radial shade gradient anchored to its existing preset color, a materially wider rim than RED, and a static outward fading glow that does not obscure the clock/cards.",
+    "Preserve preset order, labels, existing colors, selected/active styling and touch routing, and preserve Timer & Alert semantics. Preserve the existing Main Display -> Weather Context read-only boundary: do not modify WeatherCapability, any provider/adapter, refresh/freshness semantics, cache/history, normalized data or provider selection. Preserve the existing four-card content/day-night/palette/pressure ownership and existing fullscreen/landscape policy rather than moving it to another owner.",
+    "Apply a named Reviewer/visual-QA rubric to the 2460x1080 and 1280x720 RED/GREEN receipts. Record PASS/FAIL and decisive measurements/observations for complete clock readability, no clipping/overflow, four-slot stability in NO_DATA/async/populated redacted fixture, preserved anchors/order, radial preset-color shade identity, wider rim, static outward fading glow, lightweight treatment, and host-versus-target evidence separation. The rubric is evidence, not a T3 checkpoint.",
+    "Run the focused display suite, full host unit suite, clean debug build, Android debug lint and git diff check. The focused/full regression evidence must retain device-time HH:mm/date/colon behavior, four ordered display-ready cards, NO_DATA and populated redacted fixture projections, preset labels/colors/selection/touch behavior and Timer & Alert gesture/countdown/overdue/audio behavior without writing or re-owning neighbor state.",
+    "Record target/device runtime, physical Samsung GT-I9300I Android 11 custom-ROM behavior, actual 1280x720 device readability/fullscreen/keep-screen-on and any later runtime visual receipt as DEFERRED under the current authorization. Host geometry, host images and static inspection must never become a target-device/runtime PASS; a later explicit authorization must route through the applicable runtime/readiness workflow rather than being silently performed here. Do not launch an emulator/device/runtime, use adb, network or credentials.",
+    "Stop and route to /feature-doctor FT-001 if density-safe fitting, materially wider rim, radial shade treatment or outward glow cannot be decided without a new fixed dp/ratio/gradient-stop/visual target. Stop and route to /spec-design if the result needs a new owner, module, graph edge, public contract, dependency, event path, resource/asset pipeline or composition-root orchestration. Stop before any write outside DisplayCapability.kt or DisplayProjectionTest.kt, any WeatherCapability/FoundationRuntime/adapter/Settings/Timer/resource/MainActivity change, any W26/W28 history change, or any lifecycle/scheduler/checkpoint/status/terminal-state change.",
+    {
+      "stage": "scheduler_provenance_disposition",
+      "mode": "scheduler_failure_policy",
+      "decision": "blocked",
+      "decided_at": "2026-08-13",
+      "gate_summary": {
+        "executor_handoff": "HANDOFF_BLOCKED_FOR_PROVENANCE",
+        "functional_verification": "NEEDS-CLARIFICATION",
+        "semantic_verification": "semantic-concern",
+        "product_semantic_failure": "not evidenced",
+        "target_evidence": "DEFERRED; no target/device/runtime action authorized",
+        "attempt_budget": "not incremented by provenance-only blocker under scheduler policy"
+      },
+      "accepted_evidence": [
+        ".tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-001-W29-STRICT-REPAIR-FRESH-final-report-docs-01.md",
+        ".protocols/TASK-032-T3-FT-001-W29/verification.md",
+        ".protocols/TASK-032-T3-FT-001-W29/red-verification.md",
+        ".tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-RED-VERIFY-final-report-docs-01.md",
+        ".protocols/TASK-032-T3-FT-001-W29/handoff.md",
+        ".tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-EXE-final-report-code-01.md"
+      ],
+      "provenance_findings": [
+        "No durable W29 pre-write RED or prior executor summary exists; current host/static GREEN receipts are supporting-only.",
+        "W26/W28 evidence and the current implementation cannot be promoted to W29 RED, and a synthetic failure would be dishonest.",
+        "The current worktree production/test diff remains exactly DisplayCapability.kt plus DisplayProjectionTest.kt; no product semantic failure is inferred."
+      ],
+      "follow_up_owner": "/feature-to-tasks FT-001 creates the single indexed W30 replacement, followed by fresh /review-tasks-plan FT-001, strict readiness, /exe, /verify and /red-verify.",
+    "lifecycle_note": "Scheduler disposition: in_progress -> blocked for a provenance/authority gap, not a proved product semantic failure. No fourth W29 execution, history rewrite, production write or W29-dependent promotion is authorized; W30 must depend on the last successful W28 path rather than blocked W29."
+  },
+  {
+    "stage": "scheduler_failure_disposition",
+    "mode": "scheduler_failure_policy",
+    "decision": "failed",
+    "decided_at": "2026-08-13",
+    "gate_summary": {
+      "executor_handoff": "HANDOFF_BLOCKED_FOR_PROVENANCE",
+      "functional_verification": "NEEDS-CLARIFICATION",
+      "semantic_verification": "semantic-concern",
+      "product_semantic_failure": "not evidenced",
+      "target_evidence": "DEFERRED; no target/device/runtime action authorized",
+      "attempt_budget": "not incremented by provenance-only blocker"
+    },
+    "accepted_evidence": [
+      ".tasks/TASK-MB-REVIEW-TASKS-PLAN/TASK-MB-REVIEW-TASKS-PLAN-S-TASKS-FT-001-W29-STRICT-REPAIR-FRESH-final-report-docs-01.md",
+      ".protocols/TASK-032-T3-FT-001-W29/verification.md",
+      ".protocols/TASK-032-T3-FT-001-W29/red-verification.md",
+      ".tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-VERIFY-final-report-docs-01.md",
+      ".tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-RED-VERIFY-final-report-docs-01.md",
+      ".tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-EXE-final-report-code-01.md",
+      ".tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-EXE-final-report-code-01.md",
+      ".tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-VERIFY-final-report-docs-01.md",
+      ".tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-RED-VERIFY-final-report-docs-01.md"
+    ],
+    "failure_findings": [
+      "W29 has no durable pre-write RED or prior executor summary; its current host/static GREEN receipts are supporting-only.",
+      "W26/W28 evidence cannot be promoted to W29 RED, and synthetic failure reconstruction is prohibited.",
+      "The provenance failure is task-local; product semantic failure is not inferred from the inconclusive W29 review."
+    ],
+    "recovery": {
+      "replacement_task": "TASK-033-T3-FT-001-W30",
+      "replacement_dependency": "TASK-031-T3-FT-001-W28",
+      "replacement_verdict": "PASS_FOR_HANDOFF + PASS + semantic-pass",
+      "replacement_status": "done"
+    },
+    "lifecycle_note": "Scheduler disposition: blocked -> failed after controlled recovery proved the provenance gap could not be repaired honestly. W29 is terminal history, no retry is authorized, and W30 is the normal indexed replacement that owns the successful product recovery."
+  }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-001-main-clock-display.md",
+    ".memory-bank/epics/EP-001-glanceable-display.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/foundation.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-029-T3-FT-001-W26.task.json",
+    ".memory-bank/tasks/TASK-031-T3-FT-007-W28.task.json",
+    ".protocols/TASK-031-T3-FT-007-W28/handoff.md",
+    ".protocols/TASK-031-T3-FT-007-W28/verification.md",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md"
+  ],
+  "evidence_required": [
+    "[FT-001-AC-002 / REQ-002] Fresh RED/GREEN at exactly 2460x1080 and 1280x720 must record the full HH:mm text/bounds, available central/upper region, card bounds/order and preset bounds. GREEN passes only when all five clock glyphs plus colon fit without clipping/overflow at both sizes and the clock remains above the three day slots. Artifacts: .tasks/TASK-032-T3-FT-001-W29/geometry.json, red-green-contact-sheet.svg and host-gates.md.",
+    "[FT-001-AC-002 / REQ-002] Fresh RED/GREEN must distinguish four stable slots in yesterday/today/tomorrow/day_after order for honest NO_DATA, async/in-flight refresh and populated redacted-fixture cases. GREEN must retain each slot shell without fabricated values, accidental removal or layout shift, while populated values remain read-only projection content. Artifact: .tasks/TASK-032-T3-FT-001-W29/weather-slot-matrix.json and red-green-contact-sheet.svg.",
+    "[FT-001-AC-002 / REQ-002] Preset visual claim: same-size receipts and measured bounds prove three equal circular controls retain order, labels, colors, selected/active styling and touch targets; each uses one preset-color radial shade gradient, a materially wider rim than RED, and a static outward fading neon glow. Artifact: .tasks/TASK-032-T3-FT-001-W29/preset-visual-receipts.json, red-green-contact-sheet.svg and visual-rubric.md.",
+    "[REQ-023] Named Reviewer/visual-QA rubric must record PASS/FAIL, decisive observation and artifact locator for density-safe clock readability, no clipping/overflow, four-slot stability, radial/rim/glow treatment, lightweight static rendering and host/device separation at both host sizes. Artifact: .tasks/TASK-032-T3-FT-001-W29/visual-rubric.md.",
+    "[REQ-001] RED_NOT_APPLICABLE: actual fullscreen system-panel hiding, keep-screen-on and physical landscape behavior cannot be observed without the explicitly unauthorized runtime/device launch and are not changed inside the exact two-file boundary; alternative proof: two landscape host render sizes plus static boundary review preserve the existing display policy, and target/device evidence is recorded as DEFERRED. Artifacts: .tasks/TASK-032-T3-FT-001-W29/target-device.md and boundary-static-review.md.",
+    "[REQ-005 read-only regression] RED_NOT_APPLICABLE: intentionally breaking Weather Context's four-card projection/content/day-night/palette/pressure semantics or writing WeatherCapability/provider state would falsify the Main Display-only task and cross the hard boundary; alternative proof: focused/full host fixtures, the NO_DATA/populated redacted slot matrix and static review show read-only consumption of the existing four-card projection with no provider/adapter write. Artifact: .tasks/TASK-032-T3-FT-001-W29/weather-boundary-regression.md and boundary-static-review.md.",
+    "[Timer & Alert read-only regression] RED_NOT_APPLICABLE: intentionally changing preset execution, selected/active/touch dispatch, countdown, cancellation, overdue or audio behavior would reopen completed neighbor ownership; alternative proof: focused/full host regressions and exact-boundary review show TimerCapability, TimerAlertPolicy and platform/audio paths remain untouched. Artifact: .tasks/TASK-032-T3-FT-001-W29/timer-boundary-regression.md and boundary-static-review.md.",
+    "[Target/device deferral] Accepted alternative proof: no authorized runtime target is used in this planning/execution route; record physical-device/fullscreen/readability/keep-screen-on/radial visual behavior as DEFERRED with the unavailable/unauthorized-target condition and residual risk. Host receipts are not runtime PASS. Artifact: .tasks/TASK-032-T3-FT-001-W29/target-device.md.",
+    "T3 isolation and cleanup: host render fixtures use disposable deterministic state and redacted populated data; each owned claim has distinguishable RED/GREEN evidence, no credential/network/device state is created, and historical W26/W28 records plus lifecycle/checkpoint/status state remain unchanged. Artifact: .tasks/TASK-032-T3-FT-001-W29/host-gates.md and boundary-static-review.md."
+  ],
+  "purpose": "Repair the Main Display's density-safe landscape presentation after terminal W28: keep the complete HH:mm readable at both required host sizes, preserve all four weather-card slots through honest NO_DATA and async refresh as well as populated redacted data, and replace the preset outline with a wider preset-color radial rim plus static outward neon glow without changing capability ownership or timer semantics.",
+  "success_outcome": "Fresh claim-linked RED/GREEN host evidence at 2460x1080 and 1280x720 proves the complete HH:mm has no clipping/overflow, all four ordered weather slots remain visible in NO_DATA/async/populated redacted-fixture states, and each circular preset retains its order/label/color/selected-touch contract while showing one preset-color radial shade gradient, a materially wider rim and a static outward fading glow; focused/full/build/lint/diff gates pass, neighbor owners remain read-only, and target/device evidence is explicitly DEFERRED.",
+  "anti_goals": [
+    "Do not create a new feature acceptance criterion or reopen FT-001 ownership; the task is a bounded continuation under FT-001-AC-002 with REQ-001 and REQ-023 proof constraints.",
+    "Do not change WeatherCapability, WeatherProviderAdapter/OpenMeteo/OpenWeather adapter behavior, provider selection, refresh/freshness/cache/history/normalized data, or any Weather Context state/contract.",
+    "Do not remove, synthesize, relabel or reorder weather slots; do not make NO_DATA or async refresh collapse the four-slot shell; do not redesign weather content or presentation ownership.",
+    "Do not change preset order, labels, existing colors, selected/active styling, touch routing, Timer & Alert semantics, countdown/cancellation/overdue/audio or lifecycle behavior.",
+    "Do not introduce fixed product dp, ratio, font, rim width, gradient stops, assets, resources, dependencies, modules, public contracts, graph edges, events, network calls, credentials or heavy realtime effects.",
+    "Do not modify W26/W28 task identity, status, evidence/history, protocols, scheduler/checkpoint/terminal state or any unrelated production file."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/FoundationRuntime.kt",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/app/MainActivity.kt",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-029-T3-FT-001-W26.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-031-T3-FT-007-W28.task.json status, evidence and history",
+      ".protocols/TASK-029-T3-FT-001-W26/",
+      ".protocols/TASK-031-T3-FT-007-W28/",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, lifecycle/RTM status, promotion decisions and terminal state",
+      "emulator/device/runtime launch, adb, network, credentials and secret-bearing artifacts",
+      "new owner, module, dependency, public contract, graph edge, event/message path or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "The complete HH:mm cannot fit at both required host sizes without clipping/overflow unless a new fixed dp, font, ratio or product target is selected; route the material visual choice to /feature-doctor FT-001.",
+      "The radial shade, materially wider rim or outward fading glow cannot be judged without fixed gradient stops, rim metrics or a new visual target; route the unresolved product choice to /feature-doctor FT-001.",
+      "Four-slot NO_DATA/async behavior requires WeatherCapability, provider/adapter, FoundationRuntime, resources, Settings, Timer, MainActivity or another owner to change; stop and route the boundary to /spec-design or the owning feature.",
+      "Any production or test write falls outside the two exact write-boundary files, or any action would execute/verify/sync, launch runtime/device, or change W26/W28 history/status/checkpoint/terminal state."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-001-main-clock-display.md#ft-001-ac-002-main-display-composition",
+    ".memory-bank/features/FT-001-main-clock-display.md#FT-001-AC-002",
+    ".memory-bank/requirements.md#main-display-and-clock",
+    ".memory-bank/requirements.md#weather-context-and-forecast",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/weather-card-presentation.md",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3",
+    ".memory-bank/tasks/TASK-029-T3-FT-001-W26.task.json",
+    ".memory-bank/tasks/TASK-031-T3-FT-007-W28.task.json",
+    ".protocols/TASK-031-T3-FT-007-W28/handoff.md",
+    ".protocols/TASK-031-T3-FT-007-W28/verification.md",
+    ".protocols/FT-001/plan.md",
+    ".protocols/FT-001/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-001.md",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#iii-bounded-agent-autonomy-and-human-checkpoints",
+    ".memory-bank/constitution.md#iv-definition-of-done",
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/foundation.md#gate-anchors",
+    ".memory-bank/architecture/system-architecture.md#architecture-spine",
+    ".memory-bank/architecture/system-architecture.md#ad-001---one-deployable-capability-sliced-application",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-004---no-event-or-message-boundary-in-v1",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display is the sole owner of shell composition/presentation and consumes existing capability projections without writing neighbor state; no business orchestration belongs in MainActivity, FoundationRuntime or a generic helper.",
+    "The task-owned feature locator is FT-001-AC-002. REQ-001 constrains the existing landscape/fullscreen display policy, REQ-002 governs the dominant clock/four-slot/preset composition, REQ-005 remains a read-only weather-card projection regression, and REQ-023 governs material readability/lightweight visual proof; no new FT-001 AC or RTM lifecycle value is created.",
+    "At both 2460x1080 and 1280x720 host render sizes, the full HH:mm must remain inside its available central/upper bounds without clipping or overflow. Density/available-space adaptation is judged from measured host bounds; no absolute product dp, font, ratio or fixed target is selected.",
+    "The four slots remain yesterday/today/tomorrow/day_after and remain present in NO_DATA, async refresh and populated redacted-fixture cases. Main Display may render stable shells and existing read-model values but may not synthesize weather data or alter Weather Context availability/freshness/provider semantics.",
+    "The three existing circular presets retain order, labels, existing colors, selected/active state and touch contracts. The visual delta is one preset-color radial shade gradient, a materially wider rim than fresh RED, and a static outward fading neon glow; exact stops/absolute width remain execution discretion unless they become a new product decision.",
+    "Timer & Alert remains the sole owner of preset execution, countdown, cancellation, overdue, audio and lifecycle semantics. Weather Context/provider remains the sole owner of normalized data, cache/history, refresh, freshness, availability and weather-specific presentation semantics.",
+    "Only existing Android/project-native primitives and host fixtures are authorized. No resource/asset/dependency/public-contract/graph-edge/event/network/credential/target-runtime side effect is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-weather-context",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/weather-card-presentation.md#display-ready-card-contract",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-001-AC-002 / REQ-002: fresh claim-linked RED/GREEN at 2460x1080 and 1280x720 proves a complete density-safe HH:mm in the central/upper region above Today/Tomorrow/Day-after with no clipping or overflow; the measured result must distinguish every clock bound from the available region.",
+    "FT-001-AC-002 / REQ-002 four-slot presentation: fresh NO_DATA, async-refresh and populated redacted-fixture cases prove yesterday/today/tomorrow/day_after remain four visible stable slots in order without invented values, removal or layout shift; Weather Context/provider stays read-only and owns data/freshness.",
+    "FT-001-AC-002 / REQ-002 preset presentation: fresh same-size receipts prove equal circular controls retain order, labels, colors, selected/active styling and touch targets while each shows one preset-color radial shade gradient, a materially wider rim than RED and a static outward fading glow.",
+    "REQ-001 read-only policy slice: two landscape host models and static source/boundary review preserve the existing fullscreen/landscape policy; actual target fullscreen, hidden panels, keep-screen-on and physical readability are explicitly DEFERRED and cannot be inferred from host evidence.",
+    "REQ-005 read-only regression: focused/full host fixture results and boundary review prove the existing four-card projection/content/day-night/palette/pressure contract is consumed without WeatherCapability/provider mutation or a new graph edge.",
+    "REQ-023 material visual NFR: a named Reviewer/visual-QA rubric compares both host sizes for clock dominance/readability, no clipping/overflow, four-slot stability, radial/rim/glow distinction, lightweight static treatment and honest host/device separation.",
+    "T3 claim-linked proof: each owned visual/composition claim has fresh RED, claim-equivalent GREEN, distinguishable artifact, named rubric where visual judgment is required, safe rerun/cleanup, focused/full/build/lint/diff gates and explicit target/device DEFERRED status."
+  ]
+}

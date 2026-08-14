@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "state": "GREEN",
+  "fixture": [
+    {"slot": "yesterday", "populated": false, "date": "13"},
+    {"slot": "today", "populated": true, "date": "14", "temperature": "23°"},
+    {"slot": "tomorrow", "populated": true, "date": "15", "temperature": "23°"},
+    {"slot": "day_after", "populated": true, "date": "16", "temperature": "24°"}
+  ],
+  "host_sizes": {
+    "2460x1080": {"band_bounds": {"top": 754, "bottom": 1056}, "band_ratio": 0.27962962, "clock_zone_ratio": 0.7203704, "card_heights": [302, 302, 302, 302], "card_bottoms": [1056, 1056, 1056, 1056], "result": "PASS"},
+    "1280x720": {"band_bounds": {"top": 495, "bottom": 696}, "band_ratio": 0.27916667, "clock_zone_ratio": 0.7208333, "card_heights": [201, 201, 201, 201], "card_bottoms": [696, 696, 696, 696], "result": "PASS"}
+  },
+  "physical_2460x1080_view_result": "PASS",
+  "raw_sources": ["focused-green.log", "physical-green-activity-top-2.txt"]
+}

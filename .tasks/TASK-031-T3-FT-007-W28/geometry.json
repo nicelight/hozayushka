@@ -1,0 +1,41 @@
+{
+  "attempt": 1,
+  "claim": "FT-007-AC-006 / REQ-015 / REQ-023",
+  "render_size": { "width": 1280, "height": 720 },
+  "idle": {
+    "surface": { "left": 273, "top": 24, "right": 1028, "bottom": 252 },
+    "text_size": 188.75,
+    "hidden_when_overdue": ["weather_cards", "city", "date", "standard_card_shell"]
+  },
+  "active_countdown": {
+    "surface": { "left": 273, "top": 24, "right": 1028, "bottom": 252 },
+    "backdrop": { "left": 536, "top": 24, "right": 764, "bottom": 252 },
+    "backdrop_shape": "circle",
+    "backdrop_fill": "transparent",
+    "text_size": 228.0,
+    "preset": { "slot": "SECOND", "color_identity": "#FF4FA3" }
+  },
+  "overdue": {
+    "surface": { "left": 0, "top": 0, "right": 1280, "bottom": 720 },
+    "backdrop": { "left": 280, "top": 0, "right": 1000, "bottom": 720 },
+    "backdrop_shape": "circle",
+    "backdrop_fill": "transparent",
+    "plus_bounds": { "left": 0, "top": 0, "right": 1280, "bottom": 360 },
+    "elapsed_bounds": { "left": 0, "top": 360, "right": 1280, "bottom": 720 },
+    "plus_text_size": 280.0,
+    "elapsed_text_size": 256.0,
+    "full_elapsed_value": "00:10:00",
+    "numeric_stable_within_second": true,
+    "plus_blink_samples": { "0": true, "382": false, "764": true },
+    "preset": { "slot": "SECOND", "color_identity": "#FF4FA3", "neon_border": true }
+  },
+  "comparison": {
+    "same_render_size": true,
+    "elapsed_larger_than_idle": true,
+    "elapsed_larger_than_active": true,
+    "plus_and_elapsed_bounds_overlap": false,
+    "elapsed_width_fit": true,
+    "elapsed_height_fit": true
+  },
+  "evidence_kind": "deterministic host geometry, not device screenshot"
+}

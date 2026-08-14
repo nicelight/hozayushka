@@ -1,0 +1,46 @@
+{
+  "task": "TASK-027-T3-FT-001-W24",
+  "attempt": 2,
+  "viewport": { "width": 1280, "height": 720 },
+  "probe": "DisplayProjectionTest.reachableMainDisplayRefreshKeepsIdleClock176AndCountdown32",
+  "red": {
+    "basis": "fresh attempt-2 current-source reachability probe before production correction",
+    "reachableRefresh": {
+      "ownerPath": "MainActivity.onResume -> MainDisplayTickerOwner -> refresh",
+      "idleHourColonMinuteTextSize": 132,
+      "countdownTextSize": 32,
+      "result": "RED"
+    },
+    "clock": { "left": 271, "top": 24, "right": 1028, "bottom": 252, "width": 757, "height": 228, "textStyle": 132 },
+    "presets": [
+      { "slot": "FIRST", "left": 1028, "top": 24, "right": 1248, "bottom": 248, "width": 220, "height": 224, "effectiveRadius": 18 },
+      { "slot": "SECOND", "left": 1028, "top": 248, "right": 1248, "bottom": 472, "width": 220, "height": 224, "effectiveRadius": 18 },
+      { "slot": "THIRD", "left": 1028, "top": 472, "right": 1248, "bottom": 696, "width": 220, "height": 224, "effectiveRadius": 18 }
+    ]
+  },
+  "green": {
+    "basis": "same deterministic host model after bounded correction plus post-refresh regression",
+    "reachableRefresh": {
+      "test": "DisplayProjectionTest.reachableMainDisplayRefreshKeepsIdleClock176AndCountdown32",
+      "idleHourColonMinuteTextSize": 176,
+      "countdownTextSize": 32,
+      "result": "GREEN"
+    },
+    "clock": { "left": 271, "top": 24, "right": 1028, "bottom": 252, "width": 757, "height": 228, "textStyle": 176 },
+    "presets": [
+      { "slot": "FIRST", "left": 1028, "top": 26, "right": 1248, "bottom": 246, "width": 220, "height": 220, "effectiveRadius": 110 },
+      { "slot": "SECOND", "left": 1028, "top": 250, "right": 1248, "bottom": 470, "width": 220, "height": 220, "effectiveRadius": 110 },
+      { "slot": "THIRD", "left": 1028, "top": 474, "right": 1248, "bottom": 694, "width": 220, "height": 220, "effectiveRadius": 110 }
+    ],
+    "weatherCards": {
+      "order": ["yesterday", "today", "tomorrow", "day_after"],
+      "bounds": [
+        { "left": 32, "top": 252, "right": 255, "bottom": 696, "width": 223, "height": 444 },
+        { "left": 271, "top": 252, "right": 550, "bottom": 696, "width": 279, "height": 444 },
+        { "left": 566, "top": 252, "right": 789, "bottom": 696, "width": 223, "height": 444 },
+        { "left": 805, "top": 252, "right": 1028, "bottom": 696, "width": 223, "height": 444 }
+      ],
+      "gaps": [16, 16, 16]
+    }
+  }
+}

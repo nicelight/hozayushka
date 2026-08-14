@@ -1,0 +1,208 @@
+{
+  "id": "TASK-038-T3-FT-007-W35",
+  "title": "Contain active countdown digits within the Main Display timer surface",
+  "status": "planned",
+  "wave": "W35",
+  "feature": "FT-007",
+  "reqs": [
+    "REQ-012",
+    "REQ-013",
+    "REQ-015",
+    "REQ-016",
+    "REQ-023"
+  ],
+  "depends_on": [
+    "TASK-037-T3-FT-001-W34"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Focused display projection and regression suite",
+      "command": "./gradlew :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+      "required": true
+    },
+    {
+      "name": "Full host unit suite",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Android debug lint",
+      "command": "./gradlew lintDebug",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Before any production behavior write, obtain honest task-scoped RED from the existing Main Display geometry/projection path at 1280x720 and 2460x1080. For representative complete countdown values in both accepted formats, record the actual surface bounds, text/ink bounds, clipping/overlap result, hidden weather/date/city/card content, separate timer rail and activating preset color. The operator screenshot /tmp/hozayushka-physical-smoke-countdown-2026-08-14.png is supporting physical RED only and must not be reported as PASS.",
+    "Implement only the smallest active-countdown presentation correction inside DisplayCapability.kt and its claim-linked DisplayProjectionTest.kt proof. Use the existing Timer & Alert projection and preset color identity; do not calculate remaining time, write timer state, change the public timer contract or add a new lifecycle owner.",
+    "Obtain claim-equivalent host GREEN at 1280x720 and 2460x1080 by measuring the full rendered MM:SS and HH:MM:SS strings against the available timer surface. PASS requires every character and colon to be contained/readable with no clipping or overlap, while the dedicated countdown surface hides weather/date/city/card-shell content, the rail remains separate and the activating preset neon color remains unchanged. Do not replace the measurement with a scalar text-size assertion or invent a fixed font/dp/ratio target.",
+    "Run read-only host regressions for the existing countdown single-tap protection/double-tap cancellation, countdown-to-overdue projection and overdue dismissal, and W23 alert request/start/repeat/stop plus silent/DND/route suppression. Prove through focused/full host results and boundary inspection that TimerCapability.kt, TimerAlertPolicy.kt and PlatformRuntimeAdapter.kt remain outside the write boundary and W8/W23/W28 evidence is not adopted or rewritten.",
+    "When execution-time operator authorization and the connected target are available, capture fresh physical RED/GREEN only through adb -s 1156725456009666 on the TECNO LI6 at its observed 2460x1080 landscape frame, after the authorized build/install. Show the complete countdown string, timer-surface containment, hidden weather/date, separate rail and preset color; this supplementary observation does not replace the canonical Samsung 1280x720 target. If the target is unavailable, record PHYSICAL_COUNTDOWN_READABILITY=DEFERRED with the unavailable-target condition and residual custom-ROM/readability risk; host evidence is never a runtime PASS and no emulator/AVD/QEMU route is valid.",
+    "Run all required build, focused/full host, lint and Memory Bank/diff gates from disposable synthetic timer state with safe reset and cleanup. Do not run device work during planning, and preserve W31/W34 done, W32 failed, W33 blocked, W8/W23/W28 done, all historical evidence/protocols, the scheduler checkpoint, lifecycle/REQ state and terminal state.",
+    "Stop and route to /feature-doctor FT-007 if complete-string containment cannot be achieved without selecting a new fixed visual target, ratio, font or surface contract. Stop and route to /feature-to-tasks FT-007 or /spec-design if the smallest correction needs a different tier, dependency, module, graph edge, public contract, permission, resource, event boundary, Timer & Alert/audio/lifecycle change or any write outside the exact two-file boundary."
+  ],
+  "docs": [
+    ".memory-bank/features/FT-007-overdue-alert.md",
+    ".memory-bank/epics/EP-003-timers-alert.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/spec-backbone.md",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/foundation.md",
+    ".memory-bank/invariants.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/main-display-presentation.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/strategy.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/schemas/task.schema.json",
+    ".memory-bank/tasks/TASK-030-T3-FT-006-W27.task.json",
+    ".memory-bank/tasks/TASK-031-T3-FT-007-W28.task.json",
+    ".memory-bank/tasks/TASK-037-T3-FT-001-W34.task.json",
+    ".protocols/FT-007/plan.md",
+    ".protocols/FT-007/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-007.md"
+  ],
+  "evidence_required": [
+    "[FT-007-AC-007 / REQ-012 / REQ-023] Fresh host RED/GREEN at 1280x720 and 2460x1080 must record the exact representative countdown string, available timer-surface bounds, measured text/ink bounds, and decisive containment/clipping/overlap result. RED must expose the current oversized/clipped presentation when measurable; GREEN must show every character and colon contained/readable with no overlap, while preserving hidden weather/date/city/card content, separate rail and activating preset color. Artifact: .tasks/TASK-038-T3-FT-007-W35/countdown-geometry-red.json, countdown-geometry-green.json and red-green-contact-sheet.svg.",
+    "[FT-007-AC-007 / REQ-023] A named Reviewer/visual-QA rubric must record PASS/FAIL, decisive observation and artifact locator for complete countdown readability, surface containment, no clipping/overlap, dedicated hidden-content state, separate timer rail, preset color identity and host/device separation. Artifact: .tasks/TASK-038-T3-FT-007-W35/visual-rubric.md.",
+    "[REQ-013 cancellation regression] RED_NOT_APPLICABLE: intentionally breaking the accepted single-tap protection or double-tap cancellation would falsify the existing Timer & Alert contract and exceed this presentation-only correction; alternative proof: focused/full host regression and boundary review show countdown gestures remain on the existing path with no TimerCapability write. Artifact: .tasks/TASK-038-T3-FT-007-W35/cancellation-regression.md and boundary-static-review.md.",
+    "[REQ-015 overdue regression] RED_NOT_APPLICABLE: intentionally changing completed W8/W28 overdue projection or any-tap dismissal would duplicate a closed outcome and falsify the accepted lifecycle contract; alternative proof: focused/full host regression and boundary review show the active-countdown sizing change leaves overdue transition/dismissal unchanged, with no W28 evidence mutation. Artifact: .tasks/TASK-038-T3-FT-007-W35/overdue-regression.md and boundary-static-review.md.",
+    "[REQ-016 audio regression] RED_NOT_APPLICABLE: intentionally changing completed W23 request/start/repeat/stop or silent/DND/route behavior would reopen a closed audio outcome and exceed this display-only correction; alternative proof: focused/full host regression and exact-boundary review show audio owners are untouched and W23 evidence remains historical. Artifact: .tasks/TASK-038-T3-FT-007-W35/audio-regression.md and boundary-static-review.md.",
+    "[Physical target / REQ-023] The operator screenshot is physical RED observation only. With the authorized TECNO serial available at execution, record fresh physical RED/GREEN and screenshot/measurement artifacts; otherwise record PHYSICAL_COUNTDOWN_READABILITY=DEFERRED, the unavailable-target condition and residual custom-ROM/readability risk. The TECNO result is supplementary to the canonical 1280x720 target, and host geometry is not runtime PASS. Artifact: .tasks/TASK-038-T3-FT-007-W35/target-device.md and physical-visual-receipt.md when a target run occurs.",
+    "T3 isolation and cleanup: each host case starts from disposable idle state with synthetic timestamps, uses safe rerun/reset, records the decisive result and leaves no persistent timer state, credentials, network, emulator or unrelated device artifact; planning preserves all historical task and scheduler state. Artifact: .tasks/TASK-038-T3-FT-007-W35/host-gates.md and boundary-static-review.md."
+  ],
+  "purpose": "Correct the operator-observed Main Display active-countdown sizing defect so the complete remaining value is readable and contained within the existing timer surface while preserving the accepted preset identity, rail separation, hidden countdown composition and all Timer & Alert overdue/cancel/audio behavior.",
+  "success_outcome": "Fresh claim-linked host RED/GREEN geometry/projection evidence proves complete MM:SS and HH:MM:SS countdown values fit inside the available timer surface without clipping or overlap at 1280x720 and 2460x1080, with weather/date/city/card content hidden, the timer rail separate and the activating preset neon color preserved; focused/full regressions keep cancellation, overdue and alert audio behavior unchanged, and authorized TECNO physical evidence is PASS only when freshly observed or explicitly DEFERRED with residual risk.",
+  "anti_goals": [
+    "Do not change TimerCapability.kt, TimerAlertPolicy.kt, PlatformRuntimeAdapter.kt, FoundationRuntime, MainActivity, Settings, weather/provider code, resources or any production/test path outside the exact two-file write boundary.",
+    "Do not change countdown arithmetic, one-active-timer behavior, single-tap protection, double-tap cancellation, temporary lifecycle recovery, overdue presentation/dismissal, alert signal/volume/ramp/repeat/cap or silent/DND/route policy.",
+    "Do not reopen, duplicate, rewrite or claim W8/W23/W28 overdue/audio evidence, or mutate W31/W34 done, W32 failed, W33 blocked history.",
+    "Do not add a fixed font/dp/surface/ratio target, lifecycle state, storage owner, event/message boundary, module, dependency, permission, resource pipeline, network path or composition-root orchestration.",
+    "Do not use emulator/AVD/QEMU, claim host geometry as physical/runtime PASS, or claim overdue physical behavior from the current countdown screenshot."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+    ],
+    "forbidden_scope": [
+      "app/src/main/kotlin/com/hozayushka/app/timer/",
+      "app/src/main/kotlin/com/hozayushka/app/adapters/platform/PlatformRuntimeAdapter.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/",
+      "app/src/main/kotlin/com/hozayushka/app/settings/",
+      "app/src/main/kotlin/com/hozayushka/app/weather/",
+      "app/src/main/kotlin/com/hozayushka/app/forecast/",
+      "app/src/main/res/",
+      "app/src/main/assets/",
+      ".memory-bank/tasks/TASK-009-T3-FT-007-W8.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-026-T3-FT-007-W23.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-031-T3-FT-007-W28.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-034-T3-FT-001-W31.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-035-T3-FT-001-W32.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-036-T3-FT-001-W33.task.json status, evidence and history",
+      ".memory-bank/tasks/TASK-037-T3-FT-001-W34.task.json status, evidence and history",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "scheduler checkpoint, lifecycle/REQ state, promotion decisions and terminal state",
+      "emulator, AVD, QEMU, live network/provider calls, credentials and unrelated device state",
+      "new module, dependency, public contract, graph edge, event/message path, permission, resource pipeline or composition-root business orchestration"
+    ],
+    "stop_conditions": [
+      "Complete-string containment requires a new fixed visual/product target or cannot be resolved within the existing adaptive surface; route to /feature-doctor FT-007.",
+      "The smallest correction requires Timer & Alert, audio, lifecycle, public-contract, module, graph, dependency, permission, resource or composition-root changes, or a write outside the exact two-file boundary; stop and route to the owning planning skill.",
+      "The authorized TECNO target is unavailable; continue host proof only and record physical readability as DEFERRED with residual risk. Never substitute host evidence or a different device for the authorized physical observation.",
+      "Any workflow action would mutate historical task status/evidence/protocols, scheduler checkpoint, lifecycle/REQ state or terminal history."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-007-overdue-alert.md#FT-007-AC-007",
+    ".memory-bank/features/FT-007-overdue-alert.md#separate-w34-residual",
+    ".memory-bank/requirements.md#timers-and-alert",
+    ".memory-bank/requirements.md#cross-cutting-constraints-and-resilience",
+    ".memory-bank/contracts/main-display-presentation.md",
+    ".memory-bank/contracts/main-display-presentation.md#clock-hero",
+    ".memory-bank/contracts/main-display-presentation.md#timer-rail",
+    ".memory-bank/tasks/TASK-030-T3-FT-006-W27.task.json",
+    ".memory-bank/tasks/TASK-031-T3-FT-007-W28.task.json",
+    ".memory-bank/tasks/TASK-037-T3-FT-001-W34.task.json",
+    ".tasks/TASK-030-T3-FT-006-W27/geometry.json",
+    ".tasks/TASK-031-T3-FT-007-W28/geometry.json",
+    "/tmp/hozayushka-physical-smoke-countdown-2026-08-14.png",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt"
+  ],
+  "normative_inputs": [
+    ".memory-bank/constitution.md#v-product-non-negotiables",
+    ".memory-bank/spec-backbone.md#global-backbone-status",
+    ".memory-bank/spec-index.md",
+    ".memory-bank/architecture/system-architecture.md#capability-slice-runtime",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/contracts/boundary-map.md#modules",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#timer-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/contracts/main-display-presentation.md#normalized-composition-contract",
+    ".memory-bank/contracts/main-display-presentation.md#clock-hero",
+    ".memory-bank/contracts/main-display-presentation.md#timer-rail",
+    ".memory-bank/contracts/main-display-presentation.md#measurement-and-tolerance-method",
+    ".memory-bank/contracts/main-display-presentation.md#visual-qa-rubric",
+    ".memory-bank/contracts/main-display-presentation.md#claim-linked-evidence",
+    ".memory-bank/testing/strategy.md#risk-based-checks",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#target-device-evidence",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Main Display is the sole presentation owner for this task; it consumes the existing Timer & Alert projection and never calculates remaining time or writes timer state.",
+    "The complete formatted countdown string, including its colon and either MM:SS or HH:MM:SS form, must fit within the existing dedicated timer surface with no clipping or overlap at the canonical 1280x720 host geometry; 2460x1080 is the supplementary physical/host geometry used by the operator observation.",
+    "The existing activating preset color identity, transparent neon ring/backdrop, separate right-side timer rail and hidden weather/date/city/card-shell countdown composition must remain intact.",
+    "Countdown cancellation, overdue transition/dismissal, audio request/start/repeat/stop, silent/DND/route suppression and platform fullscreen policy are existing read-only contracts and regression obligations.",
+    "No fixed font-size, dp, surface-size, ratio or gradient target is selected; use the canonical raw-bound measurement/tolerance method and route an unresolvable material target to feature clarification.",
+    "Physical evidence is limited to the authorized TECNO LI6 serial 1156725456009666 when available; otherwise it is DEFERRED with residual risk, and no emulator/AVD/QEMU evidence is valid."
+  ],
+  "invariants": [
+    ".memory-bank/invariants.md#must",
+    ".memory-bank/invariants.md#never",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/platform-runtime.md#display-runtime-boundary",
+    ".memory-bank/contracts/platform-runtime.md#timer-and-audio-runtime-boundary",
+    ".memory-bank/states/lifecycle-map.md#timer-state-contract",
+    ".memory-bank/contracts/main-display-presentation.md#normative-must--must-not-rules",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "verification_targets": [
+    "FT-007-AC-007 / REQ-012: active countdown presents the complete formatted remaining value in MM:SS and HH:MM:SS cases from the existing Timer & Alert projection, with no digit/colon clipping or overlap inside the available timer surface at 1280x720 and 2460x1080.",
+    "FT-007-AC-007 / REQ-023: named visual-QA and raw-bound evidence prove readable containment, hidden weather/date/city/card-shell content, separate timer rail and preserved activating preset neon color without introducing a fixed visual ratio; host evidence is separate from physical/runtime evidence.",
+    "REQ-013 read-only integration: focused/full host evidence proves single-tap countdown protection and double-tap cancellation remain available through the existing Main Display to Timer & Alert contract.",
+    "REQ-015 read-only integration: focused/full host evidence proves countdown completion still reaches the existing overdue projection and any-tap dismissal path; W28's overdue outcome remains historical and is not re-owned.",
+    "REQ-016 read-only integration: focused/full host evidence and boundary inspection prove W35 does not change W23's alert request/start/repeat/stop or silent/DND/route behavior; no physical audio PASS is inferred.",
+    ".memory-bank/contracts/main-display-presentation.md#claim-linked-evidence and .memory-bank/testing/runtime-verification.md#target-device-evidence: fresh claim-linked RED/GREEN, raw geometry artifacts, safe rerun/cleanup and conditional physical PASS|DEFERRED separation are required; no emulator/AVD/QEMU route is accepted."
+  ]
+}

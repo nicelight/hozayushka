@@ -72,6 +72,86 @@
     {
       "id": "TASK-018-T3-FT-002-W15",
       "file": "TASK-018-T3-FT-002-W15.task.json"
+    },
+    {
+      "id": "TASK-019-T3-FT-008-W16",
+      "file": "TASK-019-T3-FT-008-W16.task.json"
+    },
+    {
+      "id": "TASK-020-T3-FT-002-W17",
+      "file": "TASK-020-T3-FT-002-W17.task.json"
+    },
+    {
+      "id": "TASK-021-T2-FT-003-W18",
+      "file": "TASK-021-T2-FT-003-W18.task.json"
+    },
+    {
+      "id": "TASK-022-T2-FT-004-W19",
+      "file": "TASK-022-T2-FT-004-W19.task.json"
+    },
+    {
+      "id": "TASK-023-T3-FT-002-W20",
+      "file": "TASK-023-T3-FT-002-W20.task.json"
+    },
+    {
+      "id": "TASK-024-T3-FT-001-W21",
+      "file": "TASK-024-T3-FT-001-W21.task.json"
+    },
+    {
+      "id": "TASK-025-T3-FT-002-W22",
+      "file": "TASK-025-T3-FT-002-W22.task.json"
+    },
+    {
+      "id": "TASK-026-T3-FT-007-W23",
+      "file": "TASK-026-T3-FT-007-W23.task.json"
+    },
+    {
+      "id": "TASK-027-T3-FT-001-W24",
+      "file": "TASK-027-T3-FT-001-W24.task.json"
+    },
+    {
+      "id": "TASK-028-T3-FT-002-W25",
+      "file": "TASK-028-T3-FT-002-W25.task.json"
+    },
+    {
+      "id": "TASK-029-T3-FT-001-W26",
+      "file": "TASK-029-T3-FT-001-W26.task.json"
+    },
+    {
+      "id": "TASK-030-T3-FT-006-W27",
+      "file": "TASK-030-T3-FT-006-W27.task.json"
+    },
+    {
+      "id": "TASK-031-T3-FT-007-W28",
+      "file": "TASK-031-T3-FT-007-W28.task.json"
+    },
+    {
+      "id": "TASK-032-T3-FT-001-W29",
+      "file": "TASK-032-T3-FT-001-W29.task.json"
+    },
+    {
+      "id": "TASK-033-T3-FT-001-W30",
+      "file": "TASK-033-T3-FT-001-W30.task.json"
+    },
+   {
+     "id": "TASK-034-T3-FT-001-W31",
+     "file": "TASK-034-T3-FT-001-W31.task.json"
+    },
+    {
+      "id": "TASK-035-T3-FT-001-W32",
+      "file": "TASK-035-T3-FT-001-W32.task.json"
+    },
+    {
+      "id": "TASK-036-T3-FT-001-W33",
+      "file": "TASK-036-T3-FT-001-W33.task.json"
+    },
+    {
+      "id": "TASK-037-T3-FT-001-W34",
+      "file": "TASK-037-T3-FT-001-W34.task.json"
+    },
+    {
+      "id": "TASK-038-T3-FT-007-W35",
+      "file": "TASK-038-T3-FT-007-W35.task.json"
     }
   ]
 }

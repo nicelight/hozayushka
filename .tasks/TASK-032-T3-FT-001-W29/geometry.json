@@ -1,0 +1,68 @@
+{
+  "task_id": "TASK-032-T3-FT-001-W29",
+  "attempt": 2,
+  "receipt_status": "supporting-only",
+  "claim": "FT-001-AC-002 / REQ-002: complete HH:mm fits the available central/upper region at exactly 2460x1080 and 1280x720 without clipping or overflow, above the four weather slots",
+  "command": "./gradlew --offline --no-daemon --console=plain :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+  "cwd": "/home/serg/Projects/Mobile_APPS/hozayushka",
+  "exit_code": 0,
+  "input_state_basis": {
+    "revision": "4ab1e1fd538f92ab3e705193a4b236777b6616bf5",
+    "allowed_source_sha256": {
+      "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt": "1df3d1bd59abd40317b91b7a38fdcc41495de75550ba9588297202c4d2111bbb",
+      "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt": "0cdf53a0cc1fdb0c6679d87a8cecb8aedac30b729ed765a4a3d32a56ee97d77a"
+    },
+    "allowed_source_status": "both paths already unstaged-modified before recovery; no recovery source/test write",
+    "runtime_inputs": "offline JVM host unit test; no emulator/device/adb/network/provider/audio/runtime"
+  },
+  "completed_at": "2026-08-13 15:32 +0500",
+  "red": {
+    "status": "unavailable",
+    "reason": "No durable W29 pre-write executor receipt exists; W26/W28 history and artificial failures are not valid substitutes.",
+    "artifact": ".tasks/TASK-032-T3-FT-001-W29/red-baseline.md"
+  },
+  "green_host_model": [
+    {
+      "surface": "2460x1080",
+      "clock_text": "12:34",
+      "available_central_upper_bounds": {"left": 551, "top": 24, "right": 2208, "bottom": 374, "width": 1657, "height": 350},
+      "full_string_metric_basis": {"text_width_at_unit_size": 3.0, "text_height_at_unit_size": 1.2, "basis": "deterministic MainClockGeometry host model; not Android raster/device capture"},
+      "measured_text_bounds": {"left": 942.0, "top": 24.0, "right": 1817.0, "bottom": 374.0, "width": 875.0, "height": 350.0},
+      "measured_text_size_px": 291.66666,
+      "fits_available_region": true,
+      "clock_above_cards": true,
+      "weather_top": 374
+    },
+    {
+      "surface": "1280x720",
+      "clock_text": "12:34",
+      "available_central_upper_bounds": {"left": 273, "top": 24, "right": 1028, "bottom": 252, "width": 755, "height": 228},
+      "full_string_metric_basis": {"text_width_at_unit_size": 3.0, "text_height_at_unit_size": 1.2, "basis": "deterministic MainClockGeometry host model; not Android raster/device capture"},
+      "measured_text_bounds": {"left": 365.5, "top": 24.0, "right": 935.5, "bottom": 252.0, "width": 570.0, "height": 228.00002},
+      "measured_text_size_px": 190.0,
+      "fits_available_region": true,
+      "clock_above_cards": true,
+      "weather_top": 252
+    }
+  ],
+  "weather_card_bounds": {
+    "2460x1080": [
+      {"slot": "yesterday", "left": 32, "top": 374, "right": 527, "bottom": 1056, "width": 495, "height": 682},
+      {"slot": "today", "left": 551, "top": 374, "right": 1170, "bottom": 1056, "width": 619, "height": 682},
+      {"slot": "tomorrow", "left": 1194, "top": 374, "right": 1689, "bottom": 1056, "width": 495, "height": 682},
+      {"slot": "day_after", "left": 1713, "top": 374, "right": 2208, "bottom": 1056, "width": 495, "height": 682}
+    ],
+    "1280x720": [
+      {"slot": "yesterday", "left": 32, "top": 252, "right": 249, "bottom": 696, "width": 217, "height": 444},
+      {"slot": "today", "left": 273, "top": 252, "right": 546, "bottom": 696, "width": 273, "height": 444},
+      {"slot": "tomorrow", "left": 570, "top": 252, "right": 787, "bottom": 696, "width": 217, "height": 444},
+      {"slot": "day_after", "left": 811, "top": 252, "right": 1028, "bottom": 696, "width": 217, "height": 444}
+    ]
+  },
+  "source_locators": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:116-150",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:656-750",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt:183-207"
+  ],
+  "evidence": "Focused XML: app/build/test-results/testDebugUnitTest/TEST-com.hozayushka.app.DisplayProjectionTest.xml; current W29 focused test passed and printed the normalized fit observations. This receipt is executor supporting evidence, not independent proof."
+}

@@ -1,0 +1,12 @@
+device
+TECNO
+TECNO LI6
+35
+Physical size: 1080x2460
+Physical density: 440
+    mKeyguardOccluded=false mKeyguardOccludedChanged=false mPendingKeyguardOccluded=false
+    mAllowLockscreenWhenOnDisplays=false mLockScreenTimeout=600000 mLockScreenTimerActive=false
+    KeyguardServiceDelegate
+      deviceHasKeyguard=true
+      KeyguardStateMonitor
+31586

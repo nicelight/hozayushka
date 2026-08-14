@@ -192,7 +192,24 @@ class PlatformRuntimeAdapter(
             return AudioProbeResult(
                 requested = false,
                 permitted = false,
-                reason = "audio_route_unavailable",
+                reason = "audio_start_error",
+                signalId = request.signalId,
+                volumePercent = request.volumePercent,
+                rampPercent = request.rampPercent,
+                overdueElapsedMillis = request.overdueElapsedMillis,
+            )
+        }
+        val started = try {
+            tone.startTone(toneFor(request.signalId), 500)
+        } catch (_: RuntimeException) {
+            false
+        }
+        if (!started) {
+            tone.release()
+            return AudioProbeResult(
+                requested = false,
+                permitted = false,
+                reason = "audio_start_error",
                 signalId = request.signalId,
                 volumePercent = request.volumePercent,
                 rampPercent = request.rampPercent,
@@ -200,7 +217,6 @@ class PlatformRuntimeAdapter(
             )
         }
         toneGenerator = tone
-        tone.startTone(toneFor(request.signalId), 500)
         mainHandler.postDelayed({
             if (toneGenerator === tone) {
                 tone.release()

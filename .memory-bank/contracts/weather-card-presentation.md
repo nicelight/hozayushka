@@ -1,7 +1,7 @@
 ---
 description: Canonical FT-002 display-ready weather card, palette and pressure-arrow presentation contract.
 status: active
-last_updated: 2026-08-06
+last_updated: 2026-08-14
 source_of_truth: .memory-bank/prd.md, .memory-bank/features/FT-002-weather-cards-context.md, .memory-bank/analysis/brainstorming/BR-001.md, operator confirmation 2026-08-06
 ---
 # Weather Card Presentation
@@ -9,8 +9,11 @@ source_of_truth: .memory-bank/prd.md, .memory-bank/features/FT-002-weather-cards
 ## Display-ready card contract
 
 Weather Context supplies Main Display exactly four ordered card projections:
-`yesterday`, `today`, `tomorrow`, `day_after`. `today` uses the accepted larger
-variant; the other three use the equal smaller variant. A filled card contains
+`yesterday`, `today`, `tomorrow`, `day_after`. Main Display renders all four
+shell cards at equal height and on one bottom alignment line. `today` may retain
+an accepted wider or denser presentation variant; that variation MUST NOT make
+its shell taller, and `yesterday` MUST never be taller than the others. A filled
+card contains
 date, temperature, illustration input and temperature background, but no
 textual day or weather-condition label. A stale projection retains card/date
 geometry while removing values, illustration and arrows.

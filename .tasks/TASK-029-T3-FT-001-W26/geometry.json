@@ -1,0 +1,84 @@
+{
+  "task": "TASK-029-T3-FT-001-W26",
+  "attempt": 1,
+  "measurement_basis": "Deterministic MainDisplayGeometry host model; values are observed implementation geometry, not new product dp/ratio targets.",
+  "baseline_red": {
+    "host": "1280x720",
+    "clock": {
+      "availableCentralUpperBounds": [271, 24, 1028, 252],
+      "availableWidth": 757,
+      "availableHeight": 228,
+      "idleTextSize": 176.0
+    },
+    "presetControls": {
+      "bounds": [[1028, 26, 1248, 246], [1028, 250, 1248, 470], [1028, 474, 1248, 694]],
+      "sizes": [220, 220, 220],
+      "radii": [110.0, 110.0, 110.0],
+      "gaps": [4, 4],
+      "interior": "#314A5A filled",
+      "border": "single solid stroke",
+      "colorIdentity": ["#FF7A00", "#FF4FA3", "#A855F7"],
+      "order": ["FIRST", "SECOND", "THIRD"]
+    },
+    "weatherCards": {
+      "slots": ["YESTERDAY", "TODAY", "TOMORROW", "DAY_AFTER"],
+      "bounds": [[32, 252, 255, 696], [271, 252, 550, 696], [566, 252, 789, 696], [805, 252, 1028, 696]],
+      "widths": [223, 279, 223, 223],
+      "gaps": [16, 16, 16],
+      "smallerToTodayWidthRatioObservation": 0.7993
+    }
+  },
+  "green": {
+    "acceptedModel": {
+      "host": "1280x720",
+      "clock": {
+        "availableCentralUpperBounds": [273, 24, 1028, 252],
+        "availableWidth": 755,
+        "availableHeight": 228,
+        "adaptiveIdleTextSize": 188.75,
+        "baselineComparison": "188.75 > 176; remains above the weather row and inside central/upper bounds"
+      },
+      "presetControls": {
+        "bounds": [[1038, 36, 1238, 236], [1038, 260, 1238, 460], [1038, 484, 1238, 684]],
+        "sizes": [200, 200, 200],
+        "radii": [100.0, 100.0, 100.0],
+        "gaps": [24, 24],
+        "interior": "transparent",
+        "border": "Canvas LinearGradient shader; endpoint positions are left to the platform shader default",
+        "colorIdentity": ["#FF7A00", "#FF4FA3", "#A855F7"],
+        "order": ["FIRST", "SECOND", "THIRD"],
+        "selectedActive": "existing alpha/activated state retained; active width remains distinct"
+      },
+      "weatherCards": {
+        "slots": ["YESTERDAY", "TODAY", "TOMORROW", "DAY_AFTER"],
+        "bounds": [[32, 252, 249, 696], [273, 252, 546, 696], [570, 252, 787, 696], [811, 252, 1028, 696]],
+        "widths": [217, 273, 217, 217],
+        "gaps": [24, 24, 24],
+        "smallerToTodayWidthRatioObservation": 0.7949,
+        "todayReductionObservation": 0.2051,
+        "interpretation": "about-20%-smaller is a visual observation, not a fixed product ratio"
+      }
+    },
+    "alternateAdaptiveModel": {
+      "host": "1024x600",
+      "clock": {
+        "availableCentralUpperBounds": [213, 24, 772, 211],
+        "availableWidth": 559,
+        "availableHeight": 187,
+        "adaptiveIdleTextSize": 139.75,
+        "comparison": "smaller than the 1280x720 value while remaining positive and above the weather row"
+      },
+      "presetControls": {
+        "bounds": [[802, 36, 962, 196], [802, 220, 962, 380], [802, 404, 962, 564]],
+        "sizes": [160, 160, 160],
+        "radii": [80.0, 80.0, 80.0],
+        "gaps": [24, 24]
+      },
+      "weatherCards": {
+        "slots": ["YESTERDAY", "TODAY", "TOMORROW", "DAY_AFTER"],
+        "widths": [157, 197, 157, 157],
+        "gaps": [24, 24, 24]
+      }
+    }
+  }
+}

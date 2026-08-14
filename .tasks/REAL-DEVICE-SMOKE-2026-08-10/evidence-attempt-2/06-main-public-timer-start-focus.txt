@@ -1,0 +1,3 @@
+  mCurrentFocus=Window{6f709e5 u0 com.hozayushka.app/com.hozayushka.app.app.MainActivity}
+  mFocusedApp=ActivityRecord{f5e1604 u0 com.hozayushka.app/.app.MainActivity t4485}
+    mShowingDream=false mDreamingLockscreen=false

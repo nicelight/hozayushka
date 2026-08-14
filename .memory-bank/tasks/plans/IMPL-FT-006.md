@@ -1,7 +1,7 @@
 ---
 description: Implementation plan for FT-006 countdown lifecycle and cancellation.
 status: active
-last_updated: 2026-08-08
+last_updated: 2026-08-12
 ---
 # IMPL-FT-006 — Countdown lifecycle and cancellation
 
@@ -16,19 +16,20 @@ already-overdue state by any tap back to Main Display.
 
 ## Bounded task shape
 
-- One task: `TASK-008-T3-FT-006-W7`.
-- Primary owner: `Timer & Alert`.
-- Direct predecessor: `TASK-007-T3-FT-005-W6`; Foundation is transitive through
+- Completed task: `TASK-008-T3-FT-006-W7`, owned by `Timer & Alert`.
+- Follow-up task: `TASK-030-T3-FT-006-W27`, owned by `Main Display`, planned
+  directly after `TASK-029-T3-FT-001-W26`; Foundation is transitive through
   the approved chain ending at `TASK-002-T3-FT-000-W1`.
-- Tier: `T3`, because the outcome combines user-facing Android runtime state,
-  mutable timer persistence, lifecycle recovery and target-device evidence.
-- Planning status was `planned`; the authoritative indexed task now records
-  scheduler closure as `done`.
+- Tier: `T3`, because the follow-up changes user-visible Android runtime
+  presentation while carrying timer/lifecycle regression proof and the
+  accepted deferred target-readability route.
+- W7 remains scheduler-closed `done`; W27 is only `planned` until the fresh
+  task-plan review and later scheduler-owned readiness/execution routes.
 
 ## Acceptance closure
 
-All five FT-006 ACs are owned by the single task. `REQ-011` is retained as a
-scoped runtime integration claim for the one-active-timer invariant while
+`TASK-008-T3-FT-006-W7` owns all five original FT-006 ACs. `REQ-011` is
+retained as a scoped runtime integration claim for the one-active-timer invariant while
 FT-005 retains configuration validation/defaults/labels/colors. `REQ-012`,
 `REQ-013`, `REQ-014` and `REQ-025` are covered by the corresponding exact
 feature AC locators. The `REQ-025` locator explicitly includes no-network
@@ -45,8 +46,14 @@ lifecycle signals trigger rehydration from the same record. Host probes cover
 state arithmetic, cardinality, gestures, already-overdue any-tap dismissal and
 no-network operation; target evidence covers only lifecycle/display behavior
 host checks cannot establish.
-This is one cohesive independently verifiable outcome; no independent
-prerequisite, rollout unit or material risk requires a second task.
+For W27 the bounded path is: existing Timer & Alert countdown projection →
+Main Display active-state surface → focused host visual/lifecycle comparison.
+The task renders no weather/city/date/card content on that surface, compares
+countdown digits with the final idle-clock result without selecting a fixed
+numeric target, and keeps the activating preset's existing color identity in a
+transparent neon circular backdrop. This is one cohesive independently
+verifiable presentation outcome; no independent prerequisite or second owner
+is exposed.
 
 ## Canonical SDD coverage
 
@@ -76,7 +83,12 @@ checkpoint for a new dependency, public boundary or product behavior.
 - `app/src/test/kotlin/com/hozayushka/app/`
 - `app/src/test/resources/fixtures/`
 
-The surface is advisory and non-exhaustive; no hard write boundary is added.
+The W7 surface remains advisory and historical. W27's production/test hard
+boundary is exactly `app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt`
+and `app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt`.
+TimerCapability, TimerAlertPolicy, PlatformRuntimeAdapter, resources,
+composition-root wiring, network/provider paths and audio behavior are
+read-only/regression or forbidden scope.
 
 ## Gates, UAT and proof
 
@@ -135,7 +147,19 @@ no runtime `PASS` is claimed. FT-006 and REQ-012/013/014/025 are reconciled to
 promotion, dependent-state reconciliation, checkpoint and terminal-state
 updates remain outside `/mb-sync`.
 
+## W27 planning boundary
+
+W27 reuses the existing feature ACs and canonical subject specs; no new spec or
+behavior-spec file is created. It owns the active countdown presentation delta
+under `FT-006-AC-001` and carries regression proof for `FT-006-AC-002`,
+`FT-006-AC-003`, `FT-006-AC-004` and `FT-006-AC-005`. Its task card requires a named visual-QA
+rubric, fresh host RED/GREEN artifacts, isolated timer/lifecycle fixtures and
+honest `DEFERRED` target/device/audio runtime records. No emulator, device, adb,
+network or audio run is planned. If a fixed dp/ratio/gradient-stop decision is
+needed, pause and route to `/feature-doctor FT-006`.
+
 ## Handoff
 
-This boundary returns to the Orchestrator for scheduler-owned post-sync gates
-and the next queue action.
+Queue action is `created`; W7 remains `done` and
+`TASK-030-T3-FT-006-W27` remains `planned`. Exact next owner is fresh
+`/review-tasks-plan FT-006`; scheduler and sync state remain untouched.

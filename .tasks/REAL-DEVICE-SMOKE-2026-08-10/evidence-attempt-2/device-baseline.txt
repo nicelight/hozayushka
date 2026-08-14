@@ -1,0 +1,7 @@
+15
+35
+Physical size: 1080x2460
+Physical density: 440
+  mCurrentFocus=Window{a52442e u0 com.transsion.hilauncher/com.android.launcher3.uioverrides.QuickstepLauncher}
+  mFocusedApp=ActivityRecord{443e0af u0 com.transsion.hilauncher/com.android.launcher3.uioverrides.QuickstepLauncher t5}
+    mShowingDream=false mDreamingLockscreen=false

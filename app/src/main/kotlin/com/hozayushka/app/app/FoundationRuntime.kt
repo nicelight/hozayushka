@@ -4,8 +4,9 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.hozayushka.app.adapters.platform.PlatformRuntimeAdapter
-import com.hozayushka.app.adapters.weather.RedactedWeatherFixtureAdapter
-import com.hozayushka.app.adapters.weather.YandexWeatherAdapter
+import com.hozayushka.app.adapters.weather.RedactedWeatherFixture
+import com.hozayushka.app.adapters.weather.OpenMeteoWeatherAdapter
+import com.hozayushka.app.adapters.weather.OpenWeatherWeatherAdapter
 import com.hozayushka.app.display.DisplayCapability
 import com.hozayushka.app.forecast.ForecastSessionCapability
 import com.hozayushka.app.settings.SettingsCapability
@@ -57,12 +58,33 @@ class FoundationRuntime private constructor(
                                 nowMillis = platform.nowMillis(),
                                 networkAvailable = platform.isNetworkAvailable(),
                                 trigger = WeatherRefreshTrigger.LOCATION_CHANGE,
-                                requireStoredCredential = true,
                             )
                         }
                     }
                 },
                 catalog = catalog,
+                onValidProviderChanged = {
+                    weatherCapability?.let { capability ->
+                        weatherRefreshExecutor.execute {
+                            capability.refreshIfNeeded(
+                                nowMillis = platform.nowMillis(),
+                                networkAvailable = platform.isNetworkAvailable(),
+                                trigger = WeatherRefreshTrigger.PROVIDER_CHANGE,
+                            )
+                        }
+                    }
+                },
+                onValidOpenWeatherApiKeySaved = {
+                    weatherCapability?.let { capability ->
+                        weatherRefreshExecutor.execute {
+                            capability.refreshIfNeeded(
+                                nowMillis = platform.nowMillis(),
+                                networkAvailable = platform.isNetworkAvailable(),
+                                trigger = WeatherRefreshTrigger.PROVIDER_CHANGE,
+                            )
+                        }
+                    }
+                },
             )
             settings.ensureDefaultLocation()
             weatherCapability = WeatherCapability(
@@ -70,8 +92,9 @@ class FoundationRuntime private constructor(
                 cacheStore = SharedPreferencesWeatherCacheStore(
                     context.getSharedPreferences(WEATHER_STORE, Context.MODE_PRIVATE),
                 ),
-                provider = YandexWeatherAdapter(),
-                fixtureProvider = RedactedWeatherFixtureAdapter(),
+                openMeteoProvider = OpenMeteoWeatherAdapter(),
+                openWeatherProvider = OpenWeatherWeatherAdapter(),
+                fixtureProvider = RedactedWeatherFixture(),
             )
             val weather = requireNotNull(weatherCapability)
             val timer = TimerCapability(
@@ -125,7 +148,6 @@ class FoundationRuntime private constructor(
                 nowMillis = platform.nowMillis(),
                 networkAvailable = platform.isNetworkAvailable(),
                 trigger = trigger,
-                requireStoredCredential = true,
             )
         }
     }

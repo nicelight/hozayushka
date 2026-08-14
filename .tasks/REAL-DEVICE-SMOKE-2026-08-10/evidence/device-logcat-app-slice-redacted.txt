@@ -1,0 +1,15 @@
+08-10 19:51:54.808  1778  2818 I ActivityTaskManager: needHookReparentToDefaultDisplay: sourceRecord = null,r = ActivityRecord{5fabd6d u0 com.hozayushka.app/.app.MainActivity t-1}, tda = null
+08-10 19:51:54.851  1778  2818 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.hozayushka.app/.app.MainActivity} with LAUNCH_MULTIPLE from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+08-10 19:51:54.851  1778  2818 I ActivityTaskManager: Add pending draw ActivityRecord{5fabd6d u0 com.hozayushka.app/.app.MainActivity t4482}
+08-10 19:51:57.974  1778  2415 I ActivityTaskManager: debug# mResumedActivity : com.hozayushka.app, mAllSleepTokens = [{"ScreenOff", display 0, acquire at 884801203 (319617 ms ago)}, {"keyguard", display 0, acquire at 884801535 (319285 ms ago)}]
+08-10 19:51:58.475  1778  1808 W ActivityTaskManager: Activity top resumed state loss timeout for ActivityRecord{5fabd6d u0 com.hozayushka.app/.app.MainActivity t4482}
+08-10 19:51:58.479  1778  1808 W ActivityTaskManager: Activity pause timeout for ActivityRecord{5fabd6d u0 com.hozayushka.app/.app.MainActivity t4482}
+08-10 19:51:58.715  1778  2821 I WindowManager: Relayout Window{6e13ca9 u0 com.hozayushka.app/com.hozayushka.app.app.MainActivity}: oldVis=4 newVis=0 focusMayChange = true requestedWidth = 1080 requestedHeight = 2460 outFrames = ClientWindowFrames{frame=[0,0][1080,2460] display=[0,0][1080,2460] parentFrame=[0,0][0,0]} outSurfaceControl = Surface(name=com.hozayushka.app/com.hozayushka.app.app.MainActivity)/@0x267fa65
+08-10 19:52:34.902  1778  2747 I ActivityTaskManager: needHookReparentToDefaultDisplay: sourceRecord = null,r = ActivityRecord{7914d90 u0 com.hozayushka.app/.app.MainActivity t-1}, tda = DefaultTaskDisplayArea@29388437
+08-10 19:52:34.914  1778  2747 I ActivityTaskManager: debug# mResumedActivity : com.hozayushka.app, mAllSleepTokens = [{"keyguard", display 0, acquire at 884801535 (356226 ms ago)}]
+08-10 19:52:34.919  1778  2747 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.hozayushka.app/.app.MainActivity} with LAUNCH_MULTIPLE from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+08-10 19:52:35.202  1778  2676 I WindowManager: Relayout Window{6e13ca9 u0 com.hozayushka.app/com.hozayushka.app.app.MainActivity}: oldVis=8 newVis=0 focusMayChange = true requestedWidth = 1080 requestedHeight = 2460 outFrames = ClientWindowFrames{frame=[0,0][1080,2460] display=[0,0][1080,2460] parentFrame=[0,0][0,0]} outSurfaceControl = Surface(name=com.hozayushka.app/com.hozayushka.app.app.MainActivity)/@0x7c0e381
+08-10 19:53:04.670  1126  1126 I adbd    : adbd service requested 'shell,v2,TERM=xterm-kitty:export ANDROID_LOG_TAGS=''; exec logcat '-d' '-v' 'threadtime' '-s' 'AndroidRuntime:ActivityTaskManager:WindowManager:com.hozayushka.app:*''
+08-10 19:53:43.851  5888  5888 I AndroidRuntime: Using default boot image
+08-10 19:53:43.851  5888  5888 I AndroidRuntime: Leaving lock profiling enabled
+08-10 19:55:17.422  1778  2671 W ActivityTaskManager: Force removing ActivityRecord{5fabd6d u0 com.hozayushka.app/.app.MainActivity t4482 f}}: app died, no saved state

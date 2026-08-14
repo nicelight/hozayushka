@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="860" viewBox="0 0 1240 860">
+  <rect width="1240" height="860" fill="#10131b"/>
+  <text x="40" y="42" fill="#ffffff" font-family="sans-serif" font-size="24">W30 fresh baseline — RED_NOT_APPLICABLE / GREEN supporting receipt</text>
+  <text x="40" y="70" fill="#aab4c4" font-family="sans-serif" font-size="14">Same current baseline observed before any production/test behavior write; host-only, redacted fixtures.</text>
+  <g transform="translate(40 100)">
+    <rect width="560" height="700" rx="12" fill="#1b2230" stroke="#64d8cb" stroke-width="2"/>
+    <text x="24" y="34" fill="#ffffff" font-family="sans-serif" font-size="18">2460×1080</text>
+    <rect x="118" y="54" width="324" height="68" fill="#252e3e" stroke="#91a4bd"/>
+    <text x="228" y="96" fill="#ffffff" font-family="monospace" font-size="28">12:34</text>
+    <text x="24" y="150" fill="#91a4bd" font-family="sans-serif" font-size="13">clock [551,24,2208,374] • full [942,24,1817,374] • fit ≤0.01</text>
+    <g transform="translate(24 178)">
+      <rect width="108" height="300" fill="#2c3b51"/><rect x="116" width="136" height="300" fill="#3d536c"/><rect x="260" width="108" height="300" fill="#2c3b51"/><rect x="376" width="108" height="300" fill="#2c3b51"/>
+      <text x="11" y="324" fill="#d6dfeb" font-size="11" font-family="sans-serif">YESTERDAY</text><text x="135" y="324" fill="#d6dfeb" font-size="11" font-family="sans-serif">TODAY</text><text x="268" y="324" fill="#d6dfeb" font-size="11" font-family="sans-serif">TOMORROW</text><text x="390" y="324" fill="#d6dfeb" font-size="11" font-family="sans-serif">DAY_AFTER</text>
+    </g>
+    <g transform="translate(454 178)">
+      <circle cx="28" cy="28" r="23" fill="#ff7a00" fill-opacity=".35" stroke="#ff9f47" stroke-width="5"/><circle cx="28" cy="100" r="23" fill="#ff4fa3" fill-opacity=".35" stroke="#ff80bd" stroke-width="5"/><circle cx="28" cy="172" r="23" fill="#a855f7" fill-opacity=".35" stroke="#c487ff" stroke-width="5"/>
+    </g>
+    <text x="24" y="566" fill="#64d8cb" font-size="14" font-family="sans-serif">NO_DATA / PARTIAL / POPULATED: 4 shells ordered</text>
+    <text x="24" y="590" fill="#64d8cb" font-size="14" font-family="sans-serif">radial • rim 11px • 3 static glow layers</text>
+    <text x="24" y="628" fill="#ffffff" font-size="14" font-family="sans-serif">Fresh W30 baseline receipt</text>
+  </g>
+  <g transform="translate(640 100)">
+    <rect width="560" height="700" rx="12" fill="#1b2230" stroke="#64d8cb" stroke-width="2"/>
+    <text x="24" y="34" fill="#ffffff" font-family="sans-serif" font-size="18">1280×720</text>
+    <rect x="98" y="54" width="364" height="54" fill="#252e3e" stroke="#91a4bd"/>
+    <text x="228" y="91" fill="#ffffff" font-family="monospace" font-size="24">12:34</text>
+    <text x="24" y="140" fill="#91a4bd" font-family="sans-serif" font-size="13">clock [273,24,1028,252] • full [365.5,24,935.5,252]</text>
+    <g transform="translate(24 168)">
+      <rect width="108" height="270" fill="#2c3b51"/><rect x="116" width="136" height="270" fill="#3d536c"/><rect x="260" width="108" height="270" fill="#2c3b51"/><rect x="376" width="108" height="270" fill="#2c3b51"/>
+      <text x="11" y="294" fill="#d6dfeb" font-size="11" font-family="sans-serif">YESTERDAY</text><text x="135" y="294" fill="#d6dfeb" font-size="11" font-family="sans-serif">TODAY</text><text x="268" y="294" fill="#d6dfeb" font-size="11" font-family="sans-serif">TOMORROW</text><text x="390" y="294" fill="#d6dfeb" font-size="11" font-family="sans-serif">DAY_AFTER</text>
+    </g>
+    <g transform="translate(454 168)">
+      <circle cx="28" cy="28" r="21" fill="#ff7a00" fill-opacity=".35" stroke="#ff9f47" stroke-width="5"/><circle cx="28" cy="94" r="21" fill="#ff4fa3" fill-opacity=".35" stroke="#ff80bd" stroke-width="5"/><circle cx="28" cy="160" r="21" fill="#a855f7" fill-opacity=".35" stroke="#c487ff" stroke-width="5"/>
+    </g>
+    <text x="24" y="526" fill="#64d8cb" font-size="14" font-family="sans-serif">NO_DATA / PARTIAL / POPULATED: 4 shells ordered</text>
+    <text x="24" y="550" fill="#64d8cb" font-size="14" font-family="sans-serif">radial • rim 10px • 3 static glow layers</text>
+    <text x="24" y="588" fill="#ffffff" font-size="14" font-family="sans-serif">Fresh W30 baseline receipt</text>
+  </g>
+</svg>

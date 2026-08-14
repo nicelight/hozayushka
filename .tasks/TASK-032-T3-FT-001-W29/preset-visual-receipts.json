@@ -1,0 +1,32 @@
+{
+  "task_id": "TASK-032-T3-FT-001-W29",
+  "attempt": 2,
+  "receipt_status": "supporting-only",
+  "claim": "FT-001-AC-002 / REQ-002: three equal circular presets preserve order/labels/colors/selected-active/touch behavior and use one preset-color radial shade gradient, materially wider rim and static outward fading glow",
+  "command": "./gradlew --offline --no-daemon --console=plain :app:testDebugUnitTest --tests com.hozayushka.app.DisplayProjectionTest",
+  "cwd": "/home/serg/Projects/Mobile_APPS/hozayushka",
+  "exit_code": 0,
+  "completed_at": "2026-08-13 15:32 +0500",
+  "input_state_basis": "same Attempt 2 source snapshot as geometry.json; host JVM only",
+  "control_geometry": {
+    "2460x1080": {"bounds": [{"left": 2208, "top": 186, "right": 2428, "bottom": 406}, {"left": 2208, "top": 430, "right": 2428, "bottom": 650}, {"left": 2208, "top": 674, "right": 2428, "bottom": 894}], "side": 220, "radius": 110, "gaps": [24, 24]},
+    "1280x720": {"bounds": [{"left": 1038, "top": 36, "right": 1238, "bottom": 236}, {"left": 1038, "top": 260, "right": 1238, "bottom": 460}, {"left": 1038, "top": 484, "right": 1238, "bottom": 684}], "side": 200, "radius": 100, "gaps": [24, 24]}
+  },
+  "presets": [
+    {"slot": "FIRST", "order": 1, "base_color": "#FF7A00", "radial_colors_highlight_base_shade": ["#FF9F47", "#FF7A00", "#AD5300"], "rim_px": 10.0, "active_rim_px": 12.0, "glow_layers": 3, "outer_glow_spread_at_side_200_px": 15.0, "label_order_preserved": true, "selected_active_touch_path_preserved": true},
+    {"slot": "SECOND", "order": 2, "base_color": "#FF4FA3", "radial_colors_highlight_base_shade": ["#FF80BD", "#FF4FA3", "#AD2C6A"], "rim_px": 10.0, "active_rim_px": 12.0, "glow_layers": 3, "outer_glow_spread_at_side_200_px": 15.0, "label_order_preserved": true, "selected_active_touch_path_preserved": true},
+    {"slot": "THIRD", "order": 3, "base_color": "#A855F7", "radial_colors_highlight_base_shade": ["#C487FF", "#A855F7", "#6E31A8"], "rim_px": 10.0, "active_rim_px": 12.0, "glow_layers": 3, "outer_glow_spread_at_side_200_px": 15.0, "label_order_preserved": true, "selected_active_touch_path_preserved": true}
+  ],
+  "visual_observations": {
+    "gradient": "NeonPresetButton.onDraw uses one RadialGradient per circular rim, with highlight/base/shade derived from the existing preset color.",
+    "rim_comparison": "Current base rim 10px is wider than the W28 source baseline 7px; active rim is 12px. The 7px baseline is historical source comparison only, not a reconstructed W29 RED receipt.",
+    "glow": "Three static stroke layers are drawn outside the rim at 5/10/15px spread for side 200; alpha decreases by layer and no realtime animation is introduced.",
+    "interior": "Existing transparent oval background remains; labels and Button touch path remain in place."
+  },
+  "source_locators": [
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:837-895",
+    "app/src/main/kotlin/com/hozayushka/app/display/DisplayCapability.kt:2218-2285",
+    "app/src/test/kotlin/com/hozayushka/app/DisplayProjectionTest.kt:245-268"
+  ],
+  "evidence": "Focused XML reports w29PresetRimIsWiderRadialAndHasStaticOutwardGlowLayers passed and prints base rim 10.0, active rim 12.0, 3 layers, 15.0px outer spread. This is host/source supporting evidence, not a raster/device capture."
+}

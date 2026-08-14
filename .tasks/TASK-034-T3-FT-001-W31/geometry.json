@@ -1,0 +1,58 @@
+{
+  "task_id": "TASK-034-T3-FT-001-W31",
+  "attempt": 1,
+  "state": "RED",
+  "device": {
+    "serial": "1156725456009666",
+    "model": "TECNO LI6",
+    "wm_size": "1080x2460",
+    "runtime_landscape": "2460x1080",
+    "orientation": "mCurrentOrientation=1",
+    "screenshot": "physical-main-before.png",
+    "screenshot_sha256": "8480037b45b393a928111393dab82dca99f68e0ce138ac46c3ffb5db5a0ab2da"
+  },
+  "app_bounds_px": {"left": 0, "top": 0, "right": 2460, "bottom": 1080},
+  "clock_glyph_bounds_px": {"left": 1051, "top": 103, "right": 1701, "bottom": 304, "width": 650, "height": 201},
+  "city_date_bounds_px": {"left": 89, "top": 48, "right": 465, "bottom": 195},
+  "weather_cards_px": [
+    {"slot": "yesterday", "left": 32, "top": 231, "right": 529, "bottom": 1048},
+    {"slot": "today", "left": 553, "top": 374, "right": 1168, "bottom": 1056},
+    {"slot": "tomorrow", "left": 1196, "top": 383, "right": 1687, "bottom": 1047},
+    {"slot": "day_after", "left": 1715, "top": 382, "right": 2206, "bottom": 1048}
+  ],
+  "weather_illustrations_px": [
+    {"slot": "today", "left": 827, "top": 459, "right": 894, "bottom": 529, "width": 67, "height": 70},
+    {"slot": "tomorrow", "left": 1406, "top": 468, "right": 1477, "bottom": 537, "width": 71, "height": 69},
+    {"slot": "day_after", "left": 1925, "top": 468, "right": 1996, "bottom": 537, "width": 71, "height": 69}
+  ],
+  "timer_controls_envelope_px": {"left": 2230, "top": 186, "right": 2428, "bottom": 900},
+  "clock_over_largest_icon_area_ratio": 26.3,
+  "green": {
+    "state": "GREEN",
+    "screenshot": "physical-main-after.png",
+    "screenshot_sha256": "cc742832b4edf6f52194dd207b9e5f71cd6481483ca83adbfc2e1cf63791cf08",
+    "app_bounds_px": {"left": 0, "top": 0, "right": 2460, "bottom": 1080},
+    "clock_glyph_bounds_px": {"left": 1015, "top": 110, "right": 1740, "bottom": 328, "width": 725, "height": 218},
+    "city_date_bounds_px": {"left": 89, "top": 48, "right": 465, "bottom": 195},
+    "weather_cards_px": [
+      {"slot": "yesterday", "left": 32, "top": 231, "right": 529, "bottom": 1048},
+      {"slot": "today", "left": 551, "top": 405, "right": 1170, "bottom": 1056},
+      {"slot": "tomorrow", "left": 1194, "top": 405, "right": 1689, "bottom": 1056},
+      {"slot": "day_after", "left": 1713, "top": 405, "right": 2208, "bottom": 1056}
+    ],
+    "weather_illustrations_px": [
+      {"slot": "today", "left": 840, "top": 467, "right": 881, "bottom": 510, "width": 41, "height": 43},
+      {"slot": "tomorrow", "left": 1419, "top": 477, "right": 1464, "bottom": 520, "width": 45, "height": 43},
+      {"slot": "day_after", "left": 1938, "top": 477, "right": 1983, "bottom": 520, "width": 45, "height": 43}
+    ],
+    "timer_controls_envelope_px": {"left": 2208, "top": 186, "right": 2428, "bottom": 894},
+    "clock_over_largest_icon_area_ratio": 81.7
+  },
+  "comparison": {
+    "clock_glyph_width_delta_px": 75,
+    "clock_glyph_height_delta_px": 17,
+    "largest_icon_width_delta_px": -26,
+    "largest_icon_height_delta_px": -27,
+    "central_card_top_delta_px": 31
+  }
+}

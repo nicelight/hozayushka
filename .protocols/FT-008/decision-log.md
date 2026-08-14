@@ -1,9 +1,24 @@
 ---
 description: Decision log for FT-008 weather access and offline location settings task decomposition.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-10
 ---
 # FT-008 — Decision log
+
+## 2026-08-10 — Revision-2 provider Settings reconciled
+
+- Done W9 remains unchanged historical evidence and retains current ownership
+  only for unchanged AC-002–AC-005 location/catalog behavior.
+- New `TASK-019-T3-FT-008-W16` solely owns current AC-001/AC-006–AC-008:
+  default/no-key Open-Meteo, explicit OpenWeather with local key,
+  provider-context failures, stable selection and Open-Meteo attribution.
+- W16 depends on the latest W15 baseline, starts `planned`, and is a Settings
+  and secret task; transport/dispatch/cache and forecast outcomes remain W17–W19.
+- Existing Settings, provider, secret, local-data and verification specs are
+  reused. No third provider, backend/shared key, registry, event bus or hard
+  write boundary is selected.
+- Exact next owner is fresh `/review-tasks-plan --all`; scheduler and `/mb-sync`
+  state remain untouched.
 
 ## 2026-08-07 — Clean task surface generated
 

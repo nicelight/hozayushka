@@ -6,6 +6,14 @@
     <string name="display_select_city">Выбрать город</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_no_city">Город не выбран</string>
+    <string name="settings_weather_provider">Поставщик погоды</string>
+    <string name="settings_weather_provider_description">Выбор поставщика погоды</string>
+    <string name="settings_weather_provider_option_description">Поставщик погоды: %1$s</string>
+    <string name="settings_open_weather_key">Личный API-ключ OpenWeather</string>
+    <string name="settings_open_weather_key_description">Личный локальный API-ключ OpenWeather</string>
+    <string name="settings_open_weather_key_hint">Введите API-ключ OpenWeather</string>
+    <string name="settings_open_weather_key_saved">Локальный API-ключ OpenWeather сохранён</string>
+    <string name="settings_open_meteo_attribution">Open-Meteo: https://open-meteo.com/ · CC BY 4.0: https://creativecommons.org/licenses/by/4.0/</string>
     <string name="settings_timer_title">Пресеты таймера</string>
     <string name="settings_preset_label">Пресет %1$s</string>
     <string name="settings_preset_field_description">Пресет %1$s, единица %2$s</string>

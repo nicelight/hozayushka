@@ -3,7 +3,7 @@ description: L2 epic for the always-visible kitchen clock and main display inter
 status: draft
 id: EP-001
 lifecycle: implemented
-last_updated: 2026-08-10
+last_updated: 2026-08-14
 ---
 # EP-001 — Glanceable main display
 
@@ -46,15 +46,33 @@ last_updated: 2026-08-10
 
 Epic remains `draft`; its global architecture and platform boundary are
 registered, and its FT-001 implementation history includes W2, the failed W11
-follow-up, the completed W12 repair, the completed W13 ticker-debt boundary
-and the completed W14 Weather Context projection/decode boundary. W14 records
-executor `PASS_FOR_HANDOFF`, fresh functional `PASS` and independent durable
-semantic `semantic-pass` for the host/static memoization outcome; detailed
-evidence is linked from [FT-001](../features/FT-001-main-clock-display.md) and
-the affected [FT-002 Weather Context](../features/FT-002-weather-cards-context.md).
-W14 keeps the existing Main Display → Weather Context edge and does not change
-EP-001 acceptance or direct RTM ownership. Target-only runtime observations
-remain `DEFERRED` under the accepted policy, including Samsung/custom-ROM/
-1280x720 physical evidence, with no runtime `PASS` claim. EP-001 lifecycle
-remains `implemented`; no epic closure, promotion or dependent-state transition
-is inferred by this boundary sync.
+follow-up, the completed W12 repair, the completed W13 ticker-debt boundary,
+the completed W14 Weather Context projection/decode boundary, the failed W29
+provenance attempt and the completed W30 replacement; W31 is the completed
+physical clock/icon-geometry follow-up. W30 records fresh
+verifier-owned host proof for the Main Display clock, four ordered weather
+shells and preset visual treatment after an accepted `RED_NOT_APPLICABLE`
+route; the exact two-file boundary and existing ownership edges remain
+unchanged. W31 records fresh physical TECNO visual PASS at `2460×1080`, with
+host geometry at `2460×1080` and `1280×720` kept as supporting evidence only.
+W32 remains scheduler-`failed` after physical mixed-state smoke exposed the
+real View-tree allocation defect, and W33 remains `blocked` on W32; its
+superseded `blocked -> failed` transition is preserved as policy-invalid
+history. W34 is the completed recovery successor from W31, with fresh host
+and physical RED/GREEN proving the equal/common-bottom mixed-state allocation
+inside the existing Main Display two-file boundary. W29 remains terminal
+`failed` for missing pre-write provenance, not
+for an evidenced product semantic failure. Detailed evidence is linked from
+[FT-001](../features/FT-001-main-clock-display.md), the [W29 semantic
+report](../../.tasks/TASK-032-T3-FT-001-W29/TASK-032-T3-FT-001-W29-S-RED-VERIFY-final-report-docs-01.md),
+the [W30 sync report](../../.tasks/TASK-033-T3-FT-001-W30/TASK-033-T3-FT-001-W30-S-MB-SYNC-final-report-docs-01.md),
+the [W31 sync report](../../.tasks/TASK-034-T3-FT-001-W31/TASK-034-T3-FT-001-W31-S-MB-SYNC-final-report-docs-01.md)
+and the [W34 sync report](../../.tasks/TASK-037-T3-FT-001-W34/TASK-037-T3-FT-001-W34-S-MB-SYNC-final-report-docs-01.md).
+Its task-owned verification reports provide the recovery evidence.
+Target-only runtime observations remain `DEFERRED` under the accepted policy,
+including other resolutions/devices, custom-ROM rendering, physical audio
+audibility and live provider refresh, with no claim beyond the accepted W34
+TECNO visual PASS for this boundary. The separate oversized timer-digit
+observation remains an FT-007 residual and does not alter EP-001. EP-001
+lifecycle remains `implemented`; no epic closure, promotion or
+dependent-state transition is inferred by this boundary sync.

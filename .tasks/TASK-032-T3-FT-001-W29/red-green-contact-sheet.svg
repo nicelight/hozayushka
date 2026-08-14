@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title desc">
+  <title id="title">W29 host geometry recovery contact sheet</title>
+  <desc id="desc">Two exact landscape host model sizes with a provenance-unavailable RED column and supporting GREEN geometry diagrams. This is not a device screenshot.</desc>
+  <defs>
+    <radialGradient id="orange" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#FF9F47"/><stop offset=".52" stop-color="#FF7A00"/><stop offset="1" stop-color="#AD5300"/></radialGradient>
+    <radialGradient id="pink" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#FF80BD"/><stop offset=".52" stop-color="#FF4FA3"/><stop offset="1" stop-color="#AD2C6A"/></radialGradient>
+    <radialGradient id="purple" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#C487FF"/><stop offset=".52" stop-color="#A855F7"/><stop offset="1" stop-color="#6E31A8"/></radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>
+    <style>
+      .bg{fill:#101923}.panel{fill:#172635;stroke:#496174;stroke-width:2}.muted{fill:#9bb2c4;font:20px sans-serif}.label{fill:#dbe9f2;font:24px sans-serif;font-weight:700}.small{fill:#b7c9d5;font:16px sans-serif}.red{fill:#ffcf8a;font:22px sans-serif}.clock{fill:#f7fbff;font:54px sans-serif;font-weight:700}.card{fill:#294454;stroke:#74a8bf;stroke-width:2}.slot{fill:#d8eef7;font:14px sans-serif}.rim{fill:none;stroke-width:10}.glowline{fill:none;stroke-width:14;opacity:.2;filter:url(#glow)}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="1080"/>
+  <text x="56" y="58" class="label">TASK-032 W29 — host-only RED/GREEN recovery sheet</text>
+  <text x="56" y="88" class="muted">RED receipt is unavailable; GREEN panels are deterministic geometry/source models, not Android/device captures.</text>
+
+  <rect class="panel" x="56" y="125" width="300" height="400" rx="12"/>
+  <text x="80" y="170" class="label">RED</text>
+  <text x="80" y="205" class="red">UNAVAILABLE</text>
+  <text x="80" y="250" class="small">No durable W29</text>
+  <text x="80" y="275" class="small">pre-write snapshot or</text>
+  <text x="80" y="300" class="small">executor receipt exists.</text>
+  <text x="80" y="350" class="small">W26/W28 history and</text>
+  <text x="80" y="375" class="small">artificial failures are</text>
+  <text x="80" y="400" class="small">not substituted.</text>
+  <text x="80" y="470" class="small">See red-baseline.md</text>
+
+  <g transform="translate(390,125)">
+    <rect class="panel" width="1150" height="400" rx="12"/>
+    <text x="24" y="42" class="label">GREEN host model — 2460×1080</text>
+    <text x="24" y="70" class="muted">clock region 1657×350 · measured 12:34 875×350 · cards y=374</text>
+    <rect class="card" x="24" y="170" width="200" height="190" rx="12"/><rect class="card" x="248" y="170" width="250" height="190" rx="12"/><rect class="card" x="522" y="170" width="200" height="190" rx="12"/><rect class="card" x="746" y="170" width="200" height="190" rx="12"/>
+    <text class="slot" x="52" y="205">yesterday</text><text class="slot" x="282" y="205">today</text><text class="slot" x="552" y="205">tomorrow</text><text class="slot" x="770" y="205">day_after</text>
+    <text class="clock" x="344" y="140">12:34</text>
+    <g transform="translate(1000,190)"><circle class="glowline" stroke="#FF7A00" cx="50" cy="50" r="58"/><circle class="rim" stroke="url(#orange)" cx="50" cy="50" r="45"/><text class="slot" x="40" y="55">10м</text></g>
+  </g>
+
+  <rect class="panel" x="56" y="570" width="300" height="400" rx="12"/>
+  <text x="80" y="615" class="label">RED</text>
+  <text x="80" y="650" class="red">UNAVAILABLE</text>
+  <text x="80" y="695" class="small">Same provenance gap</text>
+  <text x="80" y="720" class="small">at the required second</text>
+  <text x="80" y="745" class="small">host size.</text>
+  <text x="80" y="815" class="small">No runtime/device</text>
+  <text x="80" y="840" class="small">evidence is inferred.</text>
+  <text x="80" y="915" class="small">See target-device.md</text>
+
+  <g transform="translate(390,570)">
+    <rect class="panel" width="1150" height="400" rx="12"/>
+    <text x="24" y="42" class="label">GREEN host model — 1280×720</text>
+    <text x="24" y="70" class="muted">clock region 755×228 · measured 12:34 570×228 · cards y=252</text>
+    <rect class="card" x="24" y="170" width="140" height="190" rx="12"/><rect class="card" x="188" y="170" width="180" height="190" rx="12"/><rect class="card" x="392" y="170" width="140" height="190" rx="12"/><rect class="card" x="556" y="170" width="140" height="190" rx="12"/>
+    <text class="slot" x="38" y="205">yesterday</text><text class="slot" x="230" y="205">today</text><text class="slot" x="410" y="205">tomorrow</text><text class="slot" x="570" y="205">day_after</text>
+    <text class="clock" x="300" y="140">12:34</text>
+    <g transform="translate(780,190)"><circle class="glowline" stroke="#FF4FA3" cx="50" cy="50" r="58"/><circle class="rim" stroke="url(#pink)" cx="50" cy="50" r="45"/><text class="slot" x="40" y="55">10м</text></g>
+    <g transform="translate(910,190)"><circle class="glowline" stroke="#A855F7" cx="50" cy="50" r="58"/><circle class="rim" stroke="url(#purple)" cx="50" cy="50" r="45"/><text class="slot" x="40" y="55">30с</text></g>
+  </g>
+</svg>

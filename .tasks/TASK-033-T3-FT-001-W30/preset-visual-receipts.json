@@ -1,0 +1,55 @@
+{
+  "task_id": "TASK-033-T3-FT-001-W30",
+  "attempt": 1,
+  "decision": "RED_NOT_APPLICABLE",
+  "comparison_note": "No artificial W30 RED rim was manufactured. Current baseline is the accepted alternative proof; rim metrics are recorded directly.",
+  "presets": [
+    {
+      "slot": "FIRST",
+      "label": "3 м",
+      "color": "#FF7A00",
+      "selected": false,
+      "active": true,
+      "radial_shade_colors": ["#FFFF9F47", "#FFFF7A00", "#FFAD5300"],
+      "static_glow_layers": 3
+    },
+    {
+      "slot": "SECOND",
+      "label": "10 м",
+      "color": "#FF4FA3",
+      "selected": true,
+      "active": false,
+      "radial_shade_colors": ["#FFFF80BD", "#FFFF4FA3", "#FFAD2C6A"],
+      "static_glow_layers": 3
+    },
+    {
+      "slot": "THIRD",
+      "label": "30 м",
+      "color": "#A855F7",
+      "selected": false,
+      "active": false,
+      "radial_shade_colors": ["#FFC487FF", "#FFA855F7", "#FF6E31A8"],
+      "static_glow_layers": 3
+    }
+  ],
+  "hosts": {
+    "2460x1080": {
+      "touch_targets": [[2208, 186, 2428, 406], [2208, 430, 2428, 650], [2208, 674, 2428, 894]],
+      "equal_circular": true,
+      "side_px": 220,
+      "rim_width_px": 11.0,
+      "active_rim_width_px": 13.200001,
+      "glow_spreads_px": [5.5, 11.0, 16.5]
+    },
+    "1280x720": {
+      "touch_targets": [[1038, 36, 1238, 236], [1038, 260, 1238, 460], [1038, 484, 1238, 684]],
+      "equal_circular": true,
+      "side_px": 200,
+      "rim_width_px": 10.0,
+      "active_rim_width_px": 12.0,
+      "glow_spreads_px": [5.0, 10.0, 15.0]
+    }
+  },
+  "rendering": "Existing Android Canvas radial shader plus three static outward-fading stroke layers; no timer or realtime effect."
+}
+

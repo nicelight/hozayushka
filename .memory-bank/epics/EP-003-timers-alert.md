@@ -3,7 +3,7 @@ description: L2 epic for preset timer setup, resilient countdown and overdue ale
 status: draft
 id: EP-003
 lifecycle: planned
-last_updated: 2026-08-09
+last_updated: 2026-08-13
 ---
 # EP-003 — Timers and alert
 
@@ -74,3 +74,21 @@ custom-ROM and 1280x720 physical-device evidence remains `DEFERRED`, and no
 runtime target `PASS` is claimed. EP-003 remains `planned` because FT-005 /
 REQ-011 is still planned; no epic closure, promotion or dependent-state
 transition is inferred by this boundary sync.
+
+The W23 bounded follow-up is reconciled as `TASK-026-T3-FT-007-W23` `done`
+after fresh executor, functional and semantic gates. It repairs the existing
+overdue audio request/start error path without changing the EP-003 ownership,
+contracts or lifecycle. Host fake audio evidence passes; physical audibility
+remains `DEFERRED` with no runtime/device `PASS` claim. EP-003 remains planned
+because FT-005/REQ-011 is still planned.
+
+The W28 bounded visual follow-up is reconciled as
+`TASK-031-T3-FT-007-W28` `done` after fresh executor, functional and semantic
+gates. Its host evidence proves the dedicated overdue surface, stable elapsed
+hierarchy `256.0 > 228.0 > 188.75`, transparent activating-preset color
+backdrop and independently blinking plus within the exact Main Display
+two-file boundary. Timer & Alert lifecycle, dismissal and audio ownership
+remain unchanged; target readability/fullscreen/custom-ROM lifecycle and
+physical audibility remain `DEFERRED`, with no runtime/device/audio `PASS`
+claim. EP-003 remains planned because FT-005/REQ-011 is still planned; no epic
+closure, promotion or dependent-state transition is inferred by this sync.

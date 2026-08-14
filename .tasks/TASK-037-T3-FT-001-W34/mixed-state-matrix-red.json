@@ -1,0 +1,23 @@
+{
+  "attempt": 1,
+  "state": "RED",
+  "fixture": [
+    {"slot": "yesterday", "populated": false, "date": "13"},
+    {"slot": "today", "populated": true, "date": "14", "temperature": "23°"},
+    {"slot": "tomorrow", "populated": true, "date": "15", "temperature": "23°"},
+    {"slot": "day_after", "populated": true, "date": "16", "temperature": "24°"}
+  ],
+  "host_sizes": {
+    "2460x1080": {
+      "band_bounds": {"top": 754, "bottom": 1056},
+      "card_heights": [834, 302, 302, 302],
+      "card_bottoms": [1056, 1056, 1056, 1056],
+      "result": "RED: Yesterday is taller than populated cards"
+    },
+    "1280x720": {
+      "expected_shared_band_from_display_geometry": {"top": 495, "bottom": 696, "height": 201, "band_ratio": 0.27916667, "clock_zone_ratio": 0.7208333},
+      "allocation_observation": "RED: source View tree keeps Yesterday in separate MATCH_PARENT+weight=1 left allocation; host harness has no runtime View instantiation"
+    }
+  },
+  "raw_sources": ["physical-red-activity-top.txt", "host-red.log"]
+}

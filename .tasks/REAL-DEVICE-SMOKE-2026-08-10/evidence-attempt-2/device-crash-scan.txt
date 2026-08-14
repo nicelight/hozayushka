@@ -1,0 +1,1 @@
+7384:08-10 20:25:45.097  1778  1813 I TranSuccCrashMgr: Post key event: type=0, event=wm_activity_launch_time0,com.hozayushka.app/.app.MainActivity,3932, ext=null

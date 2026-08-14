@@ -1,0 +1,13 @@
+{
+  "task": "TASK-028-T3-FT-002-W25",
+  "rowCard": {"width": 223, "height": 444, "pressureBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328, "width": 86, "height": 151}},
+  "contract": {"strokeWidthPx": 5.0, "allowedStrokeWidthPx": [4.0, 8.0], "strokeCap": "ROUND", "strokeJoin": "ROUND", "pathSegmentsPerArrow": 2, "shaftAndHeadSeparate": true},
+  "cases": [
+    {"direction": "UP", "count": 1, "viewBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}, "paintedArrowBounds": {"left": 146, "top": 211, "right": 189, "bottom": 289}, "visibleNonBackgroundPixels": true, "shaftPixels": true, "headPixels": true},
+    {"direction": "UP", "count": 2, "viewBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}, "perArrowViewWidth": 43, "paintedArrowBounds": [{"left": 136, "top": 211, "right": 155, "bottom": 289}, {"left": 179, "top": 211, "right": 198, "bottom": 289}], "visibleNonBackgroundPixels": true, "shaftPixels": true, "headPixels": true},
+    {"direction": "DOWN", "count": 1, "viewBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}, "paintedArrowBounds": {"left": 146, "top": 216, "right": 189, "bottom": 294}, "visibleNonBackgroundPixels": true, "shaftPixels": true, "headPixels": true},
+    {"direction": "DOWN", "count": 2, "viewBounds": {"left": 124, "top": 177, "right": 210, "bottom": 328}, "perArrowViewWidth": 43, "paintedArrowBounds": [{"left": 136, "top": 216, "right": 155, "bottom": 294}, {"left": 179, "top": 216, "right": 198, "bottom": 294}], "visibleNonBackgroundPixels": true, "shaftPixels": true, "headPixels": true},
+    {"direction": "UP", "count": 0, "viewCount": 0, "paintedArrowBounds": null, "visibleNonBackgroundPixels": false, "shaftPixels": false, "headPixels": false}
+  ],
+  "checks": {"countClampedTo0Through2": true, "zeroArrowAbsent": true, "directionProjectionSupplied": true, "weatherCapabilityCalculationUntouched": true}
+}

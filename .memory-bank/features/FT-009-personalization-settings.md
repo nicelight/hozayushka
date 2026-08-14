@@ -105,10 +105,11 @@ epic closure, promotion or dependent-state transition.
 
 ## SDD Design Gate
 
-Global backbone is complete at Planning Revision `1` and the Foundation Gate
-is closed. The product clarification for app alert volume and the canonical
-Today-temperature preview route are complete. FT-009 is ready for task
-decomposition at Planning Revision `1`.
+Global backbone is complete at Planning Revision `2` and the Foundation Gate
+anchors remain closed. The product clarification for app alert volume and the
+canonical Today-temperature preview route remain complete. FT-009's indexed
+task-plan review is stale only by revision mismatch and is reconciled through
+`/feature-to-tasks --all` after Foundation revalidation.
 
 Applicable global specs: [Boundary Map](../contracts/boundary-map.md),
 [Capability Interfaces](../contracts/capability-interfaces.md),
@@ -149,9 +150,11 @@ Design impact: `complete`; Planning Revision remains `1`.
 
 ## Design and execution handoff
 
-The FT-009 SDD design gate and task decomposition remain complete at Planning
-Revision `1`. The existing dependency graph remains unchanged and has no new
-Settings-to-Weather edge. W10 execution and paired verification are
-reconciled above; feature lifecycle remains `planned`, with any scheduler
+The FT-009 SDD design gate remains complete at Planning Revision `2`; the
+existing dependency graph remains unchanged and has no new
+Settings-to-Weather edge. Its prior task decomposition/review is stale only by
+the global revision mismatch and routes through `/feature-to-tasks --all` after
+Foundation revalidation. W10 execution and paired verification remain
+historical evidence; feature lifecycle stays `planned`, with any scheduler
 promotion and dependent-state transition owned by the scheduler/lifecycle
 owner.

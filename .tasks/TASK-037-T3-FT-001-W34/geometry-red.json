@@ -1,0 +1,25 @@
+{
+  "attempt": 1,
+  "state": "RED",
+  "fixture": {
+    "yesterday": "empty",
+    "today": "14",
+    "tomorrow": "15",
+    "day_after": "16"
+  },
+  "coordinate_system": "fullscreen physical pixels",
+  "device": "TECNO LI6 / 1156725456009666",
+  "physical_frame": "2460x1080",
+  "orientation": "landscape / mCurrentOrientation=1 / ROTATION_90",
+  "view_tree_card_bounds": [
+    {"slot": "yesterday", "left": 32, "top": 222, "right": 527, "bottom": 1056, "width": 495, "height": 834},
+    {"slot": "today", "left": 551, "top": 754, "right": 1170, "bottom": 1056, "width": 619, "height": 302},
+    {"slot": "tomorrow", "left": 1194, "top": 754, "right": 1689, "bottom": 1056, "width": 495, "height": 302},
+    {"slot": "day_after", "left": 1713, "top": 754, "right": 2208, "bottom": 1056, "width": 495, "height": 302}
+  ],
+  "view_band": {"top": 754, "bottom": 1056, "height": 302, "band_ratio": 0.27962962, "clock_zone_ratio": 0.7203704},
+  "decisive_red": "Yesterday is a separate 834px weighted allocation while populated cards share a 302px bottom band.",
+  "screenshot": "physical-red.png",
+  "screenshot_sha256": "fa487017fbab16dffdc45b0ea388d8ae57844f0e0ab9413054de5fe72d6749b1",
+  "view_source": "physical-red-activity-top.txt"
+}

@@ -1,0 +1,208 @@
+{
+  "id": "TASK-023-T3-FT-002-W20",
+  "title": "Activate selected OpenWeather refresh after valid key save",
+  "status": "done",
+  "wave": "W20",
+  "feature": "FT-002",
+  "reqs": [
+    "REQ-007",
+    "REQ-024",
+    "REQ-025",
+    "REQ-029"
+  ],
+  "depends_on": [
+    "TASK-019-T3-FT-008-W16"
+  ],
+  "touched_files": [
+    "app/src/main/kotlin/com/hozayushka/app/settings/SettingsCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+    "app/src/main/kotlin/com/hozayushka/app/app/FoundationRuntime.kt",
+    "app/src/test/kotlin/com/hozayushka/app/SettingsLocationTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/WeatherProviderDispatchTest.kt",
+    "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt"
+  ],
+  "tier": "T3",
+  "gates": [
+    {
+      "name": "Clean Android debug build",
+      "command": "./gradlew clean assembleDebug",
+      "required": true
+    },
+    {
+      "name": "Host selected-key refresh and isolation probes",
+      "command": "./gradlew testDebugUnitTest",
+      "required": true
+    },
+    {
+      "name": "Memory Bank and diff integrity",
+      "command": "node scripts/mb-lint.mjs && git diff --check",
+      "required": true
+    }
+  ],
+  "verify": [
+    "Establish fresh claim-linked RED before production changes from an isolated OpenWeather selection with a valid location and no key: the launch/provider-change attempt records the selected-provider missing-key failure, the valid-key update persists successfully but causes zero provider calls, and the obsolete missing-key error remains current. Do not reuse TASK-020 functional or semantic evidence as this task's RED/GREEN.",
+    "Implement one cohesive activation path through the existing Settings & Location -> Weather Context refresh boundary: after a valid OpenWeather key save while OpenWeather remains explicitly selected, request one immediate non-scheduled refresh using the current immutable provider/location access context. Invalid/blank key input and Open-Meteo key-inapplicable paths do not request a refresh; Settings never calls an adapter or passes the raw key through the callback.",
+    "Prove the selected OpenWeather key-save sequence with deterministic synthetic state: the successful refresh invokes exactly OpenWeather once, invokes Open-Meteo zero times, clears the obsolete selected-provider missing-key error through the existing successful Weather Context path, exposes fresh matching projection state, and leaves provider selection/location unchanged. A selected-provider failure after the valid save remains selected-provider-specific, preserves matching state and never triggers fallback or mixing.",
+    "Run deterministic invalid/blank-key, Open-Meteo, selected-OpenWeather success, selected-OpenWeather failure and repeated-save cases with resettable owner-local Settings/Weather state. Include a matched host-side clock/timer-independence control/treatment probe using the same deterministic clock and Timer & Alert fixture, with and without the weather refresh. Verify callback/refresh ordering without adding an event/message boundary, direct storage bypass or a second provider path.",
+    "Use synthetic credentials only. Prove Open-Meteo receives no credential, the synthetic OpenWeather marker is confined to the existing transient request construction, and callback results, errors, logs, fixtures, screenshots, packaged resources and durable evidence contain only redacted observations. No live provider, emulator/device, adb, network or real credential evidence is permitted.",
+    "Run the required build, host and Memory Bank/diff gates, then obtain fresh /verify PASS and T3 /red-verify semantic-pass for this repair task. Preserve TASK-020 failed 3/3 evidence and TASK-021/TASK-022 blocked history; scheduler closure, downstream recovery and feature promotion remain external.",
+    {
+      "stage": "scheduler_lifecycle_closure",
+      "mode": "scheduler",
+      "decision": "done",
+      "decided_at": "2026-08-12",
+      "gate_summary": {
+        "executor_handoff": "PASS_FOR_HANDOFF",
+        "functional_verification": "PASS",
+        "semantic_verification": "semantic-pass",
+        "target_evidence": "DEFERRED by operator constraint; no device/live-provider runtime PASS claimed"
+      },
+      "accepted_evidence": [
+        ".protocols/TASK-023-T3-FT-002-W20/handoff.md",
+        ".tasks/TASK-023-T3-FT-002-W20/TASK-023-T3-FT-002-W20-S-EXE-final-report-code-02.md",
+        ".protocols/TASK-023-T3-FT-002-W20/verification.md",
+        ".tasks/TASK-023-T3-FT-002-W20/TASK-023-T3-FT-002-W20-S-VERIFY-final-report-docs-01.md",
+        ".tasks/TASK-023-T3-FT-002-W20/verifier-owned-evidence.md",
+        ".tasks/TASK-023-T3-FT-002-W20/verifier-owned-weather-refresh-timer-independence.json",
+        ".protocols/TASK-023-T3-FT-002-W20/red-verification.md",
+        ".tasks/TASK-023-T3-FT-002-W20/TASK-023-T3-FT-002-W20-S-RED-VERIFY-final-report-docs-01.md"
+      ],
+      "semantic_findings": [],
+      "lifecycle_note": "Scheduler closure: in_progress -> done after fresh functional PASS and semantic-pass; W17 failed 3/3 and W18/W19 blocked history remain unchanged.",
+      "accepted_residual_risk": [
+        "Target Android IME/framework/system-Back behavior, custom-ROM/display/audio compatibility and live-provider/network compatibility remain DEFERRED; no runtime PASS is claimed."
+      ]
+    }
+  ],
+  "docs": [
+    ".memory-bank/features/FT-002-weather-cards-context.md",
+    ".memory-bank/epics/EP-002-weather-context.md",
+    ".memory-bank/requirements.md",
+    ".memory-bank/prd.md",
+    ".memory-bank/constitution.md",
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/workflows/tier-policy.md",
+    ".memory-bank/tasks/TASK-019-T3-FT-008-W16.task.json",
+    ".memory-bank/tasks/TASK-020-T3-FT-002-W17.task.json",
+    ".protocols/FT-002/plan.md",
+    ".protocols/FT-002/decision-log.md",
+    ".memory-bank/tasks/plans/IMPL-FT-002.md"
+  ],
+  "evidence_required": [
+    "[FT-002-AC-004; REQ-007, REQ-025] Expected RED: after first explicit OpenWeather selection without a key, a later valid key save performs zero Weather Context/provider calls and leaves the missing-key error current. GREEN: the valid save causes exactly one selected OpenWeather refresh, successful matching data becomes fresh and the obsolete missing-key error is absent; artifact: deterministic before/save/after refresh-and-error receipt with call counts and projection comparison.",
+    "[FT-002-AC-008; REQ-007, REQ-029] Expected RED: the key-save path has no selected-only activation proof and no failure-isolation result. GREEN: OpenWeather key save invokes only OpenWeather, Open-Meteo remains at zero calls, selection/location stay unchanged, and selected-provider failure does not substitute or mix another provider; artifact: provider-call and failure-isolation matrix.",
+    "[FT-002-AC-007; REQ-024] RED_NOT_APPLICABLE: observing a real owner key outside the accepted transient path would violate the local-secret contract; alternative proof: a synthetic marker is observed only as a redacted/presence result for selected OpenWeather, Open-Meteo has no credential, and source/resource/APK/log/fixture/evidence scans contain no marker; artifact: redaction and absence scan receipt.",
+    "[FT-002-AC-004; REQ-025] Independence probe: run matched control/treatment cases from the same resettable fixture with a fixed device clock and seeded Timer & Alert countdown; the control advances identical clock ticks without weather refresh, while the treatment performs only valid-key-save OpenWeather activation before those ticks. Artifact: redacted `.tasks/TASK-023-T3-FT-002-W20/weather-refresh-timer-independence.json` containing weather call/error/projection results and both clock/timer traces (clock output, timer state and remaining time, plus accepted cancellation/overdue-dismissal outcomes). PASS: treatment proves one selected OpenWeather refresh, fresh matching data and missing-key clearance, while its clock/timer trace matches control; FAIL: weather activation changes clock/timer behavior or the artifact cannot distinguish the traces. Reset Settings/Weather/Timer fixture and deterministic clock after each case.",
+    "T3 repeatability and cleanup: each case starts from resettable owner-local Settings/Weather state, records the decisive selected provider, key-read/call counts, error and projection result, and leaves no secret-bearing or cross-run state; artifact: isolated host probe receipt."
+  ],
+  "purpose": "Repair the confirmed activation gap after first-time OpenWeather selection so a valid owner key save immediately reuses the selected-provider Weather Context path and removes the obsolete missing-key state without weakening isolation or secret handling.",
+  "success_outcome": "A fresh deterministic host/build/redaction proof shows that a valid OpenWeather key save after the initial missing-key refresh triggers one selected OpenWeather refresh, clears the obsolete missing-key error on success, preserves matching provider/location state and never calls or mixes Open-Meteo; invalid/inapplicable saves remain inert and no key leaks into evidence.",
+  "anti_goals": [
+    "Do not reopen, mutate, retry or replace TASK-020-T3-FT-002-W17 or backfill its failed 3/3 evidence.",
+    "Do not change the exact Open-Meteo/OpenWeather provider set, selected-only dispatch, provider/location cache-history identity, fallback prohibition, forecast completeness, card presentation or any downstream feature acceptance.",
+    "Do not move secret ownership, validation, adapter access, normalization, cache/history writes or error ownership across the accepted capability boundaries; Settings does not call adapters and the composition root remains wiring-only.",
+    "Do not add a backend, provider framework, event/message boundary, dependency, live network path, device/emulator route or real credential."
+  ],
+  "runtime_context": {
+    "write_boundary": [
+      "app/src/main/kotlin/com/hozayushka/app/settings/SettingsCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/weather/WeatherCapability.kt",
+      "app/src/main/kotlin/com/hozayushka/app/app/FoundationRuntime.kt",
+      "app/src/test/kotlin/com/hozayushka/app/SettingsLocationTest.kt",
+      "app/src/test/kotlin/com/hozayushka/app/WeatherProviderDispatchTest.kt",
+      "app/src/test/kotlin/com/hozayushka/app/WeatherContextTest.kt"
+    ],
+    "forbidden_scope": [
+      "all historical TASK-001 through TASK-022 lifecycle/status/verification/protocol evidence and scheduler checkpoint or terminal-state artifacts, including TASK-020 failed history and TASK-021/TASK-022 blocked history",
+      ".protocols/AUTONOMOUS-RUN/status.md",
+      "weather adapter transport/schema implementations except the existing transient request seam required by the selected-provider proof",
+      "forecast session entry, hourly/long-term completeness, display presentation, timer/alert behavior and unrelated Settings/location/personalization behavior",
+      "direct Settings-to-adapter calls, direct consumer access to Weather Context storage, cross-provider fallback/mixing and provider-unidentified key access",
+      "real credentials, unredacted key/request/response values, live external calls, emulator/device/adb evidence and secret-bearing artifacts"
+    ],
+    "stop_conditions": [
+      "Stop and route to /spec-design if the smallest repair requires a new module, graph edge, public contract, event/message boundary, storage owner or composition-root business orchestration.",
+      "Stop and route to /feature-to-tasks FT-002 with rebuild_required if the repair requires a different task tier, dependency, acceptance ownership or material scope.",
+      "Stop and route to /feature-doctor FT-002 if valid-key save, selected-provider activation, missing-key error semantics or no-fallback behavior must change beyond the confirmed repair target.",
+      "Stop if any proof requires a real key, live provider/network, unredacted artifact or target-device/runtime claim outside the accepted deferred route."
+    ]
+  },
+  "source_artifacts": [
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-004",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-007",
+    ".memory-bank/features/FT-002-weather-cards-context.md#FT-002-AC-008",
+    ".memory-bank/tasks/TASK-019-T3-FT-008-W16.task.json",
+    ".memory-bank/tasks/TASK-020-T3-FT-002-W17.task.json",
+    ".protocols/TASK-020-T3-FT-002-W17/red-verification.md",
+    ".tasks/TASK-020-T3-FT-002-W17/TASK-020-T3-FT-002-W17-S-RED-VERIFY-final-report-docs-01.md"
+  ],
+  "normative_inputs": [
+    ".memory-bank/architecture/system-architecture.md",
+    ".memory-bank/contracts/boundary-map.md",
+    ".memory-bank/contracts/capability-interfaces.md",
+    ".memory-bank/contracts/weather-provider.md",
+    ".memory-bank/contracts/local-secret-handling.md",
+    ".memory-bank/contracts/platform-runtime.md",
+    ".memory-bank/domains/local-data.md",
+    ".memory-bank/states/lifecycle-map.md",
+    ".memory-bank/testing/runtime-verification.md",
+    ".memory-bank/architecture/system-architecture.md#runtime-composition",
+    ".memory-bank/architecture/system-architecture.md#data-flow-and-ownership",
+    ".memory-bank/architecture/system-architecture.md#ad-003---cross-slice-orchestration-stays-in-a-capability-owner",
+    ".memory-bank/architecture/system-architecture.md#ad-006---openweather-owner-key-is-local-and-redacted",
+    ".memory-bank/architecture/system-architecture.md#ad-008---selected-provider-isolation-is-owned-by-weather-context",
+    ".memory-bank/contracts/boundary-map.md#dependency-graph",
+    ".memory-bank/contracts/boundary-map.md#accepted-ownership-summary",
+    ".memory-bank/contracts/capability-interfaces.md#weather-access-settings-surface",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration",
+    ".memory-bank/contracts/capability-interfaces.md#main-display-to-timer-and-alert",
+    ".memory-bank/contracts/weather-provider.md#provider-selection-and-dispatch",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules",
+    ".memory-bank/contracts/weather-provider.md#failure-rules",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract",
+    ".memory-bank/contracts/local-secret-handling.md#evidence-and-verification",
+    ".memory-bank/domains/local-data.md#ft-002-weather-context-records",
+    ".memory-bank/states/lifecycle-map.md#weather-data-lifecycle",
+    ".memory-bank/states/lifecycle-map.md#ft-002-first-run-and-failure-projection",
+    ".memory-bank/testing/runtime-verification.md#deterministic-host-side-checks",
+    ".memory-bank/testing/runtime-verification.md#redacted-integration-fixtures",
+    ".memory-bank/testing/runtime-verification.md#secret-and-artifact-checks",
+    ".memory-bank/workflows/tier-policy.md#tier-classification-and-escalation",
+    ".memory-bank/workflows/tier-policy.md#hard-write-boundary",
+    ".memory-bank/workflows/tier-policy.md#task-scoped-acceptance-evidence",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3"
+  ],
+  "constraints": [
+    "Weather Context remains the primary orchestration owner for refresh, selected-provider dispatch, normalized weather state, matching cache/history, freshness and the selected-provider inline error; Settings & Location owns validation, persistence and secret access.",
+    "A valid OpenWeather key save is eligible to request the existing refresh command only while OpenWeather remains explicitly selected. The callback carries no raw key; Weather Context obtains the key ephemerally through its existing coherent access snapshot.",
+    "Invalid/blank key input and key updates while Open-Meteo is selected do not request refresh. Open-Meteo receives no credential and no selected-provider failure invokes it as fallback.",
+    "A successful selected OpenWeather normalization clears the prior selected-provider missing-key failure through the existing Weather Context state path; a later selected-provider failure preserves selection/matching state and reports only that selected provider's result.",
+    "Use existing single-runtime composition/executor wiring and deterministic synthetic fixtures; no new dependency, event bus, storage owner, live request or target-device claim is authorized."
+  ],
+  "invariants": [
+    ".memory-bank/contracts/boundary-map.md#dependency-graph: only registered Settings & Location -> Weather Context orchestration and Weather Context -> selected adapter edges are used.",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration: refresh follows a newly valid persisted Settings value and no caller writes Weather Context storage directly.",
+    ".memory-bank/contracts/weather-provider.md#cache-history-and-refresh-rules: only successful normalized matching data replaces the cache; failed selected-provider refresh never invokes or substitutes the other provider.",
+    ".memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract: the owner key remains local and is exposed only for explicit selected OpenWeather request construction.",
+    ".memory-bank/contracts/weather-provider.md#credential-and-evidence-rules: Open-Meteo is credential-free and OpenWeather request/key evidence is redacted.",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3: this task owns fresh RED/GREEN proof for its exact activation, isolation and secret claims only."
+  ],
+  "verification_targets": [
+    "FT-002-AC-004 / REQ-007, REQ-025: after the initial missing-key result, a valid selected OpenWeather key save causes an immediate refresh without waiting for cadence; successful matching data is fresh and the obsolete missing-key error is gone, while clock/timer independence remains intact.",
+    "FT-002-AC-008 / REQ-007, REQ-029: the key-save refresh resolves one selected provider/location access snapshot, invokes OpenWeather only, preserves selection/location and never falls back to or mixes Open-Meteo data on success or failure.",
+    "FT-002-AC-007 / REQ-024: synthetic-key proof observes only redacted/presence request evidence; Open-Meteo has no credential and no source/resource/log/fixture/evidence artifact contains the synthetic marker.",
+    ".memory-bank/contracts/capability-interfaces.md#weather-context-to-settings-and-location: Settings validation/persistence and Weather Context refresh ownership remain on the registered edge without a raw-key callback or private-storage bypass.",
+    ".memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration: valid persisted Settings input requests the existing Weather Context refresh and no caller writes Weather Context storage directly.",
+    ".memory-bank/workflows/tier-policy.md#claim-linked-red--green-for-t2t3: fresh pre-change RED, claim-equivalent GREEN, selected-provider failure isolation, secret-safe artifact and repeatable cleanup are distinguishable per task-owned claim."
+  ]
+}

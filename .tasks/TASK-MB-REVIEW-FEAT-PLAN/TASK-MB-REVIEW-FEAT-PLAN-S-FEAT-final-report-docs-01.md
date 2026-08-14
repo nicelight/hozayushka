@@ -1,10 +1,10 @@
 ---
-description: Итог независимой проверки декомпозиции PRD в продуктовый feature plan.
+description: Итог независимой проверки provider-migration PRD-to-feature reconciliation.
 status: final
 task_id: TASK-MB-REVIEW-FEAT-PLAN
 stage_id: S-FEAT
 ---
-# Review report: PRD decomposition readiness
+# Review report: provider-migration decomposition readiness
 
 TASK_ID: `TASK-MB-REVIEW-FEAT-PLAN`  
 STAGE_ID: `S-FEAT`
@@ -13,68 +13,103 @@ STAGE_ID: `S-FEAT`
 
 VERDICT: APPROVE
 
-Текущая декомпозиция `PRD → REQ → EP → FT` готова к `/spec-design`.
+Provider-migration decomposition `PRD -> REQ -> EP -> FT` трассируема,
+содержательно замкнута и готова к `/spec-design`.
 
 ## Evidence checked
 
-- Governing context: [`AGENTS.md`](../../AGENTS.md), [Constitution](../../.memory-bank/constitution.md), [MBB](../../.memory-bank/mbb/index.md) и [Reviewer role](../../.memory-bank/roles/reviewer.md).
-- Product discovery: [analysis index](../../.memory-bank/analysis/index.md), [Product Brief](../../.memory-bank/analysis/product-brief.md) и [BR-001](../../.memory-bank/analysis/brainstorming/BR-001.md).
-- Product contract: [PRD](../../.memory-bank/prd.md), [product](../../.memory-bank/product.md) и [requirements + RTM](../../.memory-bank/requirements.md).
-- Decomposition: [epics index](../../.memory-bank/epics/index.md), `EP-001…EP-004`, [features index](../../.memory-bank/features/index.md) и `FT-001…FT-009`.
-- Framing/support: [spec-index](../../.memory-bank/spec-index.md), [spec-backbone](../../.memory-bank/spec-backbone.md), [user scenarios](../../.memory-bank/user-scenarios.md), [glossary](../../.memory-bank/glossary.md), [invariants](../../.memory-bank/invariants.md), [boundary-map](../../.memory-bank/contracts/boundary-map.md) и [lifecycle-map](../../.memory-bank/states/lifecycle-map.md).
+- Governing/reviewer context: [`AGENTS.md`](../../AGENTS.md),
+  [Constitution](../../.memory-bank/constitution.md),
+  [MBB](../../.memory-bank/mbb/index.md),
+  [Memory Bank index](../../.memory-bank/index.md) и
+  [Reviewer role](../../.memory-bank/roles/reviewer.md).
+- Product inputs: [analysis index](../../.memory-bank/analysis/index.md),
+  [Product Brief](../../.memory-bank/analysis/product-brief.md),
+  [clarified PRD](../../.memory-bank/prd.md),
+  [product](../../.memory-bank/product.md) и
+  [requirements/RTM](../../.memory-bank/requirements.md).
+- Decomposition: [epics index](../../.memory-bank/epics/index.md),
+  [EP-002](../../.memory-bank/epics/EP-002-weather-context.md),
+  [EP-004](../../.memory-bank/epics/EP-004-settings-location.md),
+  [features index](../../.memory-bank/features/index.md),
+  [FT-002](../../.memory-bank/features/FT-002-weather-cards-context.md),
+  [FT-003](../../.memory-bank/features/FT-003-hourly-forecast.md),
+  [FT-004](../../.memory-bank/features/FT-004-ten-day-forecast.md) и
+  [FT-008](../../.memory-bank/features/FT-008-weather-location-settings.md).
+- Readiness/context: [spec backbone](../../.memory-bank/spec-backbone.md),
+  [spec index](../../.memory-bank/spec-index.md),
+  [user scenarios](../../.memory-bank/user-scenarios.md),
+  [glossary](../../.memory-bank/glossary.md),
+  [invariants](../../.memory-bank/invariants.md),
+  [foundation](../../.memory-bank/foundation.md),
+  [boundary map](../../.memory-bank/contracts/boundary-map.md),
+  [weather-provider contract](../../.memory-bank/contracts/weather-provider.md),
+  [local-secret contract](../../.memory-bank/contracts/local-secret-handling.md),
+  [local-data domain](../../.memory-bank/domains/local-data.md) и
+  [lifecycle map](../../.memory-bank/states/lifecycle-map.md).
+- Read-only ID comparison against `HEAD`: existing `REQ-000` through `REQ-026`
+  and all pre-existing AC IDs of FT-002/003/004/008 remain present. The ID sets
+  append REQ-027/028/029 and FT-002-AC-008, FT-004-AC-006,
+  FT-008-AC-007/008 for the migration outcomes.
 
-Task records, JSON task design and implementation detail were not reviewed.
+Task JSON, implementation detail, code, emulator/device and Gradle evidence were
+not reviewed.
+
+## Acceptance closure
+
+| Product outcome | PRD -> REQ | EP -> FT acceptance |
+|---|---|---|
+| Open-Meteo default/no-key; explicit OpenWeather/local-key | `PRD-FR-032/033`, `PRD-AC-006/006A` -> REQ-024, REQ-027 | EP-004 -> FT-008-AC-001/006/007 |
+| No auto failover/mixing; provider-identified cache/history | `PRD-FR-013/032/037`, PRD domain/failure rules, `PRD-AC-002/008` -> REQ-007, REQ-008, REQ-029 | EP-002 -> FT-002-AC-004/005/008; EP-004 -> FT-008-AC-007 |
+| Open-Meteo 10 versus OpenWeather 8 + 2 empty | `PRD-FR-019/020/022`, `PRD-AC-007` -> REQ-010 | EP-002 -> FT-004-AC-001/005/006 |
+| Strict eight-slot hourly completeness/unavailable behavior | `PRD-FR-019A/B/022`, `PRD-AC-007A` -> REQ-009 | EP-002 -> FT-003-AC-001/005 |
+| Open-Meteo attribution | `PRD-FR-032`, PRD integration terms, `PRD-AC-006` -> REQ-028 | EP-004 -> FT-008-AC-008 |
+
+The new REQ and AC IDs have direct governing REQ/PRD links and deterministic
+verification targets. Material failure outcomes retain the selected provider,
+reject partial forecast entry, and forbid synthesis or cross-provider data.
+
+## Lifecycle and boundary falsification
+
+- The PRD remains Constitution-checked with `clarification_status: complete`
+  and no unresolved product blocker.
+- EP-002/EP-004 remain `draft` with lifecycle `planned`; FT-002/003/004/008 are
+  `lifecycle: planned` and `spec_design_status: pending`.
+- FT-000 remains the reserved Foundation pseudo-feature and owns no provider
+  behavior. The Foundation gate stays closed while provider-specific design
+  pressure is explicitly routed through the spec backbone and affected feature
+  design gates.
+- Historical Yandex evidence is explicitly labelled brownfield/superseded and
+  does not claim current acceptance. Registered Yandex-only provider, cache and
+  ten-filled-day contracts remain visibly stale and are routed to fresh
+  `/spec-design`; task, queue and scheduler state are not promoted.
+- The provider migration adds no FT. Selection/key/attribution remains the
+  independently observable Settings outcome in FT-008; provider-isolated
+  weather state remains FT-002; strict hourly and capability-aware long-term
+  views remain FT-003 and FT-004. No hidden independently releasable product
+  outcome or unsupported extra feature slice is evidenced.
 
 ## Blocking findings
 
 Нет.
 
-- [PRD](../../.memory-bank/prd.md) имеет `clarification_status: complete`, `constitution_checked: true`, а раздел `Unresolved Blockers` пуст.
-- `REQ-001…REQ-026` стабильны, поддержаны clarified PRD и полностью присутствуют в RTM [requirements.md](../../.memory-bank/requirements.md#traceability-rtm).
-- RTM распределяет все требования по четырём эпикам и девяти фичам; feature index и все feature-карты согласованы с этим распределением. Все девять фич содержат product outcome, requirements, acceptance criteria и edge/failure behavior.
-- Конституционные границы сохранены: local-only API key, offline location, timer lifecycle, clock dominance, отсутствие backend/Google Services/reboot recovery и отсутствие тяжёлых visual effects отражены в PRD, invariants, эпиках и feature-картах.
-- `FT-000` не используется как product feature. Foundation Dev Path оставлен отдельным решением следующей стадии.
-- [spec-backbone](../../.memory-bank/spec-backbone.md#handoff-to-spec-design) явно оставляет architecture, storage, provider mapping, runtime/device risks и другие design-pressure области для `/spec-design`; это ожидаемая граница, а не дефект decomposition.
-
-## Boundary-falsification probe
-
-Проверены `FT-003` (hourly forecast) и `FT-004` (10-day forecast) как наиболее
-очевидная пара с общим forecast exit flow. У каждого есть собственная
-наблюдаемая ценность, отдельный `REQ`, acceptance, failure behavior и
-verification target: [FT-003](../../.memory-bank/features/FT-003-hourly-forecast.md#product-outcome), [FT-004](../../.memory-bank/features/FT-004-ten-day-forecast.md#product-outcome).
-Общий exit flow задан как композиция, а не как скрытый отдельный outcome.
-Другого доказанного независимого продуктового среза внутри проверенной
-декомпозиции не выявлено.
-
 ## Non-blocking notes
 
-1. [Product Brief](../../.memory-bank/analysis/product-brief.md) сохраняет
-   исходное упоминание 14-дневного прогноза и связанные старые open questions;
-   clarified PRD, glossary и reviewed scenarios явно заменяют его на 10 дней.
-   Это documentation drift, не блокер текущего handoff. При желании очистить
-   источник — маршрут `/write-prd`/обновление Product Brief.
-2. В конце [PRD](../../.memory-bank/prd.md) осталась историческая фраза о
-   handoff в `/spec-init`; актуальный маршрут в analysis index, feature-картах и
-   spec-backbone — review → `/spec-design`. Это navigation drift, не блокер.
-3. В [FT-008](../../.memory-bank/features/FT-008-weather-location-settings.md)
-   в списке source links присутствует неточная ссылка на `PRD-FR-017`.
-   Содержательная traceability не нарушена: REQ/RTM и остальные PRD links
-   покрывают accepted location behavior. Локальная коррекция принадлежит
-   `/prd-to-features` или feature-level documentation repair.
+- [Analysis index](../../.memory-bank/analysis/index.md) still says the
+  decomposition created 26 stable REQ IDs, while the reconciled registry now
+  contains 29 and preserves the original 26. The authoritative requirements,
+  RTM, epics and feature cards are internally consistent, so this is routing
+  metadata drift rather than an acceptance gap.
+- The closing PRD handoff still names `/prd-to-features`; decomposition is now
+  complete and the current reviewed handoff is `/spec-design`. This is likewise
+  navigation drift and does not alter product acceptance.
 
 ## Unresolved operator questions
 
-Нет unresolved product/decomposition questions, блокирующих verdict.
-
-Architecture style, storage ownership, provider-field mapping, target-ROM
-timer/audio behavior и точные technical contracts корректно оставлены
-operator-owned design questions для `/spec-design`; reviewer не выбирает эти
-альтернативы. Точное название приложения также отмечено PRD как
-non-blocking.
+Нет.
 
 ## Owning repair route / handoff
 
-`APPROVE → /spec-design`.
-
-Обязательный следующий владелец — `/spec-design`; текущий review не создаёт
-Foundation tasks и не переходит к task implementation planning.
+- Required handoff: `APPROVE -> /spec-design`.
+- Non-blocking routing-metadata repair owner: `/prd-to-features` (durable
+  decomposition navigation reconciliation).

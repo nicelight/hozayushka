@@ -1,95 +1,88 @@
 ---
-description: Planning surface for FT-008 weather access and offline location settings.
+description: Revision-2 planning surface for FT-008 provider, key and offline location settings.
 status: active
-last_updated: 2026-08-07
+last_updated: 2026-08-11
 ---
 # FT-008 — Feature plan
 
 ## Objective
 
-Create one independently verifiable Settings & Location outcome: local
-personal API-key access, default/selected city persistence, offline
-country-first and scoped city search, accepted aliases/attribution, and the
-validated city-change refresh request with failure preservation.
+Extend the accepted offline location Settings with explicit provider choice:
+Open-Meteo is the first-run/default no-key path; OpenWeather is enabled only by
+owner selection with its personal local key. Keep failures contextual and
+selection-stable, and show both Open-Meteo and GeoNames attribution.
 
 ## Accepted basis
 
 - Feature: [.memory-bank/features/FT-008-weather-location-settings.md](../../.memory-bank/features/FT-008-weather-location-settings.md)
-- Epic: [.memory-bank/epics/EP-004-settings-location.md](../../.memory-bank/epics/EP-004-settings-location.md)
-- Direct requirements: `REQ-017`, `REQ-018`, `REQ-024`
-- Global Backbone: `complete`, Planning Revision `1`
-- Foundation Gate: `TASK-002-T3-FT-000-W1`, status `done`
-- Approved predecessor: `TASK-009-T3-FT-007-W8`, status `planned`
-- Clarified PRD: `clarification_status: complete`
+- Direct requirements: `REQ-017`, `REQ-018`, `REQ-024`, `REQ-027`,
+  `REQ-028`
+- Global Backbone: `complete`, Planning Revision `2`
+- Foundation Gate: `TASK-002-T3-FT-000-W1`, status `done`; Foundation
+  revalidation is successful
+- Planning-time production evidence: the unconditional Yandex-era key surface
+  was as-is behavior to migrate, not the target contract
 
-## Queue
+## Reconciled queue
 
-| Order | Task | Tier | Wave | Status | Depends on | Primary owner |
+| Order | Task | Tier | Wave | Status | Depends on | Role |
 |---|---|---|---|---|---|---|
-| 1 | `TASK-010-T3-FT-008-W9` | T3 | W9 | planned | `TASK-009-T3-FT-007-W8` | Settings & Location |
+| 1 | `TASK-010-T3-FT-008-W9` | T3 | W9 | done | `TASK-009-T3-FT-007-W8` | Historical key/location/catalog implementation |
+| 2 | `TASK-019-T3-FT-008-W16` | T3 | W16 | done | `TASK-018-T3-FT-002-W15` | Current provider/key/attribution delta |
 
-One task is sufficient. Key validation, local retention, offline catalog
-selection and city-change refresh are one user-facing Settings outcome with
-one mutable owner and one claim-linked proof path. It crosses only the
-registered Main Display → Settings & Location, Settings & Location → Weather
-Context, Weather Context → Yandex Weather Adapter and Settings & Location →
-Bundled Location Catalog boundaries. It is not split by screen/file, catalog
-asset, adapter, persistence primitive or test artifact.
+Queue action: `reconciled`. W9 identity, dependency, terminal status and
+evidence remain unchanged. W16 is `done` after final Attempt-3 functional
+`PASS` and semantic `semantic-pass`; the two unsuccessful attempts remain
+traceable in task-owned evidence. Downstream promotion remains external.
 
-## Acceptance closure
+## Current acceptance ownership
 
-All six FT-008 ACs are owned by `TASK-010-T3-FT-008-W9` through exact feature
-locators. `REQ-017` covers key/location persistence and refresh, `REQ-018`
-covers the offline catalog and attribution, and `REQ-024` covers secret safety.
-FT-002 remains the owner of normalized weather/cache/freshness behavior and
-FT-009 remains the owner of alert/glass personalization.
+| Acceptance | Current owner | Boundary |
+|---|---|---|
+| `FT-008-AC-002`, `FT-008-AC-003`, `FT-008-AC-004`, `FT-008-AC-005` | `TASK-010-T3-FT-008-W9` | Unchanged default/selected location, offline catalog, aliases and GeoNames attribution |
+| `FT-008-AC-001`, `FT-008-AC-006`, `FT-008-AC-007`, `FT-008-AC-008` | `TASK-019-T3-FT-008-W16` | OpenWeather-only key, provider-context failure, selection and Open-Meteo attribution |
+
+W9's AC-001/AC-006 locators remain historical evidence for the former
+single-provider semantics; W16 is their sole current Revision-2 owner. W16
+regression-checks location/catalog preservation but does not duplicate W9
+implementation ownership.
 
 ## Canonical SDD coverage
 
-All applicable concerns reuse existing subject-based canonical specs. No new
-canonical specification, competing path or optional behavior-spec file is
-required.
+No spec is created or extended. Reuse:
 
-| Concern | Action | Canonical basis |
-|---|---|---|
-| Architecture, ownership and graph | `reuse` | `system-architecture.md#capability-slice-runtime`, `#ad-002---application-owned-local-state-is-the-product-source-of-truth`, `#ad-003---cross-slice-orchestration-stays-in-a-capability-owner`, `#ad-006---user-api-keys-are-local-and-redacted`; `boundary-map.md#modules`, `#dependency-graph`, `#accepted-ownership-summary` |
-| Settings/location and refresh contracts | `reuse` | `capability-interfaces.md#main-display-to-settings-and-location`, `#location-refresh-orchestration`, `#settings-and-location-to-bundled-location-catalog`, `#weather-context-to-settings-and-location` |
-| Provider and failure boundary | `reuse` | `weather-provider.md#weather-provider-boundary`, `#refresh-cache-and-failure-rules`, `#credential-and-evidence-rules` |
-| Local data and persistence | `reuse` | `local-data.md#ownership-matrix`, `#durable-data-rules`, `#validation-and-serialization-boundaries` |
-| Secret handling | `reuse` | `local-secret-handling.md#local-api-key-handling-contract`, `#storage-mechanism-boundary`, `#evidence-and-verification` |
-| Platform compatibility and proof | `reuse` | `platform-runtime.md#compatibility-and-failure-rules`; `runtime-verification.md#deterministic-host-side-checks`, `#redacted-integration-fixtures`, `#secret-and-artifact-checks` |
+- [AD-006](../../.memory-bank/architecture/system-architecture.md#ad-006---openweather-owner-key-is-local-and-redacted)
+  and [AD-008](../../.memory-bank/architecture/system-architecture.md#ad-008---selected-provider-isolation-is-owned-by-weather-context)
+- [Weather Access Settings Surface](../../.memory-bank/contracts/capability-interfaces.md#weather-access-settings-surface)
+  and [Location Refresh Orchestration](../../.memory-bank/contracts/capability-interfaces.md#location-refresh-orchestration)
+- [Provider Selection](../../.memory-bank/contracts/weather-provider.md#provider-selection-and-dispatch),
+  [Credential Rules](../../.memory-bank/contracts/weather-provider.md#credential-and-evidence-rules)
+  and [Attribution Boundary](../../.memory-bank/contracts/weather-provider.md#attribution-and-terms-boundary)
+- [Local API-Key Contract](../../.memory-bank/contracts/local-secret-handling.md#local-api-key-handling-contract),
+  [storage](../../.memory-bank/contracts/local-secret-handling.md#storage-mechanism-boundary)
+  and [evidence](../../.memory-bank/contracts/local-secret-handling.md#evidence-and-verification)
 
-No `needed_before_tasks` Backbone row remains and Planning Revision remains
-positive and unchanged at `1`.
+## Scope and proof
 
-## Scope and execution path
+W16 is one T3 Settings/secret outcome. Its RED was the absence of provider
+state, the unconditional former key path and missing Open-Meteo attribution.
+Final GREEN proves first-run Open-Meteo, explicit OpenWeather switch, contextual key
+persistence/reopen, provider-stable inline failures, and ordered dual
+attribution using only synthetic redacted evidence.
 
-Settings & Location owns the validated key and location state, reads the
-immutable bundled catalog, and requests Weather Context refresh only after a
-valid location write. Weather Context owns provider refresh, normalization,
-cache/history and freshness; the adapter owns transport mapping. Main Display
-only opens Settings and renders the selected-city projection. The composition
-root wires the graph but owns no Settings or refresh business logic.
+Provider HTTP transport, actual selected dispatch, cache/history and forecast
+completeness remain downstream W17–W19. No third provider, shared key,
+backend/proxy, plugin framework, registry, DI framework or event bus is added.
+No hard `write_boundary` is declared; the three advisory files and semantic
+controls are sufficient.
 
-In scope: the accepted six ACs, Khujand default, GeoNames subset/search,
-Russian/canonical/ASCII aliases, attribution, inline errors, last-valid-value
-preservation, redacted refresh request and offline/network failure behavior.
-Out of scope: FT-002 weather semantics, FT-009 personalization, new location
-sources, Google Services, backend/cloud/accounts, shared credentials, new
-events/dependencies and unaccepted Settings controls.
-
-## Verification route
-
-- `./gradlew clean assembleDebug`
-- `./gradlew testDebugUnitTest`
-- Known isolated Settings state, synthetic credential, bundled redacted
-  fixture, safe reset/cleanup and no live credentials.
-- Host checks prove settings/catalog/provider semantics; later device evidence
-  is limited to host-insufficient Settings readability/navigation behavior.
-- Planning produces no runtime evidence.
+The current transition safeguard denies provider-unidentified legacy key
+access/refresh. Planned TASK-020 must atomically replace it with selected-
+OpenWeather-authorized access while implementing selected-provider dispatch.
+Physical-device/live-provider evidence remains `DEFERRED`; no runtime `PASS`
+is claimed.
 
 ## Handoff
 
-After this task-plan surface is accepted, the immediate route is
-`/review-tasks-plan FT-008`; execution and all verification/sync skills are
-outside this planning run.
+W16 closure is reconciled. Scheduler-owned post-sync lint/strict-doctor and the
+separate TASK-020 promotion-eligibility pass remain outside this plan.
